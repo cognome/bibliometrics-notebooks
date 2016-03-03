@@ -1,0 +1,312 @@
+{
+  "paragraphs": [
+    {
+      "title": "Dataset download",
+      "text": "%sh\n\nSCRAPY_DIR\u003d/tmp/scrapy\n\nmkdir -p $SCRAPY_DIR\ncd $SCRAPY_DIR\n\nif [ ! -f anticipation_FORESIGHT.json ]\nthen\n  wget \"https://s3-eu-west-1.amazonaws.com/cognome-crawl/anticipation_FORESIGHT.json\"\nfi\n\nif [ ! -f anticipation_NANOETHICS.json ]\nthen\n  wget \"https://s3-eu-west-1.amazonaws.com/cognome-crawl/anticipation_NANOETHICS.json\"\nfi",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "tableHide": true,
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sh",
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597683_-1143943259",
+      "id": "20160304-143637_1928759401",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Configuration",
+      "text": "val CrawlNames \u003d Seq(\n    \"anticipation_FORESIGHT\",\n    \"anticipation_NANOETHICS\")\nval CrawlIds: Option[Seq[String]] \u003d None\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval ScrapyDir \u003d \"/tmp/scrapy\"\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval CrawlDir \u003d s\"$WorkDir/crawl\"\nval CrawlFiles \u003d CrawlNames.map { crawlName \u003d\u003e s\"$ScrapyDir/$crawlName.json\" }",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "tableHide": true,
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597683_-1143943259",
+      "id": "20160304-143637_686665514",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "CrawlNames: Seq[String] \u003d List(anticipation_FORESIGHT, anticipation_NANOETHICS)\nCrawlIds: Option[Seq[String]] \u003d None\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nScrapyDir: String \u003d /tmp/scrapy\nWorkDir: String \u003d /tmp/anticipation\nCrawlDir: String \u003d /tmp/anticipation/crawl\nCrawlFiles: Seq[String] \u003d List(/tmp/scrapy/anticipation_FORESIGHT.json, /tmp/scrapy/anticipation_NANOETHICS.json)\n"
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.sql.types._\n\nval crawlSchema \u003d StructType(Array(\n    StructField(\"crawl_id\", StringType, false),\n    StructField(\"data_type\", StringType, true),\n    StructField(\"depth\", IntegerType, true),\n    StructField(\"domain\", StringType, true),\n    StructField(\"from_item\", StringType, true),\n    StructField(\"html\", StringType, true),\n    StructField(\"http_status_code\", IntegerType, true),\n    StructField(\"id\", StringType, true),\n    StructField(\"item_type\", StringType, false),\n    StructField(\"label\", StringType, true),\n    StructField(\"tags\", ArrayType(StringType, false), true),\n    StructField(\"text\", StringType, true),\n    StructField(\"time\", DateType, false),\n    StructField(\"to_item\", StringType, true),\n    StructField(\"url\", StringType, true)\n))\n\nval crawl \u003d CrawlFiles.map(sqlc.read.schema(crawlSchema).json(_)).reduce(_ unionAll _).withColumn(\"did\", lit(DatasetId)).withColumnRenamed(\"id\", \"rid\")",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597683_-1143943259",
+      "id": "20160304-143637_1406272772",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.types._\ncrawlSchema: org.apache.spark.sql.types.StructType \u003d StructType(StructField(crawl_id,StringType,false), StructField(data_type,StringType,true), StructField(depth,IntegerType,true), StructField(domain,StringType,true), StructField(from_item,StringType,true), StructField(html,StringType,true), StructField(http_status_code,IntegerType,true), StructField(id,StringType,true), StructField(item_type,StringType,false), StructField(label,StringType,true), StructField(tags,ArrayType(StringType,false),true), StructField(text,StringType,true), StructField(time,DateType,false), StructField(to_item,StringType,true), StructField(url,StringType,true))\ncrawl: org.apache.spark.sql.DataFrame \u003d [crawl_id: string, data_type: string, depth: int, domain: string, from_item: string, html: string, http_status_code: int, rid: string, item_type: string, label: string, tags: array\u003cstring\u003e, text: string, time: date, to_item: string, url: string, did: int]\n"
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val pages \u003d crawl.filter(\u0027item_type \u003d\u003d\u003d \"page\").select(\u0027did, \u0027crawl_id, \u0027rid, \u0027url, \u0027domain, \u0027data_type, \u0027http_status_code, \u0027depth, \u0027html, \u0027tags, \u0027time)\nval publicationPages \u003d pages.filter(array_contains(\u0027tags, \"publication\"))\nval summaryPages \u003d pages.filter(array_contains(\u0027tags, \"summary\"))\nval crawlingEdges \u003d crawl.filter(\u0027item_type \u003d\u003d\u003d \"edge\").select(\u0027did, \u0027crawl_id, \u0027from_item, \u0027to_item, \u0027label, \u0027tags, \u0027time)",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "text",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "text",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597683_-1143943259",
+      "id": "20160304-143637_788620740",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "pages: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, url: string, domain: string, data_type: string, http_status_code: int, depth: int, html: string, tags: array\u003cstring\u003e, time: date]\npublicationPages: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, url: string, domain: string, data_type: string, http_status_code: int, depth: int, html: string, tags: array\u003cstring\u003e, time: date]\nsummaryPages: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, url: string, domain: string, data_type: string, http_status_code: int, depth: int, html: string, tags: array\u003cstring\u003e, time: date]\ncrawlingEdges: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, from_item: string, to_item: string, label: string, tags: array\u003cstring\u003e, time: date]\n"
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "OptSaveMode.foreach { saveMode \u003d\u003e\n    publicationPages.write.mode(saveMode).parquet(s\"$CrawlDir/publications.parquet\")\n}",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597683_-1143943259",
+      "id": "20160304-143637_1777468813",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "OptSaveMode.foreach { saveMode \u003d\u003e\n    summaryPages.write.mode(saveMode).parquet(s\"$CrawlDir/summaries.parquet\")\n}",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597684_-1145867003",
+      "id": "20160304-143637_748909414",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "OptSaveMode.foreach { saveMode \u003d\u003e\n    crawlingEdges.write.mode(saveMode).parquet(s\"$CrawlDir/edges.parquet\")\n}",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597684_-1145867003",
+      "id": "20160304-143637_1872406995",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "dateUpdated": "Mar 4, 2016 2:36:37 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457098597684_-1145867003",
+      "id": "20160304-143637_1259462305",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Mar 4, 2016 2:36:37 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "[11] Crawl data import",
+  "id": "2BCFT3RJZ",
+  "angularObjects": {
+    "2BECU381X": [],
+    "2BFE4973F": [],
+    "2BDUP8TX1": [],
+    "2BC2TVSBR": [],
+    "2BEK1W1PD": [],
+    "2BEV8A6Z4": [],
+    "2BCVF5P5F": [],
+    "2BEMYV7QQ": [],
+    "2BFPPNXXV": [],
+    "2BD9VECZR": [],
+    "2BE14FKBG": [],
+    "2BEKWFP9V": [],
+    "2BDPVAN2T": [],
+    "2BDMC46FS": [],
+    "2BFC9NN6P": [],
+    "2BE7P7NCM": [],
+    "2BFQQPY3C": []
+  },
+  "config": {},
+  "info": {}
+}

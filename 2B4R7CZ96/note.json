@@ -1,0 +1,1147 @@
+{
+  "paragraphs": [
+    {
+      "title": "Configuration",
+      "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval OptExportSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\nval CsvDelimiter \u003d \"\\t\"\nval ListSeparator \u003d \",\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"\nval IndicatorsDir \u003d s\"$WorkDir/indicators\"\nval CsvDir \u003d s\"$WorkDir/csv\"\nval GraphDir \u003d s\"$WorkDir/graphml\"",
+      "dateUpdated": "Mar 4, 2016 10:19:13 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "tableHide": true,
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431936520000_-1298619013",
+      "id": "20150518-080840_1159554573",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nOptExportSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nCsvDelimiter: String \u003d \"\t\"\nListSeparator: String \u003d ,\nWorkDir: String \u003d /tmp/anticipation\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\nIndicatorsDir: String \u003d /tmp/anticipation/indicators\nCsvDir: String \u003d /tmp/anticipation/csv\nGraphDir: String \u003d /tmp/anticipation/graphml\n"
+      },
+      "dateCreated": "May 18, 2015 8:08:40 AM",
+      "dateStarted": "Mar 4, 2016 10:19:13 AM",
+      "dateFinished": "Mar 4, 2016 10:19:14 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val flattenList \u003d udf { (l: Seq[Any]) \u003d\u003e Option(l).map(_.mkString(ListSeparator)) }\n\ndef csvWriter(df: org.apache.spark.sql.DataFrame) \u003d df.repartition(1).write.format(\"com.databricks.spark.csv\").option(\"header\", \"true\").option(\"delimiter\", CsvDelimiter)",
+      "dateUpdated": "Mar 4, 2016 10:19:13 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1456995586168_-1910215752",
+      "id": "20160303-095946_1956973063",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "flattenList: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,List())\ncsvWriter: (df: org.apache.spark.sql.DataFrame)org.apache.spark.sql.DataFrameWriter\n"
+      },
+      "dateCreated": "Mar 3, 2016 9:59:46 AM",
+      "dateStarted": "Mar 4, 2016 10:19:14 AM",
+      "dateFinished": "Mar 4, 2016 10:19:15 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Author indicators",
+      "text": "%md\n\n#### latest_pub_year\nlatest publication year for all the publications authored by the author\n\n#### impact\nsum of the impact of the publications authored by the author\n\n#### pub_count\nnumber of publications authored by the author\n\n#### conf_count\nnumber of publications authored by the author which are considered as conferences",
+      "dateUpdated": "Mar 4, 2016 10:19:13 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431953565933_-2026912952",
+      "id": "20150518-125245_2079427544",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch4\u003elatest_pub_year\u003c/h4\u003e\n\u003cp\u003elatest publication year for all the publications authored by the author\u003c/p\u003e\n\u003ch4\u003eimpact\u003c/h4\u003e\n\u003cp\u003esum of the impact of the publications authored by the author\u003c/p\u003e\n\u003ch4\u003epub_count\u003c/h4\u003e\n\u003cp\u003enumber of publications authored by the author\u003c/p\u003e\n\u003ch4\u003econf_count\u003c/h4\u003e\n\u003cp\u003enumber of publications authored by the author which are considered as conferences\u003c/p\u003e\n"
+      },
+      "dateCreated": "May 18, 2015 12:52:45 PM",
+      "dateStarted": "Mar 4, 2016 10:19:14 AM",
+      "dateFinished": "Mar 4, 2016 10:19:14 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val publicationIndicators \u003d sqlc.read.parquet(s\"$IndicatorsDir/publication_instances_and_indicators-did_$DatasetId.parquet\")",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445959352568_-399062914",
+      "id": "20151027-152232_763924947",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "publicationIndicators: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categories: array\u003cstring\u003e, scielo_collections: array\u003cstring\u003e, pub_dis_id: bigint, dis_title: string, pub_lifetime: smallint, pub_impact: float]\n"
+      },
+      "dateCreated": "Oct 27, 2015 3:22:32 PM",
+      "dateStarted": "Mar 4, 2016 10:19:14 AM",
+      "dateFinished": "Mar 4, 2016 10:19:15 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Authors",
+      "text": "val authors \u003d sqlc.read.parquet(s\"$DisambigDir/disambiguated_authors-did_$DatasetId.parquet\").withColumnRenamed(\"id\", \"author_id\").withColumnRenamed(\"dis_id\", \"author_dis_id\").withColumnRenamed(\"dis_name\", \"author_dis_name\").withColumnRenamed(\"pub_id\", \"author_pub_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "tableHide": false,
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431955449952_2034993913",
+      "id": "20150518-132409_1523015815",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "authors: org.apache.spark.sql.DataFrame \u003d [did: int, author_pub_id: bigint, author_id: bigint, raw: string, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: array\u003csmallint\u003e, is_valid: boolean, generated_full_name: string, group_key: string, author_dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string]\n"
+      },
+      "dateCreated": "May 18, 2015 1:24:09 PM",
+      "dateStarted": "Mar 4, 2016 10:19:15 AM",
+      "dateFinished": "Mar 4, 2016 10:19:15 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Flat authors CSV",
+      "text": "val flatAuthors \u003d authors.withColumn(\"affiliations\", flattenList(\u0027affiliations)).drop(\"raw\")\nflatAuthors.show(5)\nOptSaveMode.foreach(csvWriter(flatAuthors).mode(_).save(s\"$CsvDir/author_instances-did_$DatasetId.csv\"))",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1456995541425_528894705",
+      "id": "20160303-095901_734202165",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "flatAuthors: org.apache.spark.sql.DataFrame \u003d [did: int, author_pub_id: bigint, author_id: bigint, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: string, is_valid: boolean, generated_full_name: string, group_key: string, author_dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string]\n+---+-------------+---------+------------+---------+-----------+--------------------+------+--------+------------+--------+-------------------+---------+-------------+--------------------+----------------------+---------------+\n|did|author_pub_id|author_id|is_anonymous|last_name|maiden_name|         given_names|suffix|nickname|affiliations|is_valid|generated_full_name|group_key|author_dis_id|author_dis_last_name|author_dis_given_names|author_dis_name|\n+---+-------------+---------+------------+---------+-----------+--------------------+------+--------+------------+--------+-------------------+---------+-------------+--------------------+----------------------+---------------+\n|  1|          468|     1918|       false|     Pace|       null|   [WrappedArray(C)]|  null|    null|        null|    true|             PACE C|    PACEC|         1918|                Pace|     [WrappedArray(C)]|         PACE C|\n|  1|         2730|       34|       false|     Park|       null|[WrappedArray(Bye...|  null|    null|        null|    true|     PARK BYEONGWON|    PARKB|           34|                Park|  [WrappedArray(Bye...| PARK BYEONGWON|\n|  1|         1150|     3847|       false| Kajikawa|       null|   [WrappedArray(Y)]|  null|    null|        null|    true|         KAJIKAWA Y|KAJIKAWAY|         2266|            Kajikawa|     [WrappedArray(Y)]|     KAJIKAWA Y|\n|  1|         2372|     2266|       false| Kajikawa|       null|   [WrappedArray(Y)]|  null|    null|        null|    true|         KAJIKAWA Y|KAJIKAWAY|         2266|            Kajikawa|     [WrappedArray(Y)]|     KAJIKAWA Y|\n|  1|         1228|     3066|       false|    Iskin|       null|   [WrappedArray(I)]|  null|    null|        null|    true|            ISKIN I|   ISKINI|         3066|               Iskin|     [WrappedArray(I)]|        ISKIN I|\n+---+-------------+---------+------------+---------+-----------+--------------------+------+--------+------------+--------+-------------------+---------+-------------+--------------------+----------------------+---------------+\nonly showing top 5 rows\n\n"
+      },
+      "dateCreated": "Mar 3, 2016 9:59:01 AM",
+      "dateStarted": "Mar 4, 2016 10:19:15 AM",
+      "dateFinished": "Mar 4, 2016 10:19:16 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "authorsToPublications",
+      "text": "// FIXME Disambiguate publications\n\nval authorsToPublications \u003d authors.join(\n    publicationIndicators, \u0027author_pub_id \u003d\u003d\u003d \u0027pub_id, \"left_outer\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nauthorsToPublications.registerTempTable(\"authors_to_publications\")",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "tableHide": false,
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431956173810_1404400856",
+      "id": "20150518-133613_682766862",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "authorsToPublications: org.apache.spark.sql.DataFrame \u003d [did: int, author_pub_id: bigint, author_id: bigint, raw: string, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: array\u003csmallint\u003e, is_valid: boolean, generated_full_name: string, group_key: string, author_dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string, pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_catego..."
+      },
+      "dateCreated": "May 18, 2015 1:36:13 PM",
+      "dateStarted": "Mar 4, 2016 10:19:16 AM",
+      "dateFinished": "Mar 4, 2016 10:19:17 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "authors.count\nauthors.select(\u0027author_dis_id).distinct.count\nauthorsToPublications.select(\u0027pub_dis_id, \u0027author_dis_id).distinct.count\nauthorsToPublications.select(\u0027author_id, \u0027pub_dis_id, \u0027author_dis_id).distinct.count",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1435324623185_494850148",
+      "id": "20150626-131703_420484785",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res501: Long \u003d 568\nres502: Long \u003d 485\nres503: Long \u003d 568\nres504: Long \u003d 568\n"
+      },
+      "dateCreated": "Jun 26, 2015 1:17:03 PM",
+      "dateStarted": "Mar 4, 2016 10:19:16 AM",
+      "dateFinished": "Mar 4, 2016 10:19:22 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Author publications CSV",
+      "text": "val authorsToPublicationsExport \u003d authorsToPublications.select(\u0027pub_dis_id, \u0027author_dis_id).distinct.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nauthorsToPublicationsExport.show(5)\nOptSaveMode.foreach(csvWriter(authorsToPublicationsExport).mode(_).save(s\"$CsvDir/authors_publications-did_$DatasetId.csv\"))",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1435648102440_1528853035",
+      "id": "20150630-070822_115658683",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "authorsToPublicationsExport: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, author_dis_id: bigint]\n+----------+-------------+\n|pub_dis_id|author_dis_id|\n+----------+-------------+\n|        32|         1963|\n|       967|         2168|\n|       676|         2736|\n|         9|         1815|\n|       942|         2494|\n+----------+-------------+\nonly showing top 5 rows\n\n"
+      },
+      "dateCreated": "Jun 30, 2015 7:08:22 AM",
+      "dateStarted": "Mar 4, 2016 10:19:17 AM",
+      "dateFinished": "Mar 4, 2016 10:19:24 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Sanity Checks - FIXME?",
+      "text": "/*\n- each publication has at least one author if not anonymous: cf JS Trello Task FIXME\n- each author has at least one publication\n*/\n\npublicationIndicators.join(authors, \u0027pub_id \u003d\u003d\u003d \u0027author_pub_id, \"left_outer\").filter(\u0027author_id.isNull).count()//.select(\u0027rid, \u0027dis_title, \u0027raw).take(10).foreach(println)\nauthorsToPublications.filter(\u0027pub_id.isNull).count()//.select(\u0027publication_id).distinct.show(10)",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431956709106_-730817098",
+      "id": "20150518-134509_1986588819",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res511: Long \u003d 3060\nres512: Long \u003d 0\n"
+      },
+      "dateCreated": "May 18, 2015 1:45:09 PM",
+      "dateStarted": "Mar 4, 2016 10:19:22 AM",
+      "dateFinished": "Mar 4, 2016 10:19:28 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql select cast(false as INT) ",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "_c0",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "_c0",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "editorMode": "ace/mode/sql",
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1446218133714_1238178620",
+      "id": "20151030-151533_242018604",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "_c0\n0\n"
+      },
+      "dateCreated": "Oct 30, 2015 3:15:33 PM",
+      "dateStarted": "Mar 4, 2016 10:19:24 AM",
+      "dateFinished": "Mar 4, 2016 10:19:28 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "authorIndicators",
+      "text": "val commonAuthorIndicators \u003d authorsToPublications.filter(\n    \u0027pub_dis_id.isNotNull\n)\n\nval mainAuthorIndicators \u003d authorsToPublications.filter(\n    \u0027pub_dis_id.isNotNull \u0026\u0026 \u0027is_main \u003d\u003d\u003d true\n).groupBy(\n    \u0027author_dis_id, \u0027author_dis_name\n).agg(\n    sum(\u0027pub_impact) as \"author_impact\",\n    count(\u0027pub_id) as \"author_pub_count\",\n    sum(\u0027is_conference.cast(\"int\")) as \"author_conf_count\",\n    min(\u0027year) as \"author_first_pub_year\",\n    max(\u0027year) as \"author_latest_pub_year\"\n)\n\nval authorIndicators \u003d commonAuthorIndicators.as(\"a1\").join(\n    mainAuthorIndicators.as(\"a2\"), $\"a1.author_dis_id\" \u003d\u003d\u003d $\"a2.author_dis_id\", \"left_outer\"\n).select(\n    $\"a1.author_dis_id\" as \"author_dis_id\", $\"a1.author_dis_name\" as \"author_dis_name\", \u0027author_first_pub_year, \u0027author_latest_pub_year, \u0027author_impact, \u0027author_pub_count, \u0027author_conf_count\n).distinct.coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nauthorIndicators.registerTempTable(\"author_indicators\")",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "tableHide": true,
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431955396128_-340353851",
+      "id": "20150518-132316_2073298813",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "commonAuthorIndicators: org.apache.spark.sql.DataFrame \u003d [did: int, author_pub_id: bigint, author_id: bigint, raw: string, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: array\u003csmallint\u003e, is_valid: boolean, generated_full_name: string, group_key: string, author_dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string, pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categ...mainAuthorIndicators: org.apache.spark.sql.DataFrame \u003d [author_dis_id: bigint, author_dis_name: string, author_impact: double, author_pub_count: bigint, author_conf_count: bigint, author_first_pub_year: smallint, author_latest_pub_year: smallint]\nauthorIndicators: org.apache.spark.sql.DataFrame \u003d [author_dis_id: bigint, author_dis_name: string, author_first_pub_year: smallint, author_latest_pub_year: smallint, author_impact: double, author_pub_count: bigint, author_conf_count: bigint]\n"
+      },
+      "dateCreated": "May 18, 2015 1:23:16 PM",
+      "dateStarted": "Mar 4, 2016 10:19:28 AM",
+      "dateFinished": "Mar 4, 2016 10:19:28 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Metrics",
+      "text": "authorIndicators.describe(\"author_first_pub_year\", \"author_latest_pub_year\", \"author_impact\", \"author_pub_count\", \"author_conf_count\").show()",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "tableHide": false,
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431960702934_476840704",
+      "id": "20150518-145142_1153733613",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+-------+---------------------+----------------------+------------------+------------------+-----------------+\n|summary|author_first_pub_year|author_latest_pub_year|     author_impact|  author_pub_count|author_conf_count|\n+-------+---------------------+----------------------+------------------+------------------+-----------------+\n|  count|                  485|                   485|               485|               485|              485|\n|   mean|   2009.3979381443298|    2009.6845360824743|0.4053851010719525|1.1711340206185568|              0.0|\n| stddev|                  NaN|                   NaN|0.9922584879274852|0.6105530301759466|              0.0|\n|    min|                 1987|                  1987|               0.0|                 1|                0|\n|    max|                 2014|                  2014|10.666666984558105|                 9|                0|\n+-------+---------------------+----------------------+------------------+------------------+-----------------+\n\n"
+      },
+      "dateCreated": "May 18, 2015 2:51:42 PM",
+      "dateStarted": "Mar 4, 2016 10:19:28 AM",
+      "dateFinished": "Mar 4, 2016 10:19:34 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "CSV Export - Author Indicators",
+      "text": "OptSaveMode.foreach(authorIndicators.write.mode(_).parquet(s\"$IndicatorsDir/author_indicators-did_$DatasetId.parquet\"))",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1432033201377_-269911601",
+      "id": "20150519-110001_881552827",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "May 19, 2015 11:00:01 AM",
+      "dateStarted": "Mar 4, 2016 10:19:29 AM",
+      "dateFinished": "Mar 4, 2016 10:19:35 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Author indicators CSV",
+      "text": "authorIndicators.show(5)\nOptSaveMode.foreach(csvWriter(authorIndicators).mode(_).save(s\"$CsvDir/author_indicators-did_$DatasetId.csv\"))",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1456995903840_-2081168502",
+      "id": "20160303-100503_519179532",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+-------------+---------------+---------------------+----------------------+------------------+----------------+-----------------+\n|author_dis_id|author_dis_name|author_first_pub_year|author_latest_pub_year|     author_impact|author_pub_count|author_conf_count|\n+-------------+---------------+---------------------+----------------------+------------------+----------------+-----------------+\n|           34| PARK BYEONGWON|                 2006|                  2006|0.4000000059604645|               1|                0|\n|         2843|     TUCKER J P|                 2009|                  2009|0.1428571492433548|               1|                0|\n|         2992|      HUGGINS B|                 2012|                  2012|               1.0|               1|                0|\n|         4077|   CLAUSEN JENS|                 2014|                  2014|               0.0|               1|                0|\n|         3529|      ANTHONY M|                 2007|                  2007|0.1111111119389534|               1|                0|\n+-------------+---------------+---------------------+----------------------+------------------+----------------+-----------------+\nonly showing top 5 rows\n\n"
+      },
+      "dateCreated": "Mar 3, 2016 10:05:03 AM",
+      "dateStarted": "Mar 4, 2016 10:19:35 AM",
+      "dateFinished": "Mar 4, 2016 10:19:35 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Sanity Checks",
+      "text": "/*\n- no author lost during processing\n*/\n\nassert(authorsToPublications.select(\u0027author_dis_id).distinct.count() \u003d\u003d authorIndicators.select(\u0027author_dis_id).distinct.count())",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431965815405_-831432560",
+      "id": "20150518-161655_1079581031",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "May 18, 2015 4:16:55 PM",
+      "dateStarted": "Mar 4, 2016 10:19:35 AM",
+      "dateFinished": "Mar 4, 2016 10:19:38 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "FIXME lost authors in publications because of author disambiguation",
+      "text": "%sql\nselect pub_id, authors, size(s) as dis_author_count\nfrom (select pub_id, collect_set(author_dis_id) as s, collect_list(author_dis_id) as l, collect_list(generated_full_name) as authors from authors_to_publications group by pub_id) t\nwhere (size(l) - size(s)) \u003e 0",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "tableHide": true,
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "editorHide": false,
+        "title": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [
+            {
+              "name": "authors",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "yAxis": {
+              "name": "authors",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1435326278035_-1996090852",
+      "id": "20150626-134438_1759362363",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "pub_id\tauthors\tdis_author_count\n"
+      },
+      "dateCreated": "Jun 26, 2015 1:44:38 PM",
+      "dateStarted": "Mar 4, 2016 10:19:36 AM",
+      "dateFinished": "Mar 4, 2016 10:19:39 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql select author_latest_pub_year, count(*) c from author_indicators group by author_latest_pub_year order by author_latest_pub_year",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "tableHide": true,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "author_latest_pub_year",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "author_latest_pub_year",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431960513135_-1507171980",
+      "id": "20150518-144833_2082019419",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "author_latest_pub_year\tc\n1987\t1\n2000\t4\n2001\t27\n2002\t11\n2003\t11\n2004\t12\n2005\t16\n2006\t22\n2007\t35\n2008\t24\n2009\t27\n2010\t41\n2011\t22\n2012\t73\n2013\t66\n2014\t93\n"
+      },
+      "dateCreated": "May 18, 2015 2:48:33 PM",
+      "dateStarted": "Mar 4, 2016 10:19:39 AM",
+      "dateFinished": "Mar 4, 2016 10:19:41 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql select author_pub_count, count(*) c from author_indicators group by author_pub_count order by author_pub_count desc",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "tableHide": true,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "author_pub_count",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "author_pub_count",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431960586455_69975582",
+      "id": "20150518-144946_600297009",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "author_pub_count\tc\n9\t1\n7\t1\n4\t2\n3\t7\n2\t49\n1\t425\n"
+      },
+      "dateCreated": "May 18, 2015 2:49:46 PM",
+      "dateStarted": "Mar 4, 2016 10:19:40 AM",
+      "dateFinished": "Mar 4, 2016 10:19:42 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql select author_conf_count, count(*) c from author_indicators group by author_conf_count order by author_conf_count desc",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "tableHide": true,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "author_conf_count",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "author_conf_count",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431960584855_-890357673",
+      "id": "20150518-144944_986234386",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "author_conf_count\tc\n0\t485\n"
+      },
+      "dateCreated": "May 18, 2015 2:49:44 PM",
+      "dateStarted": "Mar 4, 2016 10:19:41 AM",
+      "dateFinished": "Mar 4, 2016 10:19:44 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n### Collaboration indicators\n\n#### co_pub_count\nnumber of common publications between two authors",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445960794008_1187523890",
+      "id": "20151027-154634_205539456",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch3\u003eCollaboration indicators\u003c/h3\u003e\n\u003ch4\u003eco_pub_count\u003c/h4\u003e\n\u003cp\u003enumber of common publications between two authors\u003c/p\u003e\n"
+      },
+      "dateCreated": "Oct 27, 2015 3:46:34 PM",
+      "dateStarted": "Mar 4, 2016 10:19:14 AM",
+      "dateFinished": "Mar 4, 2016 10:19:14 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val authorCollaborations \u003d sqlc.sql(\"SELECT pub_dis_id, collect_set(author_dis_id) AS author_dis_ids, year FROM authors_to_publications WHERE is_main\u003dtrue GROUP BY pub_dis_id, year\").flatMap { r \u003d\u003e\n    val pid \u003d r.getLong(0)\n    val year \u003d r.getShort(2)\n    r.getSeq[Long](1).combinations(2).toSeq.map { e \u003d\u003e\n        val pairs \u003d e.sorted\n        (pairs(0), pairs(1), pid, year)\n    }\n}.toDF(\n    \"author_dis_id_1\", \"author_dis_id_2\", \"pub_dis_id\", \"year\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nauthorCollaborations.show(5)",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": true,
+        "editorMode": "ace/mode/scala",
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445960846543_-2019850211",
+      "id": "20151027-154726_2017309774",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "authorCollaborations: org.apache.spark.sql.DataFrame \u003d [author_dis_id_1: bigint, author_dis_id_2: bigint, pub_dis_id: bigint, year: smallint]\n+---------------+---------------+----------+----+\n|author_dis_id_1|author_dis_id_2|pub_dis_id|year|\n+---------------+---------------+----------+----+\n|           2997|           3029|      3074|2010|\n|           1252|           1348|      3928|2014|\n|           1284|           1348|      3928|2014|\n|           1316|           1348|      3928|2014|\n|           1220|           1348|      3928|2014|\n+---------------+---------------+----------+----+\nonly showing top 5 rows\n\n"
+      },
+      "dateCreated": "Oct 27, 2015 3:47:26 PM",
+      "dateStarted": "Mar 4, 2016 10:19:43 AM",
+      "dateFinished": "Mar 4, 2016 10:19:45 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Collaborations CSV",
+      "text": "OptSaveMode.foreach(csvWriter(authorCollaborations).mode(_).save(s\"$CsvDir/author_collaborations-did_$DatasetId.csv\"))",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445960904806_1845196033",
+      "id": "20151027-154824_1488387564",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Oct 27, 2015 3:48:24 PM",
+      "dateStarted": "Mar 4, 2016 10:19:44 AM",
+      "dateFinished": "Mar 4, 2016 10:19:45 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val authorCollaborationIndicators \u003d authorCollaborations.groupBy(\n    \u0027author_dis_id_1, \u0027author_dis_id_2\n).agg(\n    count(\u0027pub_dis_id) as \"co_pub_count\",\n    min(\u0027year) as \"start_year\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nauthorCollaborationIndicators.registerTempTable(\"author_collaboration_indicators\")\n\nauthorCollaborationIndicators.describe(\"co_pub_count\", \"start_year\").show()\nauthorCollaborationIndicators.show(5)",
+      "dateUpdated": "Mar 4, 2016 10:19:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445960990629_-350257812",
+      "id": "20151027-154950_190526036",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "authorCollaborationIndicators: org.apache.spark.sql.DataFrame \u003d [author_dis_id_1: bigint, author_dis_id_2: bigint, co_pub_count: bigint, start_year: smallint]\n+-------+-------------------+-----------------+\n|summary|       co_pub_count|       start_year|\n+-------+-------------------+-----------------+\n|  count|                591|              591|\n|   mean| 1.0169204737732656|2010.093062605753|\n| stddev|0.12897352961190914|              NaN|\n|    min|                  1|             2000|\n|    max|                  2|             2014|\n+-------+-------------------+-----------------+\n\n+---------------+---------------+------------+----------+\n|author_dis_id_1|author_dis_id_2|co_pub_count|start_year|\n+---------------+---------------+------------+----------+\n|           3682|           3714|           1|      2005|\n|             18|             82|           1|      2010|\n|            197|            261|           1|      2013|\n|           1563|           1719|           1|      2005|\n|           2961|           2993|           1|      2012|\n+---------------+---------------+------------+----------+\nonly showing top 5 rows\n\n"
+      },
+      "dateCreated": "Oct 27, 2015 3:49:50 PM",
+      "dateStarted": "Mar 4, 2016 10:19:45 AM",
+      "dateFinished": "Mar 4, 2016 10:19:47 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Collaboration indicators CSV",
+      "text": "OptSaveMode.foreach(csvWriter(authorCollaborationIndicators).mode(_).save(s\"$CsvDir/author_collaboration_indicators-did_$DatasetId.csv\"))",
+      "dateUpdated": "Mar 4, 2016 10:19:15 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445961049107_1095936683",
+      "id": "20151027-155049_1199072883",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Oct 27, 2015 3:50:49 PM",
+      "dateStarted": "Mar 4, 2016 10:19:45 AM",
+      "dateFinished": "Mar 4, 2016 10:19:48 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql select co_pub_count, count(*) c from author_collaboration_indicators group by co_pub_count order by c desc",
+      "dateUpdated": "Mar 4, 2016 10:19:15 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "co_pub_count",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "co_pub_count",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "c",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445961073484_-619811904",
+      "id": "20151027-155113_298845408",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "co_pub_count\tc\n1\t581\n2\t10\n"
+      },
+      "dateCreated": "Oct 27, 2015 3:51:13 PM",
+      "dateStarted": "Mar 4, 2016 10:19:48 AM",
+      "dateFinished": "Mar 4, 2016 10:19:50 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Author collaboration graph",
+      "text": "val authorCollaborationGraph \u003d {\n    import org.apache.tinkerpop.gremlin.structure.T\n    val g \u003d org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph.open()\n    val verticesMap \u003d authorIndicators/*.filter(\u0027author_depths.contains(1))*/.select(\n        \u0027author_dis_id, \u0027author_dis_name, \u0027author_first_pub_year, \u0027author_latest_pub_year, \u0027author_impact, \u0027author_pub_count, \u0027author_conf_count\n    ).collect().map { r \u003d\u003e\n        val id: java.lang.Long \u003d r.getLong(0)\n        val v \u003d g.addVertex(\n            T.id, id,\n            T.label, r.getString(1),\n            \"first_pub_year\", new java.lang.Short(r.getShort(2)),\n            \"latest_pub_year\", new java.lang.Short(r.getShort(3)),\n            \"impact\", new java.lang.Double(r.getDouble(4)),\n            \"pub_count\", new java.lang.Long(r.getLong(5)),\n            \"conf_count\", new java.lang.Long(r.getLong(6)))\n        id -\u003e v\n    }.toMap\n    authorCollaborationIndicators.collect().foreach { r \u003d\u003e\n        verticesMap(r.getLong(0)).addEdge(\n            \"collaborates_with\",\n            verticesMap(r.getLong(1)),\n            \"co_pub_count\", new java.lang.Long(r.getLong(2)),\n            \"start_year\", new java.lang.Short(r.getShort(3)))\n    }\n    g\n}\nval authorCollaborationGraphPath \u003d s\"$GraphDir/author-collaborations.graphml\"\nauthorCollaborationGraph.io(org.apache.tinkerpop.gremlin.structure.io.IoCore.graphml()).writeGraph(authorCollaborationGraphPath)",
+      "dateUpdated": "Mar 4, 2016 10:19:15 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1445961562845_-1543068950",
+      "id": "20151027-155922_116089532",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "authorCollaborationGraph: org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph \u003d tinkergraph[vertices:485 edges:591]\nauthorCollaborationGraphPath: String \u003d /tmp/anticipation/graphml/author-collaborations.graphml\n"
+      },
+      "dateCreated": "Oct 27, 2015 3:59:22 PM",
+      "dateStarted": "Mar 4, 2016 10:19:48 AM",
+      "dateFinished": "Mar 4, 2016 10:19:51 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "dateUpdated": "Mar 4, 2016 10:19:15 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1456996446402_1677997342",
+      "id": "20160303-101406_1348806674",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Mar 3, 2016 10:14:06 AM",
+      "dateStarted": "Mar 4, 2016 10:19:50 AM",
+      "dateFinished": "Mar 4, 2016 10:19:51 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "[32] Author indicators",
+  "id": "2B4R7CZ96",
+  "angularObjects": {
+    "2BECU381X": [],
+    "2BFE4973F": [],
+    "2BDUP8TX1": [],
+    "2BC2TVSBR": [],
+    "2BEK1W1PD": [],
+    "2BEV8A6Z4": [],
+    "2BCVF5P5F": [],
+    "2BEMYV7QQ": [],
+    "2BFPPNXXV": [],
+    "2BD9VECZR": [],
+    "2BE14FKBG": [],
+    "2BEKWFP9V": [],
+    "2BDPVAN2T": [],
+    "2BDMC46FS": [],
+    "2BFC9NN6P": [],
+    "2BE7P7NCM": [],
+    "2BFQQPY3C": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

@@ -1,0 +1,594 @@
+{
+  "paragraphs": [
+    {
+      "title": "Dataset download",
+      "text": "%sh\n\nGEONAMES_DIR\u003d/tmp/geonames\n\nmkdir -p $GEONAMES_DIR\ncd $GEONAMES_DIR\n\nif [ ! -f countryInfo.txt ]\nthen\n  wget \"http://download.geonames.org/export/dump/countryInfo.txt\"\nfi\n\nif [ ! -f allCountries.txt ]\nthen\n  wget http://download.geonames.org/export/dump/allCountries.zip\n  unzip allCountries.zip\nfi",
+      "dateUpdated": "Mar 3, 2016 4:52:23 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh",
+        "tableHide": false,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1456926734375_2133455335",
+      "id": "20160302-145214_1486199364",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Mar 2, 2016 2:52:14 PM",
+      "dateStarted": "Mar 3, 2016 4:49:30 PM",
+      "dateFinished": "Mar 3, 2016 4:49:31 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val GeonamesDir \u003d \"/tmp/geonames\"\n\nval reader \u003d sqlc.read.format(\"com.databricks.spark.csv\").option(\"delimiter\", \"\\t\")",
+      "dateUpdated": "Mar 2, 2016 3:06:07 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1434109696797_895615636",
+      "id": "20150612-114816_550563408",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "GeonamesDir: String \u003d /tmp/geonames\nreader: org.apache.spark.sql.DataFrameReader \u003d org.apache.spark.sql.DataFrameReader@317a6824\n"
+      },
+      "dateCreated": "Jun 12, 2015 11:48:16 AM",
+      "dateStarted": "Mar 2, 2016 3:03:02 PM",
+      "dateFinished": "Mar 2, 2016 3:03:22 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Continents",
+      "text": "val continents \u003d sc.parallelize(Seq(\n    (6255146, \"AF\", \"Africa\"),\n    (6255147, \"AS\", \"Asia\"),\n    (6255148, \"EU\", \"Europe\"),\n    (6255149, \"NA\", \"North America\"),\n    (6255151, \"OC\", \"Oceania\"),\n    (6255150, \"SA\", \"South America\"),\n    (6255152, \"AN\", \"Antarctica\"))).toDF(\"continent_geoname_id\", \"continent_code\", \"continent_name\")\n\ncontinents.registerTempTable(\"continents\")",
+      "dateUpdated": "Mar 2, 2016 3:06:22 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "tableHide": false,
+        "enabled": true,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1430405278797_1929290611",
+      "id": "20150430-144758_327082773",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "continents: org.apache.spark.sql.DataFrame \u003d [continent_geoname_id: int, continent_code: string, continent_name: string]\n"
+      },
+      "dateCreated": "Apr 30, 2015 2:47:58 PM",
+      "dateStarted": "Mar 2, 2016 3:03:05 PM",
+      "dateFinished": "Mar 2, 2016 3:03:24 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "CountryInfo",
+      "text": "import org.apache.spark.sql.types._\n\nval countryInfoSchema \u003d StructType(Seq(\n    StructField(\"iso\", StringType, false),\n    StructField(\"iso3\", StringType, false),\n    StructField(\"iso_numeric\", StringType, false),\n    StructField(\"fips\", StringType, true),\n    StructField(\"name\", StringType, false),\n    StructField(\"capital\", StringType, true),\n    StructField(\"area\", DoubleType, true),\n    StructField(\"population\", StringType, false), // BigInt\n    StructField(\"continent\", StringType, false),\n    StructField(\"tld\", StringType, false),\n    StructField(\"currencyCode\", StringType, false),\n    StructField(\"currencyName\", StringType, false),\n    StructField(\"phone\", StringType, true),\n    StructField(\"postalCodeFormat\", StringType, true),\n    StructField(\"postalCodeRegex\", StringType, true),\n    StructField(\"languages\", StringType, true),\n    StructField(\"geoname_id\", IntegerType, true),\n    StructField(\"neighbours\", StringType, true),\n    StructField(\"equivalentFipsCode\", StringType, true)))\n\nval countryInfoCsv \u003d reader.schema(countryInfoSchema).load(s\"$GeonamesDir/countryInfo.txt\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ncountryInfoCsv.registerTempTable(\"countryInfo\")",
+      "dateUpdated": "Mar 2, 2016 3:07:00 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "tableHide": false,
+        "enabled": true,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1430405796729_1432327493",
+      "id": "20150430-145636_702326911",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.types._\ncountryInfoSchema: org.apache.spark.sql.types.StructType \u003d StructType(StructField(iso,StringType,false), StructField(iso3,StringType,false), StructField(iso_numeric,StringType,false), StructField(fips,StringType,true), StructField(name,StringType,false), StructField(capital,StringType,true), StructField(area,DoubleType,true), StructField(population,StringType,false), StructField(continent,StringType,false), StructField(tld,StringType,false), StructField(currencyCode,StringType,false), StructField(currencyName,StringType,false), StructField(phone,StringType,true), StructField(postalCodeFormat,StringType,true), StructField(postalCodeRegex,StringType,true), StructField(languages,StringType,true), StructField(geoname_id,IntegerType,true), StructField(neighbours,StringType,true), StructField...countryInfoCsv: org.apache.spark.sql.DataFrame \u003d [iso: string, iso3: string, iso_numeric: string, fips: string, name: string, capital: string, area: double, population: string, continent: string, tld: string, currencyCode: string, currencyName: string, phone: string, postalCodeFormat: string, postalCodeRegex: string, languages: string, geoname_id: int, neighbours: string, equivalentFipsCode: string]\n"
+      },
+      "dateCreated": "Apr 30, 2015 2:56:36 PM",
+      "dateStarted": "Mar 2, 2016 3:05:26 PM",
+      "dateFinished": "Mar 2, 2016 3:05:28 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql SELECT * FROM countryInfo",
+      "dateUpdated": "Mar 2, 2016 3:07:04 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "iso",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "iso3",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "iso",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "iso3",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "tableHide": false,
+        "enabled": true,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1430406454968_836503044",
+      "id": "20150430-150734_782934283",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "iso\tiso3\tiso_numeric\tfips\tname\tcapital\tarea\tpopulation\tcontinent\ttld\tcurrencyCode\tcurrencyName\tphone\tpostalCodeFormat\tpostalCodeRegex\tlanguages\tgeoname_id\tneighbours\tequivalentFipsCode\nAD\tAND\t020\tAN\tAndorra\tAndorra la Vella\t468.0\t84000\tEU\t.ad\tEUR\tEuro\t376\tAD###\t^(?:AD)*(\\d{3})$\tca\t3041565\tES,FR\t\nAE\tARE\t784\tAE\tUnited Arab Emirates\tAbu Dhabi\t82880.0\t4975593\tAS\t.ae\tAED\tDirham\t971\t\t\tar-AE,fa,en,hi,ur\t290557\tSA,OM\t\nAF\tAFG\t004\tAF\tAfghanistan\tKabul\t647500.0\t29121286\tAS\t.af\tAFN\tAfghani\t93\t\t\tfa-AF,ps,uz-AF,tk\t1149361\tTM,CN,IR,TJ,PK,UZ\t\nAG\tATG\t028\tAC\tAntigua and Barbuda\tSt. John\u0027s\t443.0\t86754\tNA\t.ag\tXCD\tDollar\t+1-268\t\t\ten-AG\t3576396\t\t\nAI\tAIA\t660\tAV\tAnguilla\tThe Valley\t102.0\t13254\tNA\t.ai\tXCD\tDollar\t+1-264\t\t\ten-AI\t3573511\t\t\nAL\tALB\t008\tAL\tAlbania\tTirana\t28748.0\t2986952\tEU\t.al\tALL\tLek\t355\t\t\tsq,el\t783754\tMK,GR,ME,RS,XK\t\nAM\tARM\t051\tAM\tArmenia\tYerevan\t29800.0\t2968000\tAS\t.am\tAMD\tDram\t374\t######\t^(\\d{6})$\thy\t174982\tGE,IR,AZ,TR\t\nAO\tAGO\t024\tAO\tAngola\tLuanda\t1246700.0\t13068161\tAF\t.ao\tAOA\tKwanza\t244\t\t\tpt-AO\t3351879\tCD,NA,ZM,CG\t\nAQ\tATA\t010\tAY\tAntarctica\t\t1.4E7\t0\tAN\t.aq\t\t\t\t\t\t\t6697173\t\t\nAR\tARG\t032\tAR\tArgentina\tBuenos Aires\t2766890.0\t41343201\tSA\t.ar\tARS\tPeso\t54\t@####@@@\t^([A-Z]\\d{4}[A-Z]{3})$\tes-AR,en,it,de,fr,gn\t3865483\tCL,BO,UY,PY,BR\t\nAS\tASM\t016\tAQ\tAmerican Samoa\tPago Pago\t199.0\t57881\tOC\t.as\tUSD\tDollar\t+1-684\t\t\ten-AS,sm,to\t5880801\t\t\nAT\tAUT\t040\tAU\tAustria\tVienna\t83858.0\t8205000\tEU\t.at\tEUR\tEuro\t43\t####\t^(\\d{4})$\tde-AT,hr,hu,sl\t2782113\tCH,DE,HU,SK,CZ,IT,SI,LI\t\nAU\tAUS\t036\tAS\tAustralia\tCanberra\t7686850.0\t21515754\tOC\t.au\tAUD\tDollar\t61\t####\t^(\\d{4})$\ten-AU\t2077456\t\t\nAW\tABW\t533\tAA\tAruba\tOranjestad\t193.0\t71566\tNA\t.aw\tAWG\tGuilder\t297\t\t\tnl-AW,es,en\t3577279\t\t\nAX\tALA\t248\t\tAland Islands\tMariehamn\t1580.0\t26711\tEU\t.ax\tEUR\tEuro\t+358-18\t#####\t^(?:FI)*(\\d{5})$\tsv-AX\t661882\t\tFI\nAZ\tAZE\t031\tAJ\tAzerbaijan\tBaku\t86600.0\t8303512\tAS\t.az\tAZN\tManat\t994\tAZ ####\t^(?:AZ)*(\\d{4})$\taz,ru,hy\t587116\tGE,IR,AM,TR,RU\t\nBA\tBIH\t070\tBK\tBosnia and Herzegovina\tSarajevo\t51129.0\t4590000\tEU\t.ba\tBAM\tMarka\t387\t#####\t^(\\d{5})$\tbs,hr-BA,sr-BA\t3277605\tHR,ME,RS\t\nBB\tBRB\t052\tBB\tBarbados\tBridgetown\t431.0\t285653\tNA\t.bb\tBBD\tDollar\t+1-246\tBB#####\t^(?:BB)*(\\d{5})$\ten-BB\t3374084\t\t\nBD\tBGD\t050\tBG\tBangladesh\tDhaka\t144000.0\t156118464\tAS\t.bd\tBDT\tTaka\t880\t####\t^(\\d{4})$\tbn-BD,en\t1210997\tMM,IN\t\nBE\tBEL\t056\tBE\tBelgium\tBrussels\t30510.0\t10403000\tEU\t.be\tEUR\tEuro\t32\t####\t^(\\d{4})$\tnl-BE,fr-BE,de-BE\t2802361\tDE,NL,LU,FR\t\nBF\tBFA\t854\tUV\tBurkina Faso\tOuagadougou\t274200.0\t16241811\tAF\t.bf\tXOF\tFranc\t226\t\t\tfr-BF\t2361809\tNE,BJ,GH,CI,TG,ML\t\nBG\tBGR\t100\tBU\tBulgaria\tSofia\t110910.0\t7148785\tEU\t.bg\tBGN\tLev\t359\t####\t^(\\d{4})$\tbg,tr-BG,rom\t732800\tMK,GR,RO,TR,RS\t\nBH\tBHR\t048\tBA\tBahrain\tManama\t665.0\t738004\tAS\t.bh\tBHD\tDinar\t973\t####|###\t^(\\d{3}\\d?)$\tar-BH,en,fa,ur\t290291\t\t\nBI\tBDI\t108\tBY\tBurundi\tBujumbura\t27830.0\t9863117\tAF\t.bi\tBIF\tFranc\t257\t\t\tfr-BI,rn\t433561\tTZ,CD,RW\t\nBJ\tBEN\t204\tBN\tBenin\tPorto-Novo\t112620.0\t9056010\tAF\t.bj\tXOF\tFranc\t229\t\t\tfr-BJ\t2395170\tNE,TG,BF,NG\t\nBL\tBLM\t652\tTB\tSaint Barthelemy\tGustavia\t21.0\t8450\tNA\t.gp\tEUR\tEuro\t590\t### ###\t\tfr\t3578476\t\t\nBM\tBMU\t060\tBD\tBermuda\tHamilton\t53.0\t65365\tNA\t.bm\tBMD\tDollar\t+1-441\t@@ ##\t^([A-Z]{2}\\d{2})$\ten-BM,pt\t3573345\t\t\nBN\tBRN\t096\tBX\tBrunei\tBandar Seri Begawan\t5770.0\t395027\tAS\t.bn\tBND\tDollar\t673\t@@####\t^([A-Z]{2}\\d{4})$\tms-BN,en-BN\t1820814\tMY\t\nBO\tBOL\t068\tBL\tBolivia\tSucre\t1098580.0\t9947418\tSA\t.bo\tBOB\tBoliviano\t591\t\t\tes-BO,qu,ay\t3923057\tPE,CL,PY,BR,AR\t\nBQ\tBES\t535\t\tBonaire, Saint Eustatius and Saba \t\t328.0\t18012\tNA\t.bq\tUSD\tDollar\t599\t\t\tnl,pap,en\t7626844\t\t\nBR\tBRA\t076\tBR\tBrazil\tBrasilia\t8511965.0\t201103330\tSA\t.br\tBRL\tReal\t55\t#####-###\t^(\\d{8})$\tpt-BR,es,en,fr\t3469034\tSR,PE,BO,UY,GY,PY,GF,VE,CO,AR\t\nBS\tBHS\t044\tBF\tBahamas\tNassau\t13940.0\t301790\tNA\t.bs\tBSD\tDollar\t+1-242\t\t\ten-BS\t3572887\t\t\nBT\tBTN\t064\tBT\tBhutan\tThimphu\t47000.0\t699847\tAS\t.bt\tBTN\tNgultrum\t975\t\t\tdz\t1252634\tCN,IN\t\nBV\tBVT\t074\tBV\tBouvet Island\t\t49.0\t0\tAN\t.bv\tNOK\tKrone\t\t\t\t\t3371123\t\t\nBW\tBWA\t072\tBC\tBotswana\tGaborone\t600370.0\t2029307\tAF\t.bw\tBWP\tPula\t267\t\t\ten-BW,tn-BW\t933860\tZW,ZA,NA\t\nBY\tBLR\t112\tBO\tBelarus\tMinsk\t207600.0\t9685000\tEU\t.by\tBYR\tRuble\t375\t######\t^(\\d{6})$\tbe,ru\t630336\tPL,LT,UA,RU,LV\t\nBZ\tBLZ\t084\tBH\tBelize\tBelmopan\t22966.0\t314522\tNA\t.bz\tBZD\tDollar\t501\t\t\ten-BZ,es\t3582678\tGT,MX\t\nCA\tCAN\t124\tCA\tCanada\tOttawa\t9984670.0\t33679000\tNA\t.ca\tCAD\tDollar\t1\t@#@ #@#\t^([ABCEGHJKLMNPRSTVXY]\\d[ABCEGHJKLMNPRSTVWXYZ]) ?(\\d[ABCEGHJKLMNPRSTVWXYZ]\\d)$ \ten-CA,fr-CA,iu\t6251999\tUS\t\nCC\tCCK\t166\tCK\tCocos Islands\tWest Island\t14.0\t628\tAS\t.cc\tAUD\tDollar\t61\t\t\tms-CC,en\t1547376\t\t\nCD\tCOD\t180\tCG\tDemocratic Republic of the Congo\tKinshasa\t2345410.0\t70916439\tAF\t.cd\tCDF\tFranc\t243\t\t\tfr-CD,ln,kg\t203312\tTZ,CF,SS,RW,ZM,BI,UG,CG,AO\t\nCF\tCAF\t140\tCT\tCentral African Republic\tBangui\t622984.0\t4844927\tAF\t.cf\tXAF\tFranc\t236\t\t\tfr-CF,sg,ln,kg\t239880\tTD,SD,CD,SS,CM,CG\t\nCG\tCOG\t178\tCF\tRepublic of the Congo\tBrazzaville\t342000.0\t3039126\tAF\t.cg\tXAF\tFranc\t242\t\t\tfr-CG,kg,ln-CG\t2260494\tCF,GA,CD,CM,AO\t\nCH\tCHE\t756\tSZ\tSwitzerland\tBern\t41290.0\t7581000\tEU\t.ch\tCHF\tFranc\t41\t####\t^(\\d{4})$\tde-CH,fr-CH,it-CH,rm\t2658434\tDE,IT,LI,FR,AT\t\nCI\tCIV\t384\tIV\tIvory Coast\tYamoussoukro\t322460.0\t21058798\tAF\t.ci\tXOF\tFranc\t225\t\t\tfr-CI\t2287781\tLR,GH,GN,BF,ML\t\nCK\tCOK\t184\tCW\tCook Islands\tAvarua\t240.0\t21388\tOC\t.ck\tNZD\tDollar\t682\t\t\ten-CK,mi\t1899402\t\t\nCL\tCHL\t152\tCI\tChile\tSantiago\t756950.0\t16746491\tSA\t.cl\tCLP\tPeso\t56\t#######\t^(\\d{7})$\tes-CL\t3895114\tPE,BO,AR\t\nCM\tCMR\t120\tCM\tCameroon\tYaounde\t475440.0\t19294149\tAF\t.cm\tXAF\tFranc\t237\t\t\ten-CM,fr-CM\t2233387\tTD,CF,GA,GQ,CG,NG\t\nCN\tCHN\t156\tCH\tChina\tBeijing\t9596960.0\t1330044000\tAS\t.cn\tCNY\tYuan Renminbi\t86\t######\t^(\\d{6})$\tzh-CN,yue,wuu,dta,ug,za\t1814991\tLA,BT,TJ,KZ,MN,AF,NP,MM,KG,PK,KP,RU,VN,IN\t\nCO\tCOL\t170\tCO\tColombia\tBogota\t1138910.0\t47790000\tSA\t.co\tCOP\tPeso\t57\t\t\tes-CO\t3686110\tEC,PE,PA,BR,VE\t\nCR\tCRI\t188\tCS\tCosta Rica\tSan Jose\t51100.0\t4516220\tNA\t.cr\tCRC\tColon\t506\t####\t^(\\d{4})$\tes-CR,en\t3624060\tPA,NI\t\nCU\tCUB\t192\tCU\tCuba\tHavana\t110860.0\t11423000\tNA\t.cu\tCUP\tPeso\t53\tCP #####\t^(?:CP)*(\\d{5})$\tes-CU\t3562981\tUS\t\nCV\tCPV\t132\tCV\tCape Verde\tPraia\t4033.0\t508659\tAF\t.cv\tCVE\tEscudo\t238\t####\t^(\\d{4})$\tpt-CV\t3374766\t\t\nCW\tCUW\t531\tUC\tCuracao\t Willemstad\t444.0\t141766\tNA\t.cw\tANG\tGuilder\t599\t\t\tnl,pap\t7626836\t\t\nCX\tCXR\t162\tKT\tChristmas Island\tFlying Fish Cove\t135.0\t1500\tAS\t.cx\tAUD\tDollar\t61\t####\t^(\\d{4})$\ten,zh,ms-CC\t2078138\t\t\nCY\tCYP\t196\tCY\tCyprus\tNicosia\t9250.0\t1102677\tEU\t.cy\tEUR\tEuro\t357\t####\t^(\\d{4})$\tel-CY,tr-CY,en\t146669\t\t\nCZ\tCZE\t203\tEZ\tCzech Republic\tPrague\t78866.0\t10476000\tEU\t.cz\tCZK\tKoruna\t420\t### ##\t^(\\d{5})$\tcs,sk\t3077311\tPL,DE,SK,AT\t\nDE\tDEU\t276\tGM\tGermany\tBerlin\t357021.0\t81802257\tEU\t.de\tEUR\tEuro\t49\t#####\t^(\\d{5})$\tde\t2921044\tCH,PL,NL,DK,BE,CZ,LU,FR,AT\t\nDJ\tDJI\t262\tDJ\tDjibouti\tDjibouti\t23000.0\t740528\tAF\t.dj\tDJF\tFranc\t253\t\t\tfr-DJ,ar,so-DJ,aa\t223816\tER,ET,SO\t\nDK\tDNK\t208\tDA\tDenmark\tCopenhagen\t43094.0\t5484000\tEU\t.dk\tDKK\tKrone\t45\t####\t^(\\d{4})$\tda-DK,en,fo,de-DK\t2623032\tDE\t\nDM\tDMA\t212\tDO\tDominica\tRoseau\t754.0\t72813\tNA\t.dm\tXCD\tDollar\t+1-767\t\t\ten-DM\t3575830\t\t\nDO\tDOM\t214\tDR\tDominican Republic\tSanto Domingo\t48730.0\t9823821\tNA\t.do\tDOP\tPeso\t+1-809 and 1-829\t#####\t^(\\d{5})$\tes-DO\t3508796\tHT\t\nDZ\tDZA\t012\tAG\tAlgeria\tAlgiers\t2381740.0\t34586184\tAF\t.dz\tDZD\tDinar\t213\t#####\t^(\\d{5})$\tar-DZ\t2589581\tNE,EH,LY,MR,TN,MA,ML\t\nEC\tECU\t218\tEC\tEcuador\tQuito\t283560.0\t14790608\tSA\t.ec\tUSD\tDollar\t593\t@####@\t^([a-zA-Z]\\d{4}[a-zA-Z])$\tes-EC\t3658394\tPE,CO\t\nEE\tEST\t233\tEN\tEstonia\tTallinn\t45226.0\t1291170\tEU\t.ee\tEUR\tEuro\t372\t#####\t^(\\d{5})$\tet,ru\t453733\tRU,LV\t\nEG\tEGY\t818\tEG\tEgypt\tCairo\t1001450.0\t80471869\tAF\t.eg\tEGP\tPound\t20\t#####\t^(\\d{5})$\tar-EG,en,fr\t357994\tLY,SD,IL,PS\t\nEH\tESH\t732\tWI\tWestern Sahara\tEl-Aaiun\t266000.0\t273008\tAF\t.eh\tMAD\tDirham\t212\t\t\tar,mey\t2461445\tDZ,MR,MA\t\nER\tERI\t232\tER\tEritrea\tAsmara\t121320.0\t5792984\tAF\t.er\tERN\tNakfa\t291\t\t\taa-ER,ar,tig,kun,ti-ER\t338010\tET,SD,DJ\t\nES\tESP\t724\tSP\tSpain\tMadrid\t504782.0\t46505963\tEU\t.es\tEUR\tEuro\t34\t#####\t^(\\d{5})$\tes-ES,ca,gl,eu,oc\t2510769\tAD,PT,GI,FR,MA\t\nET\tETH\t231\tET\tEthiopia\tAddis Ababa\t1127127.0\t88013491\tAF\t.et\tETB\tBirr\t251\t####\t^(\\d{4})$\tam,en-ET,om-ET,ti-ET,so-ET,sid\t337996\tER,KE,SD,SS,SO,DJ\t\nFI\tFIN\t246\tFI\tFinland\tHelsinki\t337030.0\t5244000\tEU\t.fi\tEUR\tEuro\t358\t#####\t^(?:FI)*(\\d{5})$\tfi-FI,sv-FI,smn\t660013\tNO,RU,SE\t\nFJ\tFJI\t242\tFJ\tFiji\tSuva\t18270.0\t875983\tOC\t.fj\tFJD\tDollar\t679\t\t\ten-FJ,fj\t2205218\t\t\nFK\tFLK\t238\tFK\tFalkland Islands\tStanley\t12173.0\t2638\tSA\t.fk\tFKP\tPound\t500\t\t\ten-FK\t3474414\t\t\nFM\tFSM\t583\tFM\tMicronesia\tPalikir\t702.0\t107708\tOC\t.fm\tUSD\tDollar\t691\t#####\t^(\\d{5})$\ten-FM,chk,pon,yap,kos,uli,woe,nkr,kpg\t2081918\t\t\nFO\tFRO\t234\tFO\tFaroe Islands\tTorshavn\t1399.0\t48228\tEU\t.fo\tDKK\tKrone\t298\tFO-###\t^(?:FO)*(\\d{3})$\tfo,da-FO\t2622320\t\t\nFR\tFRA\t250\tFR\tFrance\tParis\t547030.0\t64768389\tEU\t.fr\tEUR\tEuro\t33\t#####\t^(\\d{5})$\tfr-FR,frp,br,co,ca,eu,oc\t3017382\tCH,DE,BE,LU,IT,AD,MC,ES\t\nGA\tGAB\t266\tGB\tGabon\tLibreville\t267667.0\t1545255\tAF\t.ga\tXAF\tFranc\t241\t\t\tfr-GA\t2400553\tCM,GQ,CG\t\nGB\tGBR\t826\tUK\tUnited Kingdom\tLondon\t244820.0\t62348447\tEU\t.uk\tGBP\tPound\t44\t@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA\t^(([A-Z]\\d{2}[A-Z]{2})|([A-Z]\\d{3}[A-Z]{2})|([A-Z]{2}\\d{2}[A-Z]{2})|([A-Z]{2}\\d{3}[A-Z]{2})|([A-Z]\\d[A-Z]\\d[A-Z]{2})|([A-Z]{2}\\d[A-Z]\\d[A-Z]{2})|(GIR0AA))$\ten-GB,cy-GB,gd\t2635167\tIE\t\nGD\tGRD\t308\tGJ\tGrenada\tSt. George\u0027s\t344.0\t107818\tNA\t.gd\tXCD\tDollar\t+1-473\t\t\ten-GD\t3580239\t\t\nGE\tGEO\t268\tGG\tGeorgia\tTbilisi\t69700.0\t4630000\tAS\t.ge\tGEL\tLari\t995\t####\t^(\\d{4})$\tka,ru,hy,az\t614540\tAM,AZ,TR,RU\t\nGF\tGUF\t254\tFG\tFrench Guiana\tCayenne\t91000.0\t195506\tSA\t.gf\tEUR\tEuro\t594\t#####\t^((97|98)3\\d{2})$\tfr-GF\t3381670\tSR,BR\t\nGG\tGGY\t831\tGK\tGuernsey\tSt Peter Port\t78.0\t65228\tEU\t.gg\tGBP\tPound\t+44-1481\t@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA\t^(([A-Z]\\d{2}[A-Z]{2})|([A-Z]\\d{3}[A-Z]{2})|([A-Z]{2}\\d{2}[A-Z]{2})|([A-Z]{2}\\d{3}[A-Z]{2})|([A-Z]\\d[A-Z]\\d[A-Z]{2})|([A-Z]{2}\\d[A-Z]\\d[A-Z]{2})|(GIR0AA))$\ten,fr\t3042362\t\t\nGH\tGHA\t288\tGH\tGhana\tAccra\t239460.0\t24339838\tAF\t.gh\tGHS\tCedi\t233\t\t\ten-GH,ak,ee,tw\t2300660\tCI,TG,BF\t\nGI\tGIB\t292\tGI\tGibraltar\tGibraltar\t6.5\t27884\tEU\t.gi\tGIP\tPound\t350\t\t\ten-GI,es,it,pt\t2411586\tES\t\nGL\tGRL\t304\tGL\tGreenland\tNuuk\t2166086.0\t56375\tNA\t.gl\tDKK\tKrone\t299\t####\t^(\\d{4})$\tkl,da-GL,en\t3425505\t\t\nGM\tGMB\t270\tGA\tGambia\tBanjul\t11300.0\t1593256\tAF\t.gm\tGMD\tDalasi\t220\t\t\ten-GM,mnk,wof,wo,ff\t2413451\tSN\t\nGN\tGIN\t324\tGV\tGuinea\tConakry\t245857.0\t10324025\tAF\t.gn\tGNF\tFranc\t224\t\t\tfr-GN\t2420477\tLR,SN,SL,CI,GW,ML\t\nGP\tGLP\t312\tGP\tGuadeloupe\tBasse-Terre\t1780.0\t443000\tNA\t.gp\tEUR\tEuro\t590\t#####\t^((97|98)\\d{3})$\tfr-GP\t3579143\t\t\nGQ\tGNQ\t226\tEK\tEquatorial Guinea\tMalabo\t28051.0\t1014999\tAF\t.gq\tXAF\tFranc\t240\t\t\tes-GQ,fr\t2309096\tGA,CM\t\nGR\tGRC\t300\tGR\tGreece\tAthens\t131940.0\t11000000\tEU\t.gr\tEUR\tEuro\t30\t### ##\t^(\\d{5})$\tel-GR,en,fr\t390903\tAL,MK,TR,BG\t\nGS\tSGS\t239\tSX\tSouth Georgia and the South Sandwich Islands\tGrytviken\t3903.0\t30\tAN\t.gs\tGBP\tPound\t\t\t\ten\t3474415\t\t\nGT\tGTM\t320\tGT\tGuatemala\tGuatemala City\t108890.0\t13550440\tNA\t.gt\tGTQ\tQuetzal\t502\t#####\t^(\\d{5})$\tes-GT\t3595528\tMX,HN,BZ,SV\t\nGU\tGUM\t316\tGQ\tGuam\tHagatna\t549.0\t159358\tOC\t.gu\tUSD\tDollar\t+1-671\t969##\t^(969\\d{2})$\ten-GU,ch-GU\t4043988\t\t\nGW\tGNB\t624\tPU\tGuinea-Bissau\tBissau\t36120.0\t1565126\tAF\t.gw\tXOF\tFranc\t245\t####\t^(\\d{4})$\tpt-GW,pov\t2372248\tSN,GN\t\nGY\tGUY\t328\tGY\tGuyana\tGeorgetown\t214970.0\t748486\tSA\t.gy\tGYD\tDollar\t592\t\t\ten-GY\t3378535\tSR,BR,VE\t\nHK\tHKG\t344\tHK\tHong Kong\tHong Kong\t1092.0\t6898686\tAS\t.hk\tHKD\tDollar\t852\t\t\tzh-HK,yue,zh,en\t1819730\t\t\nHM\tHMD\t334\tHM\tHeard Island and McDonald Islands\t\t412.0\t0\tAN\t.hm\tAUD\tDollar\t \t\t\t\t1547314\t\t\nHN\tHND\t340\tHO\tHonduras\tTegucigalpa\t112090.0\t7989415\tNA\t.hn\tHNL\tLempira\t504\t@@####\t^([A-Z]{2}\\d{4})$\tes-HN\t3608932\tGT,NI,SV\t\nHR\tHRV\t191\tHR\tCroatia\tZagreb\t56542.0\t4491000\tEU\t.hr\tHRK\tKuna\t385\t#####\t^(?:HR)*(\\d{5})$\thr-HR,sr\t3202326\tHU,SI,BA,ME,RS\t\nHT\tHTI\t332\tHA\tHaiti\tPort-au-Prince\t27750.0\t9648924\tNA\t.ht\tHTG\tGourde\t509\tHT####\t^(?:HT)*(\\d{4})$\tht,fr-HT\t3723988\tDO\t\nHU\tHUN\t348\tHU\tHungary\tBudapest\t93030.0\t9982000\tEU\t.hu\tHUF\tForint\t36\t####\t^(\\d{4})$\thu-HU\t719819\tSK,SI,RO,UA,HR,AT,RS\t\nID\tIDN\t360\tID\tIndonesia\tJakarta\t1919440.0\t242968342\tAS\t.id\tIDR\tRupiah\t62\t#####\t^(\\d{5})$\tid,en,nl,jv\t1643084\tPG,TL,MY\t\nIE\tIRL\t372\tEI\tIreland\tDublin\t70280.0\t4622917\tEU\t.ie\tEUR\tEuro\t353\t@@@ @@@@\t^([A-Z]{3}[A-Z]{4})$\ten-IE,ga-IE\t2963597\tGB\t\nIL\tISR\t376\tIS\tIsrael\tJerusalem\t20770.0\t7353985\tAS\t.il\tILS\tShekel\t972\t#####\t^(\\d{5})$\the,ar-IL,en-IL,\t294640\tSY,JO,LB,EG,PS\t\nIM\tIMN\t833\tIM\tIsle of Man\tDouglas\t572.0\t75049\tEU\t.im\tGBP\tPound\t+44-1624\t@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA\t^(([A-Z]\\d{2}[A-Z]{2})|([A-Z]\\d{3}[A-Z]{2})|([A-Z]{2}\\d{2}[A-Z]{2})|([A-Z]{2}\\d{3}[A-Z]{2})|([A-Z]\\d[A-Z]\\d[A-Z]{2})|([A-Z]{2}\\d[A-Z]\\d[A-Z]{2})|(GIR0AA))$\ten,gv\t3042225\t\t\nIN\tIND\t356\tIN\tIndia\tNew Delhi\t3287590.0\t1173108018\tAS\t.in\tINR\tRupee\t91\t######\t^(\\d{6})$\ten-IN,hi,bn,te,mr,ta,ur,gu,kn,ml,or,pa,as,bh,sat,ks,ne,sd,kok,doi,mni,sit,sa,fr,lus,inc\t1269750\tCN,NP,MM,BT,PK,BD\t\nIO\tIOT\t086\tIO\tBritish Indian Ocean Territory\tDiego Garcia\t60.0\t4000\tAS\t.io\tUSD\tDollar\t246\t\t\ten-IO\t1282588\t\t\nIQ\tIRQ\t368\tIZ\tIraq\tBaghdad\t437072.0\t29671605\tAS\t.iq\tIQD\tDinar\t964\t#####\t^(\\d{5})$\tar-IQ,ku,hy\t99237\tSY,SA,IR,JO,TR,KW\t\nIR\tIRN\t364\tIR\tIran\tTehran\t1648000.0\t76923300\tAS\t.ir\tIRR\tRial\t98\t##########\t^(\\d{10})$\tfa-IR,ku\t130758\tTM,AF,IQ,AM,PK,AZ,TR\t\nIS\tISL\t352\tIC\tIceland\tReykjavik\t103000.0\t308910\tEU\t.is\tISK\tKrona\t354\t###\t^(\\d{3})$\tis,en,de,da,sv,no\t2629691\t\t\nIT\tITA\t380\tIT\tItaly\tRome\t301230.0\t60340328\tEU\t.it\tEUR\tEuro\t39\t#####\t^(\\d{5})$\tit-IT,de-IT,fr-IT,sc,ca,co,sl\t3175395\tCH,VA,SI,SM,FR,AT\t\nJE\tJEY\t832\tJE\tJersey\tSaint Helier\t116.0\t90812\tEU\t.je\tGBP\tPound\t+44-1534\t@# #@@|@## #@@|@@# #@@|@@## #@@|@#@ #@@|@@#@ #@@|GIR0AA\t^(([A-Z]\\d{2}[A-Z]{2})|([A-Z]\\d{3}[A-Z]{2})|([A-Z]{2}\\d{2}[A-Z]{2})|([A-Z]{2}\\d{3}[A-Z]{2})|([A-Z]\\d[A-Z]\\d[A-Z]{2})|([A-Z]{2}\\d[A-Z]\\d[A-Z]{2})|(GIR0AA))$\ten,pt\t3042142\t\t\nJM\tJAM\t388\tJM\tJamaica\tKingston\t10991.0\t2847232\tNA\t.jm\tJMD\tDollar\t+1-876\t\t\ten-JM\t3489940\t\t\nJO\tJOR\t400\tJO\tJordan\tAmman\t92300.0\t6407085\tAS\t.jo\tJOD\tDinar\t962\t#####\t^(\\d{5})$\tar-JO,en\t248816\tSY,SA,IQ,IL,PS\t\nJP\tJPN\t392\tJA\tJapan\tTokyo\t377835.0\t127288000\tAS\t.jp\tJPY\tYen\t81\t###-####\t^(\\d{7})$\tja\t1861060\t\t\nKE\tKEN\t404\tKE\tKenya\tNairobi\t582650.0\t40046566\tAF\t.ke\tKES\tShilling\t254\t#####\t^(\\d{5})$\ten-KE,sw-KE\t192950\tET,TZ,SS,SO,UG\t\nKG\tKGZ\t417\tKG\tKyrgyzstan\tBishkek\t198500.0\t5776500\tAS\t.kg\tKGS\tSom\t996\t######\t^(\\d{6})$\tky,uz,ru\t1527747\tCN,TJ,UZ,KZ\t\nKH\tKHM\t116\tCB\tCambodia\tPhnom Penh\t181040.0\t14453680\tAS\t.kh\tKHR\tRiels\t855\t#####\t^(\\d{5})$\tkm,fr,en\t1831722\tLA,TH,VN\t\nKI\tKIR\t296\tKR\tKiribati\tTarawa\t811.0\t92533\tOC\t.ki\tAUD\tDollar\t686\t\t\ten-KI,gil\t4030945\t\t\nKM\tCOM\t174\tCN\tComoros\tMoroni\t2170.0\t773407\tAF\t.km\tKMF\tFranc\t269\t\t\tar,fr-KM\t921929\t\t\nKN\tKNA\t659\tSC\tSaint Kitts and Nevis\tBasseterre\t261.0\t51134\tNA\t.kn\tXCD\tDollar\t+1-869\t\t\ten-KN\t3575174\t\t\nKP\tPRK\t408\tKN\tNorth Korea\tPyongyang\t120540.0\t22912177\tAS\t.kp\tKPW\tWon\t850\t###-###\t^(\\d{6})$\tko-KP\t1873107\tCN,KR,RU\t\nKR\tKOR\t410\tKS\tSouth Korea\tSeoul\t98480.0\t48422644\tAS\t.kr\tKRW\tWon\t82\tSEOUL ###-###\t^(?:SEOUL)*(\\d{6})$\tko-KR,en\t1835841\tKP\t\nXK\tXKX\t0\tKV\tKosovo\tPristina\t10908.0\t1800000\tEU\t\tEUR\tEuro\t\t\t\tsq,sr\t831053\tRS,AL,MK,ME\t\nKW\tKWT\t414\tKU\tKuwait\tKuwait City\t17820.0\t2789132\tAS\t.kw\tKWD\tDinar\t965\t#####\t^(\\d{5})$\tar-KW,en\t285570\tSA,IQ\t\nKY\tCYM\t136\tCJ\tCayman Islands\tGeorge Town\t262.0\t44270\tNA\t.ky\tKYD\tDollar\t+1-345\t\t\ten-KY\t3580718\t\t\nKZ\tKAZ\t398\tKZ\tKazakhstan\tAstana\t2717300.0\t15340000\tAS\t.kz\tKZT\tTenge\t7\t######\t^(\\d{6})$\tkk,ru\t1522867\tTM,CN,KG,UZ,RU\t\nLA\tLAO\t418\tLA\tLaos\tVientiane\t236800.0\t6368162\tAS\t.la\tLAK\tKip\t856\t#####\t^(\\d{5})$\tlo,fr,en\t1655842\tCN,MM,KH,TH,VN\t\nLB\tLBN\t422\tLE\tLebanon\tBeirut\t10400.0\t4125247\tAS\t.lb\tLBP\tPound\t961\t#### ####|####\t^(\\d{4}(\\d{4})?)$\tar-LB,fr-LB,en,hy\t272103\tSY,IL\t\nLC\tLCA\t662\tST\tSaint Lucia\tCastries\t616.0\t160922\tNA\t.lc\tXCD\tDollar\t+1-758\t\t\ten-LC\t3576468\t\t\nLI\tLIE\t438\tLS\tLiechtenstein\tVaduz\t160.0\t35000\tEU\t.li\tCHF\tFranc\t423\t####\t^(\\d{4})$\tde-LI\t3042058\tCH,AT\t\nLK\tLKA\t144\tCE\tSri Lanka\tColombo\t65610.0\t21513990\tAS\t.lk\tLKR\tRupee\t94\t#####\t^(\\d{5})$\tsi,ta,en\t1227603\t\t\nLR\tLBR\t430\tLI\tLiberia\tMonrovia\t111370.0\t3685076\tAF\t.lr\tLRD\tDollar\t231\t####\t^(\\d{4})$\ten-LR\t2275384\tSL,CI,GN\t\nLS\tLSO\t426\tLT\tLesotho\tMaseru\t30355.0\t1919552\tAF\t.ls\tLSL\tLoti\t266\t###\t^(\\d{3})$\ten-LS,st,zu,xh\t932692\tZA\t\nLT\tLTU\t440\tLH\tLithuania\tVilnius\t65200.0\t2944459\tEU\t.lt\tEUR\tEuro\t370\tLT-#####\t^(?:LT)*(\\d{5})$\tlt,ru,pl\t597427\tPL,BY,RU,LV\t\nLU\tLUX\t442\tLU\tLuxembourg\tLuxembourg\t2586.0\t497538\tEU\t.lu\tEUR\tEuro\t352\tL-####\t^(\\d{4})$\tlb,de-LU,fr-LU\t2960313\tDE,BE,FR\t\nLV\tLVA\t428\tLG\tLatvia\tRiga\t64589.0\t2217969\tEU\t.lv\tEUR\tEuro\t371\tLV-####\t^(?:LV)*(\\d{4})$\tlv,ru,lt\t458258\tLT,EE,BY,RU\t\nLY\tLBY\t434\tLY\tLibya\tTripoli\t1759540.0\t6461454\tAF\t.ly\tLYD\tDinar\t218\t\t\tar-LY,it,en\t2215636\tTD,NE,DZ,SD,TN,EG\t\nMA\tMAR\t504\tMO\tMorocco\tRabat\t446550.0\t31627428\tAF\t.ma\tMAD\tDirham\t212\t#####\t^(\\d{5})$\tar-MA,fr\t2542007\tDZ,EH,ES\t\nMC\tMCO\t492\tMN\tMonaco\tMonaco\t1.95\t32965\tEU\t.mc\tEUR\tEuro\t377\t#####\t^(\\d{5})$\tfr-MC,en,it\t2993457\tFR\t\nMD\tMDA\t498\tMD\tMoldova\tChisinau\t33843.0\t4324000\tEU\t.md\tMDL\tLeu\t373\tMD-####\t^(?:MD)*(\\d{4})$\tro,ru,gag,tr\t617790\tRO,UA\t\nME\tMNE\t499\tMJ\tMontenegro\tPodgorica\t14026.0\t666730\tEU\t.me\tEUR\tEuro\t382\t#####\t^(\\d{5})$\tsr,hu,bs,sq,hr,rom\t3194884\tAL,HR,BA,RS,XK\t\nMF\tMAF\t663\tRN\tSaint Martin\tMarigot\t53.0\t35925\tNA\t.gp\tEUR\tEuro\t590\t### ###\t\tfr\t3578421\tSX\t\nMG\tMDG\t450\tMA\tMadagascar\tAntananarivo\t587040.0\t21281844\tAF\t.mg\tMGA\tAriary\t261\t###\t^(\\d{3})$\tfr-MG,mg\t1062947\t\t\nMH\tMHL\t584\tRM\tMarshall Islands\tMajuro\t181.3\t65859\tOC\t.mh\tUSD\tDollar\t692\t\t\tmh,en-MH\t2080185\t\t\nMK\tMKD\t807\tMK\tMacedonia\tSkopje\t25333.0\t2062294\tEU\t.mk\tMKD\tDenar\t389\t####\t^(\\d{4})$\tmk,sq,tr,rmm,sr\t718075\tAL,GR,BG,RS,XK\t\nML\tMLI\t466\tML\tMali\tBamako\t1240000.0\t13796354\tAF\t.ml\tXOF\tFranc\t223\t\t\tfr-ML,bm\t2453866\tSN,NE,DZ,CI,GN,MR,BF\t\nMM\tMMR\t104\tBM\tMyanmar\tNay Pyi Taw\t678500.0\t53414374\tAS\t.mm\tMMK\tKyat\t95\t#####\t^(\\d{5})$\tmy\t1327865\tCN,LA,TH,BD,IN\t\nMN\tMNG\t496\tMG\tMongolia\tUlan Bator\t1565000.0\t3086918\tAS\t.mn\tMNT\tTugrik\t976\t######\t^(\\d{6})$\tmn,ru\t2029969\tCN,RU\t\nMO\tMAC\t446\tMC\tMacao\tMacao\t254.0\t449198\tAS\t.mo\tMOP\tPataca\t853\t\t\tzh,zh-MO,pt\t1821275\t\t\nMP\tMNP\t580\tCQ\tNorthern Mariana Islands\tSaipan\t477.0\t53883\tOC\t.mp\tUSD\tDollar\t+1-670\t\t\tfil,tl,zh,ch-MP,en-MP\t4041468\t\t\nMQ\tMTQ\t474\tMB\tMartinique\tFort-de-France\t1100.0\t432900\tNA\t.mq\tEUR\tEuro\t596\t#####\t^(\\d{5})$\tfr-MQ\t3570311\t\t\nMR\tMRT\t478\tMR\tMauritania\tNouakchott\t1030700.0\t3205060\tAF\t.mr\tMRO\tOuguiya\t222\t\t\tar-MR,fuc,snk,fr,mey,wo\t2378080\tSN,DZ,EH,ML\t\nMS\tMSR\t500\tMH\tMontserrat\tPlymouth\t102.0\t9341\tNA\t.ms\tXCD\tDollar\t+1-664\t\t\ten-MS\t3578097\t\t\nMT\tMLT\t470\tMT\tMalta\tValletta\t316.0\t403000\tEU\t.mt\tEUR\tEuro\t356\t@@@ ####\t^([A-Z]{3}\\d{4})$\tmt,en-MT\t2562770\t\t\nMU\tMUS\t480\tMP\tMauritius\tPort Louis\t2040.0\t1294104\tAF\t.mu\tMUR\tRupee\t230\t\t\ten-MU,bho,fr\t934292\t\t\nMV\tMDV\t462\tMV\tMaldives\tMale\t300.0\t395650\tAS\t.mv\tMVR\tRufiyaa\t960\t#####\t^(\\d{5})$\tdv,en\t1282028\t\t\nMW\tMWI\t454\tMI\tMalawi\tLilongwe\t118480.0\t15447500\tAF\t.mw\tMWK\tKwacha\t265\t\t\tny,yao,tum,swk\t927384\tTZ,MZ,ZM\t\nMX\tMEX\t484\tMX\tMexico\tMexico City\t1972550.0\t112468855\tNA\t.mx\tMXN\tPeso\t52\t#####\t^(\\d{5})$\tes-MX\t3996063\tGT,US,BZ\t\nMY\tMYS\t458\tMY\tMalaysia\tKuala Lumpur\t329750.0\t28274729\tAS\t.my\tMYR\tRinggit\t60\t#####\t^(\\d{5})$\tms-MY,en,zh,ta,te,ml,pa,th\t1733045\tBN,TH,ID\t\nMZ\tMOZ\t508\tMZ\tMozambique\tMaputo\t801590.0\t22061451\tAF\t.mz\tMZN\tMetical\t258\t####\t^(\\d{4})$\tpt-MZ,vmw\t1036973\tZW,TZ,SZ,ZA,ZM,MW\t\nNA\tNAM\t516\tWA\tNamibia\tWindhoek\t825418.0\t2128471\tAF\t.na\tNAD\tDollar\t264\t\t\ten-NA,af,de,hz,naq\t3355338\tZA,BW,ZM,AO\t\nNC\tNCL\t540\tNC\tNew Caledonia\tNoumea\t19060.0\t216494\tOC\t.nc\tXPF\tFranc\t687\t#####\t^(\\d{5})$\tfr-NC\t2139685\t\t\nNE\tNER\t562\tNG\tNiger\tNiamey\t1267000.0\t15878271\tAF\t.ne\tXOF\tFranc\t227\t####\t^(\\d{4})$\tfr-NE,ha,kr,dje\t2440476\tTD,BJ,DZ,LY,BF,NG,ML\t\nNF\tNFK\t574\tNF\tNorfolk Island\tKingston\t34.6\t1828\tOC\t.nf\tAUD\tDollar\t672\t####\t^(\\d{4})$\ten-NF\t2155115\t\t\nNG\tNGA\t566\tNI\tNigeria\tAbuja\t923768.0\t154000000\tAF\t.ng\tNGN\tNaira\t234\t######\t^(\\d{6})$\ten-NG,ha,yo,ig,ff\t2328926\tTD,NE,BJ,CM\t\nNI\tNIC\t558\tNU\tNicaragua\tManagua\t129494.0\t5995928\tNA\t.ni\tNIO\tCordoba\t505\t###-###-#\t^(\\d{7})$\tes-NI,en\t3617476\tCR,HN\t\nNL\tNLD\t528\tNL\tNetherlands\tAmsterdam\t41526.0\t16645000\tEU\t.nl\tEUR\tEuro\t31\t#### @@\t^(\\d{4}[A-Z]{2})$\tnl-NL,fy-NL\t2750405\tDE,BE\t\nNO\tNOR\t578\tNO\tNorway\tOslo\t324220.0\t5009150\tEU\t.no\tNOK\tKrone\t47\t####\t^(\\d{4})$\tno,nb,nn,se,fi\t3144096\tFI,RU,SE\t\nNP\tNPL\t524\tNP\tNepal\tKathmandu\t140800.0\t28951852\tAS\t.np\tNPR\tRupee\t977\t#####\t^(\\d{5})$\tne,en\t1282988\tCN,IN\t\nNR\tNRU\t520\tNR\tNauru\tYaren\t21.0\t10065\tOC\t.nr\tAUD\tDollar\t674\t\t\tna,en-NR\t2110425\t\t\nNU\tNIU\t570\tNE\tNiue\tAlofi\t260.0\t2166\tOC\t.nu\tNZD\tDollar\t683\t\t\tniu,en-NU\t4036232\t\t\nNZ\tNZL\t554\tNZ\tNew Zealand\tWellington\t268680.0\t4252277\tOC\t.nz\tNZD\tDollar\t64\t####\t^(\\d{4})$\ten-NZ,mi\t2186224\t\t\nOM\tOMN\t512\tMU\tOman\tMuscat\t212460.0\t2967717\tAS\t.om\tOMR\tRial\t968\t###\t^(\\d{3})$\tar-OM,en,bal,ur\t286963\tSA,YE,AE\t\nPA\tPAN\t591\tPM\tPanama\tPanama City\t78200.0\t3410676\tNA\t.pa\tPAB\tBalboa\t507\t\t\tes-PA,en\t3703430\tCR,CO\t\nPE\tPER\t604\tPE\tPeru\tLima\t1285220.0\t29907003\tSA\t.pe\tPEN\tSol\t51\t\t\tes-PE,qu,ay\t3932488\tEC,CL,BO,BR,CO\t\nPF\tPYF\t258\tFP\tFrench Polynesia\tPapeete\t4167.0\t270485\tOC\t.pf\tXPF\tFranc\t689\t#####\t^((97|98)7\\d{2})$\tfr-PF,ty\t4030656\t\t\nPG\tPNG\t598\tPP\tPapua New Guinea\tPort Moresby\t462840.0\t6064515\tOC\t.pg\tPGK\tKina\t675\t###\t^(\\d{3})$\ten-PG,ho,meu,tpi\t2088628\tID\t\nPH\tPHL\t608\tRP\tPhilippines\tManila\t300000.0\t99900177\tAS\t.ph\tPHP\tPeso\t63\t####\t^(\\d{4})$\ttl,en-PH,fil\t1694008\t\t\nPK\tPAK\t586\tPK\tPakistan\tIslamabad\t803940.0\t184404791\tAS\t.pk\tPKR\tRupee\t92\t#####\t^(\\d{5})$\tur-PK,en-PK,pa,sd,ps,brh\t1168579\tCN,AF,IR,IN\t\nPL\tPOL\t616\tPL\tPoland\tWarsaw\t312685.0\t38500000\tEU\t.pl\tPLN\tZloty\t48\t##-###\t^(\\d{5})$\tpl\t798544\tDE,LT,SK,CZ,BY,UA,RU\t\nPM\tSPM\t666\tSB\tSaint Pierre and Miquelon\tSaint-Pierre\t242.0\t7012\tNA\t.pm\tEUR\tEuro\t508\t#####\t^(97500)$\tfr-PM\t3424932\t\t\nPN\tPCN\t612\tPC\tPitcairn\tAdamstown\t47.0\t46\tOC\t.pn\tNZD\tDollar\t870\t\t\ten-PN\t4030699\t\t\nPR\tPRI\t630\tRQ\tPuerto Rico\tSan Juan\t9104.0\t3916632\tNA\t.pr\tUSD\tDollar\t+1-787 and 1-939\t#####-####\t^(\\d{9})$\ten-PR,es-PR\t4566966\t\t\nPS\tPSE\t275\tWE\tPalestinian Territory\tEast Jerusalem\t5970.0\t3800000\tAS\t.ps\tILS\tShekel\t970\t\t\tar-PS\t6254930\tJO,IL,EG\t\nPT\tPRT\t620\tPO\tPortugal\tLisbon\t92391.0\t10676000\tEU\t.pt\tEUR\tEuro\t351\t####-###\t^(\\d{7})$\tpt-PT,mwl\t2264397\tES\t\nPW\tPLW\t585\tPS\tPalau\tMelekeok\t458.0\t19907\tOC\t.pw\tUSD\tDollar\t680\t96940\t^(96940)$\tpau,sov,en-PW,tox,ja,fil,zh\t1559582\t\t\nPY\tPRY\t600\tPA\tParaguay\tAsuncion\t406750.0\t6375830\tSA\t.py\tPYG\tGuarani\t595\t####\t^(\\d{4})$\tes-PY,gn\t3437598\tBO,BR,AR\t\nQA\tQAT\t634\tQA\tQatar\tDoha\t11437.0\t840926\tAS\t.qa\tQAR\tRial\t974\t\t\tar-QA,es\t289688\tSA\t\nRE\tREU\t638\tRE\tReunion\tSaint-Denis\t2517.0\t776948\tAF\t.re\tEUR\tEuro\t262\t#####\t^((97|98)(4|7|8)\\d{2})$\tfr-RE\t935317\t\t\nRO\tROU\t642\tRO\tRomania\tBucharest\t237500.0\t21959278\tEU\t.ro\tRON\tLeu\t40\t######\t^(\\d{6})$\tro,hu,rom\t798549\tMD,HU,UA,BG,RS\t\nRS\tSRB\t688\tRI\tSerbia\tBelgrade\t88361.0\t7344847\tEU\t.rs\tRSD\tDinar\t381\t######\t^(\\d{6})$\tsr,hu,bs,rom\t6290252\tAL,HU,MK,RO,HR,BA,BG,ME,XK\t\nRU\tRUS\t643\tRS\tRussia\tMoscow\t1.71E7\t140702000\tEU\t.ru\tRUB\tRuble\t7\t######\t^(\\d{6})$\tru,tt,xal,cau,ady,kv,ce,tyv,cv,udm,tut,mns,bua,myv,mdf,chm,ba,inh,tut,kbd,krc,ava,sah,nog\t2017370\tGE,CN,BY,UA,KZ,LV,PL,EE,LT,FI,MN,NO,AZ,KP\t\nRW\tRWA\t646\tRW\tRwanda\tKigali\t26338.0\t11055976\tAF\t.rw\tRWF\tFranc\t250\t\t\trw,en-RW,fr-RW,sw\t49518\tTZ,CD,BI,UG\t\nSA\tSAU\t682\tSA\tSaudi Arabia\tRiyadh\t1960582.0\t25731776\tAS\t.sa\tSAR\tRial\t966\t#####\t^(\\d{5})$\tar-SA\t102358\tQA,OM,IQ,YE,JO,AE,KW\t\nSB\tSLB\t090\tBP\tSolomon Islands\tHoniara\t28450.0\t559198\tOC\t.sb\tSBD\tDollar\t677\t\t\ten-SB,tpi\t2103350\t\t\nSC\tSYC\t690\tSE\tSeychelles\tVictoria\t455.0\t88340\tAF\t.sc\tSCR\tRupee\t248\t\t\ten-SC,fr-SC\t241170\t\t\nSD\tSDN\t729\tSU\tSudan\tKhartoum\t1861484.0\t35000000\tAF\t.sd\tSDG\tPound\t249\t#####\t^(\\d{5})$\tar-SD,en,fia\t366755\tSS,TD,EG,ET,ER,LY,CF\t\nSS\tSSD\t728\tOD\tSouth Sudan\tJuba\t644329.0\t8260490\tAF\t\tSSP\tPound\t211\t\t\ten\t7909807\tCD,CF,ET,KE,SD,UG,\t\nSE\tSWE\t752\tSW\tSweden\tStockholm\t449964.0\t9828655\tEU\t.se\tSEK\tKrona\t46\t### ##\t^(?:SE)*(\\d{5})$\tsv-SE,se,sma,fi-SE\t2661886\tNO,FI\t\nSG\tSGP\t702\tSN\tSingapore\tSingapore\t692.7\t4701069\tAS\t.sg\tSGD\tDollar\t65\t######\t^(\\d{6})$\tcmn,en-SG,ms-SG,ta-SG,zh-SG\t1880251\t\t\nSH\tSHN\t654\tSH\tSaint Helena\tJamestown\t410.0\t7460\tAF\t.sh\tSHP\tPound\t290\tSTHL 1ZZ\t^(STHL1ZZ)$\ten-SH\t3370751\t\t\nSI\tSVN\t705\tSI\tSlovenia\tLjubljana\t20273.0\t2007000\tEU\t.si\tEUR\tEuro\t386\t####\t^(?:SI)*(\\d{4})$\tsl,sh\t3190538\tHU,IT,HR,AT\t\nSJ\tSJM\t744\tSV\tSvalbard and Jan Mayen\tLongyearbyen\t62049.0\t2550\tEU\t.sj\tNOK\tKrone\t47\t\t\tno,ru\t607072\t\t\nSK\tSVK\t703\tLO\tSlovakia\tBratislava\t48845.0\t5455000\tEU\t.sk\tEUR\tEuro\t421\t### ##\t^(\\d{5})$\tsk,hu\t3057568\tPL,HU,CZ,UA,AT\t\nSL\tSLE\t694\tSL\tSierra Leone\tFreetown\t71740.0\t5245695\tAF\t.sl\tSLL\tLeone\t232\t\t\ten-SL,men,tem\t2403846\tLR,GN\t\nSM\tSMR\t674\tSM\tSan Marino\tSan Marino\t61.2\t31477\tEU\t.sm\tEUR\tEuro\t378\t4789#\t^(4789\\d)$\tit-SM\t3168068\tIT\t\nSN\tSEN\t686\tSG\tSenegal\tDakar\t196190.0\t12323252\tAF\t.sn\tXOF\tFranc\t221\t#####\t^(\\d{5})$\tfr-SN,wo,fuc,mnk\t2245662\tGN,MR,GW,GM,ML\t\nSO\tSOM\t706\tSO\tSomalia\tMogadishu\t637657.0\t10112453\tAF\t.so\tSOS\tShilling\t252\t@@  #####\t^([A-Z]{2}\\d{5})$\tso-SO,ar-SO,it,en-SO\t51537\tET,KE,DJ\t\nSR\tSUR\t740\tNS\tSuriname\tParamaribo\t163270.0\t492829\tSA\t.sr\tSRD\tDollar\t597\t\t\tnl-SR,en,srn,hns,jv\t3382998\tGY,BR,GF\t\nST\tSTP\t678\tTP\tSao Tome and Principe\tSao Tome\t1001.0\t175808\tAF\t.st\tSTD\tDobra\t239\t\t\tpt-ST\t2410758\t\t\nSV\tSLV\t222\tES\tEl Salvador\tSan Salvador\t21040.0\t6052064\tNA\t.sv\tUSD\tDollar\t503\tCP ####\t^(?:CP)*(\\d{4})$\tes-SV\t3585968\tGT,HN\t\nSX\tSXM\t534\tNN\tSint Maarten\tPhilipsburg\t21.0\t37429\tNA\t.sx\tANG\tGuilder\t599\t\t\tnl,en\t7609695\tMF\t\nSY\tSYR\t760\tSY\tSyria\tDamascus\t185180.0\t22198110\tAS\t.sy\tSYP\tPound\t963\t\t\tar-SY,ku,hy,arc,fr,en\t163843\tIQ,JO,IL,TR,LB\t\nSZ\tSWZ\t748\tWZ\tSwaziland\tMbabane\t17363.0\t1354051\tAF\t.sz\tSZL\tLilangeni\t268\t@###\t^([A-Z]\\d{3})$\ten-SZ,ss-SZ\t934841\tZA,MZ\t\nTC\tTCA\t796\tTK\tTurks and Caicos Islands\tCockburn Town\t430.0\t20556\tNA\t.tc\tUSD\tDollar\t+1-649\tTKCA 1ZZ\t^(TKCA 1ZZ)$\ten-TC\t3576916\t\t\nTD\tTCD\t148\tCD\tChad\tN\u0027Djamena\t1284000.0\t10543464\tAF\t.td\tXAF\tFranc\t235\t\t\tfr-TD,ar-TD,sre\t2434508\tNE,LY,CF,SD,CM,NG\t\nTF\tATF\t260\tFS\tFrench Southern Territories\tPort-aux-Francais\t7829.0\t140\tAN\t.tf\tEUR\tEuro  \t\t\t\tfr\t1546748\t\t\nTG\tTGO\t768\tTO\tTogo\tLome\t56785.0\t6587239\tAF\t.tg\tXOF\tFranc\t228\t\t\tfr-TG,ee,hna,kbp,dag,ha\t2363686\tBJ,GH,BF\t\nTH\tTHA\t764\tTH\tThailand\tBangkok\t514000.0\t67089500\tAS\t.th\tTHB\tBaht\t66\t#####\t^(\\d{5})$\tth,en\t1605651\tLA,MM,KH,MY\t\nTJ\tTJK\t762\tTI\tTajikistan\tDushanbe\t143100.0\t7487489\tAS\t.tj\tTJS\tSomoni\t992\t######\t^(\\d{6})$\ttg,ru\t1220409\tCN,AF,KG,UZ\t\nTK\tTKL\t772\tTL\tTokelau\t\t10.0\t1466\tOC\t.tk\tNZD\tDollar\t690\t\t\ttkl,en-TK\t4031074\t\t\nTL\tTLS\t626\tTT\tEast Timor\tDili\t15007.0\t1154625\tOC\t.tl\tUSD\tDollar\t670\t\t\ttet,pt-TL,id,en\t1966436\tID\t\nTM\tTKM\t795\tTX\tTurkmenistan\tAshgabat\t488100.0\t4940916\tAS\t.tm\tTMT\tManat\t993\t######\t^(\\d{6})$\ttk,ru,uz\t1218197\tAF,IR,UZ,KZ\t\nTN\tTUN\t788\tTS\tTunisia\tTunis\t163610.0\t10589025\tAF\t.tn\tTND\tDinar\t216\t####\t^(\\d{4})$\tar-TN,fr\t2464461\tDZ,LY\t\nTO\tTON\t776\tTN\tTonga\tNuku\u0027alofa\t748.0\t122580\tOC\t.to\tTOP\tPa\u0027anga\t676\t\t\tto,en-TO\t4032283\t\t\nTR\tTUR\t792\tTU\tTurkey\tAnkara\t780580.0\t77804122\tAS\t.tr\tTRY\tLira\t90\t#####\t^(\\d{5})$\ttr-TR,ku,diq,az,av\t298795\tSY,GE,IQ,IR,GR,AM,AZ,BG\t\nTT\tTTO\t780\tTD\tTrinidad and Tobago\tPort of Spain\t5128.0\t1228691\tNA\t.tt\tTTD\tDollar\t+1-868\t\t\ten-TT,hns,fr,es,zh\t3573591\t\t\nTV\tTUV\t798\tTV\tTuvalu\tFunafuti\t26.0\t10472\tOC\t.tv\tAUD\tDollar\t688\t\t\ttvl,en,sm,gil\t2110297\t\t\nTW\tTWN\t158\tTW\tTaiwan\tTaipei\t35980.0\t22894384\tAS\t.tw\tTWD\tDollar\t886\t#####\t^(\\d{5})$\tzh-TW,zh,nan,hak\t1668284\t\t\nTZ\tTZA\t834\tTZ\tTanzania\tDodoma\t945087.0\t41892895\tAF\t.tz\tTZS\tShilling\t255\t\t\tsw-TZ,en,ar\t149590\tMZ,KE,CD,RW,ZM,BI,UG,MW\t\nUA\tUKR\t804\tUP\tUkraine\tKiev\t603700.0\t45415596\tEU\t.ua\tUAH\tHryvnia\t380\t#####\t^(\\d{5})$\tuk,ru-UA,rom,pl,hu\t690791\tPL,MD,HU,SK,BY,RO,RU\t\nUG\tUGA\t800\tUG\tUganda\tKampala\t236040.0\t33398682\tAF\t.ug\tUGX\tShilling\t256\t\t\ten-UG,lg,sw,ar\t226074\tTZ,KE,SS,CD,RW\t\nUM\tUMI\t581\t\tUnited States Minor Outlying Islands\t\t0.0\t0\tOC\t.um\tUSD\tDollar \t1\t\t\ten-UM\t5854968\t\t\nUS\tUSA\t840\tUS\tUnited States\tWashington\t9629091.0\t310232863\tNA\t.us\tUSD\tDollar\t1\t#####-####\t^\\d{5}(-\\d{4})?$\ten-US,es-US,haw,fr\t6252001\tCA,MX,CU\t\nUY\tURY\t858\tUY\tUruguay\tMontevideo\t176220.0\t3477000\tSA\t.uy\tUYU\tPeso\t598\t#####\t^(\\d{5})$\tes-UY\t3439705\tBR,AR\t\nUZ\tUZB\t860\tUZ\tUzbekistan\tTashkent\t447400.0\t27865738\tAS\t.uz\tUZS\tSom\t998\t######\t^(\\d{6})$\tuz,ru,tg\t1512440\tTM,AF,KG,TJ,KZ\t\nVA\tVAT\t336\tVT\tVatican\tVatican City\t0.44\t921\tEU\t.va\tEUR\tEuro\t379\t#####\t^(\\d{5})$\tla,it,fr\t3164670\tIT\t\nVC\tVCT\t670\tVC\tSaint Vincent and the Grenadines\tKingstown\t389.0\t104217\tNA\t.vc\tXCD\tDollar\t+1-784\t\t\ten-VC,fr\t3577815\t\t\nVE\tVEN\t862\tVE\tVenezuela\tCaracas\t912050.0\t27223228\tSA\t.ve\tVEF\tBolivar\t58\t####\t^(\\d{4})$\tes-VE\t3625428\tGY,BR,CO\t\nVG\tVGB\t092\tVI\tBritish Virgin Islands\tRoad Town\t153.0\t21730\tNA\t.vg\tUSD\tDollar\t+1-284\t\t\ten-VG\t3577718\t\t\nVI\tVIR\t850\tVQ\tU.S. Virgin Islands\tCharlotte Amalie\t352.0\t108708\tNA\t.vi\tUSD\tDollar\t+1-340\t#####-####\t^\\d{5}(-\\d{4})?$\ten-VI\t4796775\t\t\nVN\tVNM\t704\tVM\tVietnam\tHanoi\t329560.0\t89571130\tAS\t.vn\tVND\tDong\t84\t######\t^(\\d{6})$\tvi,en,fr,zh,km\t1562822\tCN,LA,KH\t\nVU\tVUT\t548\tNH\tVanuatu\tPort Vila\t12200.0\t221552\tOC\t.vu\tVUV\tVatu\t678\t\t\tbi,en-VU,fr-VU\t2134431\t\t\nWF\tWLF\t876\tWF\tWallis and Futuna\tMata Utu\t274.0\t16025\tOC\t.wf\tXPF\tFranc\t681\t#####\t^(986\\d{2})$\twls,fud,fr-WF\t4034749\t\t\nWS\tWSM\t882\tWS\tSamoa\tApia\t2944.0\t192001\tOC\t.ws\tWST\tTala\t685\t\t\tsm,en-WS\t4034894\t\t\nYE\tYEM\t887\tYM\tYemen\tSanaa\t527970.0\t23495361\tAS\t.ye\tYER\tRial\t967\t\t\tar-YE\t69543\tSA,OM\t\nYT\tMYT\t175\tMF\tMayotte\tMamoudzou\t374.0\t159042\tAF\t.yt\tEUR\tEuro\t262\t#####\t^(\\d{5})$\tfr-YT\t1024031\t\t\nZA\tZAF\t710\tSF\tSouth Africa\tPretoria\t1219912.0\t49000000\tAF\t.za\tZAR\tRand\t27\t####\t^(\\d{4})$\tzu,xh,af,nso,en-ZA,tn,st,ts,ss,ve,nr\t953987\tZW,SZ,MZ,BW,NA,LS\t\nZM\tZMB\t894\tZA\tZambia\tLusaka\t752614.0\t13460305\tAF\t.zm\tZMW\tKwacha\t260\t#####\t^(\\d{5})$\ten-ZM,bem,loz,lun,lue,ny,toi\t895949\tZW,TZ,MZ,CD,NA,MW,AO\t\nZW\tZWE\t716\tZI\tZimbabwe\tHarare\t390580.0\t11651858\tAF\t.zw\tZWL\tDollar\t263\t\t\ten-ZW,sn,nr,nd\t878675\tZA,MZ,BW,ZM\t\nCS\tSCG\t891\tYI\tSerbia and Montenegro\tBelgrade\t102350.0\t10829175\tEU\t.cs\tRSD\tDinar\t381\t#####\t^(\\d{5})$\tcu,hu,sq,sr\t8505033\tAL,HU,MK,RO,HR,BA,BG\t\nAN\tANT\t530\tNT\tNetherlands Antilles\tWillemstad\t960.0\t300000\tNA\t.an\tANG\tGuilder\t599\t\t\tnl-AN,en,es\t8505032\tGP\t\n"
+      },
+      "dateCreated": "Apr 30, 2015 3:07:34 PM",
+      "dateStarted": "Mar 2, 2016 3:05:30 PM",
+      "dateFinished": "Mar 2, 2016 3:05:31 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val countries \u003d countryInfoCsv.join(continents, \u0027continent \u003d\u003d\u003d \u0027continent_code)",
+      "dateUpdated": "Mar 2, 2016 3:07:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "tableHide": false,
+        "enabled": true,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431506328815_1797313600",
+      "id": "20150513-083848_1149611362",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "countries: org.apache.spark.sql.DataFrame \u003d [iso: string, iso3: string, iso_numeric: string, fips: string, name: string, capital: string, area: double, population: string, continent: string, tld: string, currencyCode: string, currencyName: string, phone: string, postalCodeFormat: string, postalCodeRegex: string, languages: string, geoname_id: int, neighbours: string, equivalentFipsCode: string, continent_geoname_id: int, continent_code: string, continent_name: string]\n"
+      },
+      "dateCreated": "May 13, 2015 8:38:48 AM",
+      "dateStarted": "Mar 2, 2016 3:07:25 PM",
+      "dateFinished": "Mar 2, 2016 3:07:26 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "countries.printSchema()",
+      "dateUpdated": "Mar 2, 2016 3:07:53 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "tableHide": false,
+        "enabled": true,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431506905918_-522113113",
+      "id": "20150513-084825_1581081211",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "root\n |-- iso: string (nullable \u003d false)\n |-- iso3: string (nullable \u003d false)\n |-- iso_numeric: string (nullable \u003d false)\n |-- fips: string (nullable \u003d true)\n |-- name: string (nullable \u003d false)\n |-- capital: string (nullable \u003d true)\n |-- area: double (nullable \u003d true)\n |-- population: string (nullable \u003d false)\n |-- continent: string (nullable \u003d false)\n |-- tld: string (nullable \u003d false)\n |-- currencyCode: string (nullable \u003d false)\n |-- currencyName: string (nullable \u003d false)\n |-- phone: string (nullable \u003d true)\n |-- postalCodeFormat: string (nullable \u003d true)\n |-- postalCodeRegex: string (nullable \u003d true)\n |-- languages: string (nullable \u003d true)\n |-- geoname_id: integer (nullable \u003d true)\n |-- neighbours: string (nullable \u003d true)\n |-- equivalentFipsCode: string (nullable \u003d true)\n |-- continent_geoname_id: integer (nullable \u003d false)\n |-- continent_code: string (nullable \u003d true)\n |-- continent_name: string (nullable \u003d true)\n\n"
+      },
+      "dateCreated": "May 13, 2015 8:48:25 AM",
+      "dateStarted": "Mar 2, 2016 3:07:53 PM",
+      "dateFinished": "Mar 2, 2016 3:07:53 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "countries.write.mode(org.apache.spark.sql.SaveMode.Overwrite).parquet(s\"$GeonamesDir/countries.parquet\")",
+      "dateUpdated": "Mar 2, 2016 3:10:18 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431506909061_-70802653",
+      "id": "20150513-084829_1407409820",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "May 13, 2015 8:48:29 AM",
+      "dateStarted": "Mar 2, 2016 3:10:18 PM",
+      "dateFinished": "Mar 2, 2016 3:10:18 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Load CSV",
+      "text": "import org.apache.spark.sql.types._\n\nval geonamesSchema \u003d StructType(Seq(\n    StructField(\"geoname_id\", IntegerType, false),\n    StructField(\"name\", StringType, false),\n    StructField(\"ascii_name\", StringType, false),\n    StructField(\"inlineAlternateNames\", StringType, false),\n    StructField(\"latitude\", FloatType, false),\n    StructField(\"longitude\", FloatType, false),\n    StructField(\"feature_class\", StringType, false), // Char\n    StructField(\"feature_code\", StringType, false),\n    StructField(\"country_iso\", StringType, false),\n    StructField(\"inlineAlternateCountryCodes\", StringType, false),\n    StructField(\"admin_1_code\", StringType, false),\n    StructField(\"admin2Code\", StringType, true),\n    StructField(\"admin3Code\", StringType, true),\n    StructField(\"admin4Code\", StringType, true),\n    StructField(\"population\", StringType, false), // BigInt\n    StructField(\"elevation\", IntegerType, true),\n    StructField(\"dem\", IntegerType, false),\n    StructField(\"timeZone\", StringType, false),\n    StructField(\"modificationDate\", DateType, false)))\n\nval allCountriesCsv \u003d reader.schema(geonamesSchema).load(s\"$GeonamesDir/allCountries.txt\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
+      "dateUpdated": "Mar 2, 2016 3:40:01 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "tableHide": true,
+        "enabled": true,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1427737030473_1282200273",
+      "id": "20150330-173710_1693823343",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.types._\ngeonamesSchema: org.apache.spark.sql.types.StructType \u003d StructType(StructField(geoname_id,IntegerType,false), StructField(name,StringType,false), StructField(ascii_name,StringType,false), StructField(inlineAlternateNames,StringType,false), StructField(latitude,FloatType,false), StructField(longitude,FloatType,false), StructField(feature_class,StringType,false), StructField(feature_code,StringType,false), StructField(country_iso,StringType,false), StructField(inlineAlternateCountryCodes,StringType,false), StructField(admin_1_code,StringType,false), StructField(admin2Code,StringType,true), StructField(admin3Code,StringType,true), StructField(admin4Code,StringType,true), StructField(population,StringType,false), StructField(elevation,IntegerType,true), StructField(dem,IntegerType,false), S...allCountriesCsv: org.apache.spark.sql.DataFrame \u003d [geoname_id: int, name: string, ascii_name: string, inlineAlternateNames: string, latitude: float, longitude: float, feature_class: string, feature_code: string, country_iso: string, inlineAlternateCountryCodes: string, admin_1_code: string, admin2Code: string, admin3Code: string, admin4Code: string, population: string, elevation: int, dem: int, timeZone: string, modificationDate: date]\n"
+      },
+      "dateCreated": "Mar 30, 2015 5:37:10 PM",
+      "dateStarted": "Mar 2, 2016 3:16:11 PM",
+      "dateFinished": "Mar 2, 2016 3:16:11 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Processing",
+      "text": "allCountriesCsv.withColumn(\n    \"alternate_names\", split(\u0027inlineAlternateNames, \",\")\n).withColumn(\n    \"alternateCountryCodes\", split(\u0027inlineAlternateCountryCodes, \",\")\n).select(\n    \"geoname_id\", \"name\", \"ascii_name\", \"alternate_names\", \"latitude\", \"longitude\", \"feature_class\", \"feature_code\", \"country_iso\", \"alternateCountryCodes\", \"admin_1_code\", \"admin2Code\", \"admin3Code\", \"admin4Code\", \"population\", \"elevation\", \"dem\", \"timeZone\", \"modificationDate\"\n).write.mode(org.apache.spark.sql.SaveMode.Overwrite).parquet(s\"$GeonamesDir/allCountries.parquet\")",
+      "dateUpdated": "Mar 2, 2016 3:22:01 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "enabled": true,
+        "editorHide": false,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1427810247101_-555360907",
+      "id": "20150331-135727_388463402",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Mar 31, 2015 1:57:27 PM",
+      "dateStarted": "Mar 2, 2016 3:22:01 PM",
+      "dateFinished": "Mar 2, 2016 3:23:53 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val allCountries \u003d sqlc.read.parquet(s\"$GeonamesDir/allCountries.parquet\")\nallCountries.registerTempTable(\"allCountries\")",
+      "dateUpdated": "Mar 2, 2016 3:37:07 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1428399185831_834938861",
+      "id": "20150407-093305_1746249276",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "allCountries: org.apache.spark.sql.DataFrame \u003d [geoname_id: int, name: string, ascii_name: string, alternate_names: array\u003cstring\u003e, latitude: float, longitude: float, feature_class: string, feature_code: string, country_iso: string, alternateCountryCodes: array\u003cstring\u003e, admin_1_code: string, admin2Code: string, admin3Code: string, admin4Code: string, population: string, elevation: int, dem: int, timeZone: string, modificationDate: date]\n"
+      },
+      "dateCreated": "Apr 7, 2015 9:33:05 AM",
+      "dateStarted": "Mar 2, 2016 3:36:49 PM",
+      "dateFinished": "Mar 2, 2016 3:36:50 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql SELECT * FROM allCountries WHERE ascii_name LIKE \"${name}\" AND feature_code\u003d\"PCLI\"",
+      "dateUpdated": "Mar 2, 2016 3:37:10 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sql",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {
+          "name": "%France"
+        },
+        "forms": {
+          "name": {
+            "name": "name",
+            "defaultValue": "",
+            "hidden": false
+          }
+        }
+      },
+      "jobName": "paragraph_1427888172487_2081295734",
+      "id": "20150401-113612_180498484",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "geoname_id\tname\tascii_name\talternate_names\tlatitude\tlongitude\tfeature_class\tfeature_code\tcountry_iso\talternateCountryCodes\tadmin_1_code\tadmin2Code\tadmin3Code\tadmin4Code\tpopulation\televation\tdem\ttimeZone\tmodificationDate\n3017382\tRepublic of France\tRepublic of France\tWrappedArray(An Fhrainc, An Fhraing, Bro-C\u0027hall, Bufalansa, Falanise, Falanisē, Falansia, Falánsɛ, Farani, Faransa, Faransi, Faransiis, Faransiiska, Faranzi, Farayse, Faronsa, Farânzi, Farāni, Ffrainc, Frakkland, Frakland, Franc, Franc uls, Franca, France, Francejo, Franchiya, Franci, Francia, Franciaorszag, Franciaország, Francie, Francija, Francio, Francja, Francland, Francogallia, Francoska, Francujo, Francuska, Francuzsko, Francyja, Francë, Francëjô, Francúzsko, Frankraeich, Frankreich, Frankriek, Frankrig, Frankrigi, Frankriika, Frankrijk, Frankrike, Frankrish, Frankryk, Frankräich, Frans, Frans nutome, Fransa, Fransaen, Fransia, Fransiya, Fransya, Fransän, Franta, Frantsa, Frantscha, Frantza, Frantzia, Franza, Franzia, Franzsa, França, Franța, Fraunce, Frañs, Frɛnkyeman, Furansi, Gallia, Huak-guok, Huák-guók, Nfalanse, Orileede Faranse, Orílẹ́ède Faranse, Perancis, Phap, Pháp, Pow Frenk, Pow Frynk, Prancis, Prancuzija, Prancūzija, Pranis, Pransiya, Pransya, Prantsusmaa, Ranska, Republic of France, Republique Francaise, République Française, Ubaranja, Ubufaransa, Ufaransa, Vrankriek, Yn Rank, fa guo, faransesivilat, fasygu\u0027e, framsa, frangses, frans, fransa, fransh, frnsa, furansu, furansu gong he guo, i-France, peulangseu, phraansa, phramsa, phrans, phransa, pirans, prathes frangses, saprangeti, zrpt, Γαλλία, Фаронса, Франц, Франц улс, Франци, Франция, Франција, Француска, Францыя, Франція, Ֆրանսիա, צרפת, فرانس, فرانسه, فرانسىيە, فرنسا, فەڕەنسا, ܦܪܢܣܐ, ފަރަންސޭސިވިލާތް, फ़्राँस, फ़्रांस, फ्रांस, फ्रान्स, ফ্রান্স, ফ্ৰান্স, ફ્રાઁસ, ફ્રાંસ, ଫ୍ରାନ୍ସ, பிரான்ஸ், ఫ్రాన్స్‌, ಫ್ರಾನ್ಸ್, ഫ്രാന്‍സ്, ප්‍රංශය, ประเทศฝรั่งเศส, ฝรั่งเศส, ຝລັ່ງ, ཕ་རཱན་སི།, ཕརཱནསི, ပြင်သစ်, საფრანგეთი, ፈረንሣይ, ፈረንሳይ, បារាំង, フランス, フランス共和国, 法国, ꃔꇩ, 프랑스)\t46.0\t2.0\tA\tPCLI\tFR\tWrappedArray()\t00\t\t\t\t64768389\tnull\t543\tEurope/Paris\t2015-01-08\n"
+      },
+      "dateCreated": "Apr 1, 2015 11:36:12 AM",
+      "dateStarted": "Mar 2, 2016 3:37:09 PM",
+      "dateFinished": "Mar 2, 2016 3:37:21 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\nSELECT geoname_id, ascii_name, latitude, longitude, feature_class, feature_code, country_iso, admin_1_code, admin2Code, admin3Code, admin4Code\nFROM allCountries\nWHERE ascii_name LIKE \"${name}\" AND feature_code LIKE \"${feature code\u003d%}\"",
+      "dateUpdated": "Mar 2, 2016 3:40:45 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "geoname_id",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "ascii_name",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "geoname_id",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "ascii_name",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sql",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {
+          "name": "Grenoble",
+          "id": "3908443",
+          "feature class": "",
+          "feature code": "%"
+        },
+        "forms": {
+          "feature code": {
+            "name": "feature code",
+            "defaultValue": "%",
+            "hidden": false
+          },
+          "name": {
+            "name": "name",
+            "defaultValue": "",
+            "hidden": false
+          }
+        }
+      },
+      "jobName": "paragraph_1427732340884_-528895925",
+      "id": "20150330-161900_933561554",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "geoname_id\tascii_name\tlatitude\tlongitude\tfeature_class\tfeature_code\tcountry_iso\tadmin_1_code\tadmin2Code\tadmin3Code\tadmin4Code\n2070376\tGrenoble\t-20.46667\t138.18333\tS\tFRM\tAU\t04\t35300\t\t\n8779743\tGrenoble\t-27.71894\t152.4708\tS\tHMSD\tAU\t04\t33960\t\t\n3014728\tGrenoble\t45.16667\t5.71667\tP\tPPLA2\tFR\t84\t38\t381\t38185\n6454071\tGrenoble\t45.1872\t5.7266\tA\tADM4\tFR\t84\t38\t381\t38185\n5192104\tGrenoble\t40.23955\t-75.03795\tP\tPPL\tUS\tPA\t017\t\t\n1000051\tGrenoble\t-23.0067\t28.43313\tS\tFRM\tZA\t09\tDC35\tLIM351\t\n5966836\tGrenoble\t47.01677\t-84.16661\tL\tAREA\tCA\t08\t\t\t\n"
+      },
+      "dateCreated": "Mar 30, 2015 4:19:00 PM",
+      "dateStarted": "Mar 2, 2016 3:40:37 PM",
+      "dateFinished": "Mar 2, 2016 3:40:42 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1427739383346_-647175375",
+      "id": "20150330-181623_1566314701",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Mar 30, 2015 6:16:23 PM",
+      "dateStarted": "Apr 1, 2015 8:52:28 AM",
+      "dateFinished": "Apr 1, 2015 8:52:55 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "[01] Geonames",
+  "id": "2AGDXG8KX",
+  "angularObjects": {
+    "2BECU381X": [],
+    "2BFE4973F": [],
+    "2BDUP8TX1": [],
+    "2BC2TVSBR": [],
+    "2BEK1W1PD": [],
+    "2BEV8A6Z4": [],
+    "2BCVF5P5F": [],
+    "2BEMYV7QQ": [],
+    "2BFPPNXXV": [],
+    "2BD9VECZR": [],
+    "2BE14FKBG": [],
+    "2BEKWFP9V": [],
+    "2BDPVAN2T": [],
+    "2BDMC46FS": [],
+    "2BFC9NN6P": [],
+    "2BE7P7NCM": [],
+    "2BFQQPY3C": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

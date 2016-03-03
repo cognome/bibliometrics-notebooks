@@ -1,0 +1,579 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n### TODO\n\n- Handle composed-names properly\n- Handle mispells",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1443101992831_394963366",
+      "id": "20150924-133952_221661205",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch3\u003eTODO\u003c/h3\u003e\n\u003cul\u003e\n\u003cli\u003eHandle composed-names properly\u003c/li\u003e\n\u003cli\u003eHandle mispells\u003c/li\u003e\n\u003c/ul\u003e\n"
+      },
+      "dateCreated": "Sep 24, 2015 1:39:52 PM",
+      "dateStarted": "Mar 4, 2016 1:56:31 PM",
+      "dateFinished": "Mar 4, 2016 1:56:31 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Configuration",
+      "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval MaxIter \u003d 10\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval ProcessingDir \u003d s\"$WorkDir/processing\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "tableHide": true,
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1442482035823_-2061755991",
+      "id": "20150917-092715_1798454316",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nMaxIter: Int \u003d 10\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nWorkDir: String \u003d /tmp/anticipation\nProcessingDir: String \u003d /tmp/anticipation/processing\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\n"
+      },
+      "dateCreated": "Sep 17, 2015 9:27:15 AM",
+      "dateStarted": "Mar 4, 2016 1:56:31 PM",
+      "dateFinished": "Mar 4, 2016 1:56:32 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "object FullNameEntityHelper {\n    \n    trait CompatibilityCheckable[A] {\n\n        def isCompatibleWith(that: A): Boolean \u003d {\n            compatibilityScore(that) \u003e 0.0F\n        }\n        \n        def compatibilityScore(that: A): Float\n    }\n    \n    trait Entity extends CompatibilityCheckable[Entity] {\n\n        def initial: Initial\n        \n        def length: Int\n    }\n    \n    case class Initial(value: Char) extends Entity {\n        \n        override def compatibilityScore(that: Entity): Float \u003d {\n            that match {\n                case that: Initial    \u003d\u003e if (this.value \u003d\u003d that.value) 1.0F else 0.0F\n                case name: NameEntity \u003d\u003e if (this.isCompatibleWith(name.initial)) 1.0F else 0.0F\n            }\n        }\n    \n        override def initial: Initial \u003d this\n        \n        override def length: Int \u003d 1\n    }\n    \n    case class NameEntity(value: String) extends Entity {\n        \n        override def  compatibilityScore(that: Entity): Float \u003d that match {\n            case that: Initial    \u003d\u003e that.compatibilityScore(this)\n            case that: NameEntity \u003d\u003e if (this.value.toUpperCase \u003d\u003d that.value.toUpperCase) 2.0F else 0.0F\n        }\n\n        override def initial: Initial \u003d Initial(value.head)\n        \n        override def length: Int \u003d value.length\n    }\n    \n    object Name {\n        \n        def empty: Name \u003d Name(Seq.empty)\n    }\n    \n    case class Name(entities: Seq[Entity]) extends CompatibilityCheckable[Name] {\n        \n        override def compatibilityScore(that: Name): Float \u003d {\n            val zipped \u003d entities.zip(that.entities)\n            if (zipped.isEmpty) {\n                if (this.isEmpty || that.isEmpty) -1.0F else 1.0F\n            } else if (entities.size \u003d\u003d that.entities.size) {\n                val scores \u003d zipped.map { case (a, b) \u003d\u003e a.compatibilityScore(b) }\n                if (scores.contains(0.0F)) {\n                    0.0F\n                } else {\n                    val c \u003d scores.size\n                    scores.zipWithIndex.map { case (s, i) \u003d\u003e s * (c - i) / c }.reduce(_ + _)\n                }\n            } else if (zipped.size \u003d\u003d 1) {\n                zipped.head match {\n                    case (a: NameEntity, b: NameEntity) \u003d\u003e 0.0F\n                    case (a, b) \u003d\u003e a.compatibilityScore(b)\n                }\n            } else {\n                0.0F\n            }\n        }\n        \n        def length: Int \u003d entities.map(_.length).reduce(_ + _)\n        \n        def isEmpty: Boolean \u003d entities.isEmpty\n    }\n    \n    object NameList {\n        \n        def empty: NameList \u003d NameList(Seq.empty)\n    }\n    \n    case class NameList(names: Seq[Name]) extends CompatibilityCheckable[NameList] {\n        \n        override def compatibilityScore(that: NameList): Float \u003d {\n            val zipped \u003d names.zip(that.names)\n            //val zipped \u003d names.zipAll(that.names, Name.empty, Name.empty)\n            if (zipped.isEmpty) {\n                1.0F\n            } else {\n                val scores \u003d zipped.map { case (a, b) \u003d\u003e a.compatibilityScore(b) }\n                if (scores.contains(0.0F)) {\n                    0.0F\n                } else {\n                    val c \u003d scores.size\n                    scores.zipWithIndex.map { case (s, i) \u003d\u003e s * (c - i) / c }.reduce(_ + _)\n                }\n            }\n        }\n        \n        def length: Int \u003d names.map(_.length).fold(0)(_ + _)\n    }\n    \n    def discoverEntities(l: Seq[Seq[String]]): NameList \u003d {\n        NameList(l.map { g \u003d\u003e\n            Name(g.map { str \u003d\u003e\n                if (str.length \u003d\u003d 1) {\n                    Initial(str.head.toUpper)\n                } else {\n                    NameEntity(str)\n                }\n            })\n        })\n    }\n}\n\nval authorGroupKey \u003d sqlc.udf.register(\"author_group_key\", { (lastName: String, givenNames: Seq[Seq[String]]) \u003d\u003e\n    val optFirstInitial \u003d Option(givenNames).flatMap(_.headOption).map(_.head.head.toString)\n    lastName.toUpperCase + optFirstInitial.getOrElse(\"\")\n})\n\nval generateFullName \u003d sqlc.udf.register(\"generate_full_name\", { (lastName: String, givenNames: Seq[Seq[String]]) \u003d\u003e\n    Seq(Some(lastName), Option(givenNames).map(_.map(_.mkString(\"-\")).mkString(\" \"))).flatten.mkString(\" \").toUpperCase\n})\n\ndef compatibilityEdges(vertices: org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))]) \u003d {\n    vertices.map { case (vid, (groupKey, optGivenNames)) \u003d\u003e\n        groupKey -\u003e (vid, optGivenNames.map(FullNameEntityHelper.discoverEntities(_)))\n    }.groupByKey().flatMap { case (_, groups) \u003d\u003e\n        groups.toSeq.combinations(2).map { pair \u003d\u003e\n            val (id1, optNames1) \u003d pair(0)\n            val (id2, optNames2) \u003d pair(1)\n            val compatibilityScore \u003d optNames1.getOrElse(FullNameEntityHelper.NameList.empty).compatibilityScore(optNames2.getOrElse(FullNameEntityHelper.NameList.empty))\n            org.apache.spark.graphx.Edge(id1, id2, compatibilityScore)\n        }\n    }\n}\n\ndef dedupVertices(\n        vertices: org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))],\n        dupIds: org.apache.spark.rdd.RDD[(Long, Long)]) \u003d {\n    vertices.leftOuterJoin(dupIds).flatMap { case (id, (attrs, optReplacingId)) \u003d\u003e\n        if (optReplacingId.getOrElse(id) \u003d\u003d id) Some(id -\u003e attrs) else None\n    }\n}",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": true,
+        "editorMode": "ace/mode/scala",
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1442482157176_112460043",
+      "id": "20150917-092917_486715929",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "defined module FullNameEntityHelper\nauthorGroupKey: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction2\u003e,StringType,List())\ngenerateFullName: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction2\u003e,StringType,List())\ncompatibilityEdges: (vertices: org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))])org.apache.spark.rdd.RDD[org.apache.spark.graphx.Edge[Float]]\ndedupVertices: (vertices: org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))], dupIds: org.apache.spark.rdd.RDD[(Long, Long)])org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))]\n"
+      },
+      "dateCreated": "Sep 17, 2015 9:29:17 AM",
+      "dateStarted": "Mar 4, 2016 1:56:31 PM",
+      "dateFinished": "Mar 4, 2016 1:56:33 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Real data",
+      "text": "val mainPublications \u003d sqlc.read.parquet(s\"$DisambigDir/disambiguated_publications-did_$DatasetId.parquet\").filter(\u0027is_main \u003d\u003d\u003d true)\n\nval authors \u003d sqlc.read.parquet(s\"$ProcessingDir/authors.parquet\").join(\n    mainPublications.select(\u0027pub_id), \"pub_id\"\n).filter(\n    \u0027did \u003d\u003d\u003d DatasetId \u0026\u0026 \u0027is_valid \u003d\u003d\u003d true \u0026\u0026 \u0027is_anonymous \u003d\u003d\u003d false\n).distinct.repartition(NumPartitions).withColumn(\n    \"generated_full_name\", generateFullName(\u0027last_name, \u0027given_names)\n).withColumn(\n    \"group_key\", authorGroupKey(\u0027last_name, \u0027given_names)\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nauthors.registerTempTable(\"authors\")",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "tableHide": false,
+        "editorHide": true,
+        "editorMode": "ace/mode/scala",
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1442482135881_1043537057",
+      "id": "20150917-092855_1945070196",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "mainPublications: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, title: string, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categories: array\u003cstring\u003e, scielo_collections: array\u003cstring\u003e, dis_id: bigint, dis_title: string]\nauthors: org.apache.spark.sql.DataFrame \u003d [did: int, pub_id: bigint, id: bigint, raw: string, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: array\u003csmallint\u003e, is_valid: boolean, generated_full_name: string, group_key: string]\n"
+      },
+      "dateCreated": "Sep 17, 2015 9:28:55 AM",
+      "dateStarted": "Mar 4, 2016 1:56:32 PM",
+      "dateFinished": "Mar 4, 2016 1:56:34 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Sanity check\nassert(authors.select(\u0027id).distinct.count() \u003d\u003d authors.select(\u0027id).count())",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1457023617954_1134509437",
+      "id": "20160303-174657_77476063",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Mar 3, 2016 5:46:57 PM",
+      "dateStarted": "Mar 4, 2016 1:56:34 PM",
+      "dateFinished": "Mar 4, 2016 1:56:38 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Test data",
+      "text": "/*val authors \u003d sc.parallelize(Seq(\n    \n    (1L, \"Smith\", Seq(Seq(\"J\"))),\n    (2L, \"Smith\", Seq(Seq(\"Jer\"), Seq(\"Jer\"))),\n    (3L, \"Smith\", Seq(Seq(\"Jer\"), Seq(\"J\"))),\n    (4L, \"Smith\", Seq(Seq(\"Jo\"))),\n    (5L, \"Smith\", Seq(Seq(\"J\"), Seq(\"J\"))),\n    (6L, \"Smith\", Seq(Seq(\"John\"))),\n    (7L, \"Smith\", Seq(Seq(\"Jer\"), Seq(\"Joo\"))),\n    \n    (11L, \"Smet\", Seq(Seq(\"Jo\"), Seq(\"M\"))),\n    (12L, \"Smet\", Seq(Seq(\"Jo\"), Seq(\"Moo\"))),\n    (13L, \"Smet\", Seq(Seq(\"J\"), Seq(\"M\"))),\n    (14L, \"Smet\", Seq(Seq(\"Jo\"), Seq(\"Marc\"))),\n    (15L, \"Smet\", Seq(Seq(\"J\"))),\n    (16L, \"Smet\", Seq(Seq(\"Johnny\"))),\n    \n    (21L, \"London\", Seq(Seq(\"J\"))),\n    (22L, \"London\", Seq(Seq(\"Jim\"), Seq(\"Q\"))),\n    (23L, \"London\", Seq(Seq(\"Jon\"))),\n    (24L, \"London\", Seq(Seq(\"Jeremy\"))),\n    (25L, \"London\", Seq(Seq(\"Jack\"), Seq(\"E\"))),\n    (26L, \"London\", Seq(Seq(\"Jack\"))),\n    (27L, \"London\", Seq(Seq(\"J\"), Seq(\"E\"))),\n    \n    (31L, \"RAVETZ\", Seq(Seq(\"Jerry\"))),\n    (32L, \"RAVETZ\", Seq(Seq(\"Jerome\"))),\n    (33L, \"RAVETZ\", Seq(Seq(\"J\"))),\n    (34L, \"RAVETZ\", Seq(Seq(\"J\"), Seq(\"R\"))),\n    \n    (41L, \"Chen\", Seq(Seq(\"K\"))),\n    (42L, \"Chen\", Seq(Seq(\"Kuo\", \"Hua\"))),\n    (43L, \"Chen\", Seq(Seq(\"Kan\"))),\n    \n    (51L, \"KASSI\", Seq(Seq(\"T\"))),\n    (52L, \"KASSI\", Seq(Seq(\"T\"), Seq(\"S\"))),\n    (53L, \"KASSI\", Seq(Seq(\"Tuomo\"))),\n    \n    (61L, \"ALHO\", Seq(Seq(\"JUHA\"), Seq(\"M\"))),\n    (62L, \"ALHO\", Seq(Seq(\"JUHA\"))),\n    (63L, \"ALHO\", Seq(Seq(\"J\"))),\n    (64L, \"ALHO\", Seq(Seq(\"JUHA\"), Seq(\"M\"))),\n    (65L, \"ALHO\", Seq(Seq(\"JUHA\"))),\n    (66L, \"ALHO\", Seq(Seq(\"JUHA\"), Seq(\"M\")))\n)).toDF(\n    \"id\", \"last_name\", \"given_names\"\n).withColumn(\n    \"group_key\", authorGroupKey(\u0027last_name, \u0027given_names)\n)*/",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "tableHide": false,
+        "title": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1442500935175_1467062545",
+      "id": "20150917-144215_1311365944",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Sep 17, 2015 2:42:15 PM",
+      "dateStarted": "Mar 4, 2016 1:56:34 PM",
+      "dateFinished": "Mar 4, 2016 1:56:38 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Clean up identical authors",
+      "text": "val authorVerticesAttrs \u003d\n    authors.select(\u0027id, \u0027given_names, \u0027group_key).map { r \u003d\u003e\n        val id \u003d r.getLong(0)\n        val optGivenNames \u003d Option(r.getSeq[Seq[String]](1))\n        val groupKey \u003d r.getString(2)\n        id -\u003e (groupKey, optGivenNames)\n    }.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval initialDedupRDD \u003d\n    authorVerticesAttrs.map(_.swap).groupByKey().values.flatMap { ids \u003d\u003e\n        val disId \u003d ids.head\n        ids.tail.map(_ -\u003e disId)\n    }.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval uniqueVertices \u003d dedupVertices(authorVerticesAttrs, initialDedupRDD).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval dedupRDDBldr \u003d Seq.newBuilder[org.apache.spark.rdd.RDD[(Long, Long)]] +\u003d initialDedupRDD",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true,
+        "editorHide": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1443083642645_321956162",
+      "id": "20150924-083402_675695279",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "authorVerticesAttrs: org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))] \u003d MapPartitionsRDD[2623] at map at \u003cconsole\u003e:57\ninitialDedupRDD: org.apache.spark.rdd.RDD[(Long, Long)] \u003d MapPartitionsRDD[2627] at flatMap at \u003cconsole\u003e:60\nuniqueVertices: org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))] \u003d MapPartitionsRDD[2631] at flatMap at \u003cconsole\u003e:90\ndedupRDDBldr: scala.collection.mutable.Builder[org.apache.spark.rdd.RDD[(Long, Long)],Seq[org.apache.spark.rdd.RDD[(Long, Long)]]] \u003d ListBuffer(MapPartitionsRDD[2627] at flatMap at \u003cconsole\u003e:60)\n"
+      },
+      "dateCreated": "Sep 24, 2015 8:34:02 AM",
+      "dateStarted": "Mar 4, 2016 1:56:38 PM",
+      "dateFinished": "Mar 4, 2016 1:56:39 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Neighborhood-only graph algorithm (deprecated)",
+      "text": "/*val g \u003d org.apache.spark.graphx.Graph(\n    authorVerticesAttrs,\n    edges \u003d compatibilityEdges(authorVerticesAttrs).filter(_.attr \u003e 0.0F),\n    defaultVertexAttr \u003d null,\n    edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n    vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval disIds \u003d g.collectNeighborIds(org.apache.spark.graphx.EdgeDirection.Either).map { case (vid, neighbors) \u003d\u003e\n    (neighbors.toSet + vid) -\u003e vid\n}.groupByKey().values.zipWithUniqueId().flatMap { case (ids, disId) \u003d\u003e\n    ids.map(_ -\u003e disId)\n}.toDF(\"id\", \"dis_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval disNames \u003d authors.join(disIds, \"id\").select(\u0027dis_id, \u0027last_name, \u0027given_names).map { r \u003d\u003e\n    val disId \u003d r.getLong(0)\n    val lastName \u003d r.getString(1)\n    val optGivenNames \u003d Option(r.getSeq[Seq[String]](2))\n    val length \u003d optGivenNames.flatMap { givenNames \u003d\u003e\n        if (givenNames.isEmpty) None else Some(givenNames)\n    }.map(FullNameEntityHelper.discoverEntities(_).length).getOrElse(0)\n    disId -\u003e (lastName, optGivenNames, length)\n}.groupByKey().mapValues(_.maxBy(_._3)).map { case (disId, (lastName, optGivenNames, _)) \u003d\u003e\n    (disId, lastName, optGivenNames)\n}.toDF(\"dis_id\", \"dis_last_name\", \"dis_given_names\")\n\nval disAuthors \u003d authors.join(disIds, \"id\").join(disNames, \"dis_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ndisAuthors.registerTempTable(\"dis_authors\")*/",
+      "dateUpdated": "Mar 4, 2016 1:56:31 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "tableHide": false,
+        "title": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1442500076327_1492441769",
+      "id": "20150917-142756_795932830",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Sep 17, 2015 2:27:56 PM",
+      "dateStarted": "Mar 4, 2016 1:56:39 PM",
+      "dateFinished": "Mar 4, 2016 1:56:39 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Iterative procedural algorithm",
+      "text": "// Handle most of the disambiguation:\n// merge everything compatible inside of the same group (key \u003d last name + first name initial) when there\u0027s no ambiguity\n\ndedupRDDBldr +\u003d uniqueVertices.map { case (id, (groupKey, optGivenNames)) \u003d\u003e\n    groupKey -\u003e (id, optGivenNames)\n}.groupByKey().flatMap { case (_, uniqueIdentities) \u003d\u003e\n    if (uniqueIdentities.size \u003d\u003d 1) {\n    \tuniqueIdentities.map { case (id, _) \u003d\u003e id -\u003e id }\n    } else {\n        val nameLists \u003d\n            uniqueIdentities.map { case (id, optGivenNames) \u003d\u003e\n        \t    id -\u003e optGivenNames.map(FullNameEntityHelper.discoverEntities(_)).getOrElse(FullNameEntityHelper.NameList.empty)\n        \t}\n        \n        val disambiguatedBuilder \u003d Seq.newBuilder[(Long, Long)]\n    \tvar candidates \u003d nameLists.toSet\n    \n    \twhile (!candidates.isEmpty) {\n    \t\tval mostInformative \u003d candidates.reduce { (a, b) \u003d\u003e\n    \t\t    if (a._2.length \u003e b._2.length) a else b\n    \t\t}\n    \t\tval compatibleIdentities \u003d nameLists.filter(_._2.isCompatibleWith(mostInformative._2))\n    \t\tdisambiguatedBuilder ++\u003d compatibleIdentities.map(_._1 -\u003e mostInformative._1)\n    \t\tcandidates --\u003d compatibleIdentities\n    \t}\n    \n    \tdisambiguatedBuilder.result().groupBy(_._1).toSeq.map {\n    \t\tcase (id, disIds) \u003d\u003e\n    \t\t\tif (disIds.size \u003e 1) {\n    \t\t\t\t// Conflicting mapping -\u003e Keeping the original name\n    \t\t\t\tid -\u003e id\n    \t\t\t} else {\n    \t\t\t\tid -\u003e disIds.head._2\n    \t\t\t}\n    \t}\n    }\n}.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
+      "dateUpdated": "Mar 4, 2016 1:56:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true,
+        "editorHide": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1443015858237_-726806857",
+      "id": "20150923-134418_1104579817",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res656: dedupRDDBldr.type \u003d ListBuffer(MapPartitionsRDD[2627] at flatMap at \u003cconsole\u003e:60, MapPartitionsRDD[2634] at flatMap at \u003cconsole\u003e:131)\n"
+      },
+      "dateCreated": "Sep 23, 2015 1:44:18 PM",
+      "dateStarted": "Mar 4, 2016 1:56:39 PM",
+      "dateFinished": "Mar 4, 2016 1:56:39 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Iterative graph algorithm",
+      "text": "// Polish the disambiguation by iteratively merging the closest similarity scores\n\nvar g: org.apache.spark.graphx.Graph[(String, Option[Seq[Seq[String]]]), Float] \u003d _\nvar verticeCount: Long \u003d _\nvar vertices \u003d dedupVertices(uniqueVertices, dedupRDDBldr.result().last).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nvar newVerticeCount \u003d vertices.count()\nvar i \u003d 0\n\ndo {\n    g \u003d org.apache.spark.graphx.Graph(\n            vertices,\n            edges \u003d compatibilityEdges(vertices).filter(_.attr \u003e 0.0F),\n            defaultVertexAttr \u003d null,\n            edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n            vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\n    verticeCount \u003d newVerticeCount\n\n    val maxUniqueSimilarityPerVertice \u003d\n        g.edges.flatMap { edge \u003d\u003e\n            Seq(\n                (edge.srcId, edge.attr) -\u003e 1,\n                (edge.dstId, edge.attr) -\u003e 1)\n        }.reduceByKey(_ + _).filter { case (_, count) \u003d\u003e\n            count \u003d\u003d 1\n        }.keys.reduceByKey(math.max)\n    \n    val dupIds \u003d\n        g.outerJoinVertices(maxUniqueSimilarityPerVertice) { case (_, (_, optGivenNames), optMaxUniqueSimilarity) \u003d\u003e\n            val nameLength \u003d optGivenNames.map(FullNameEntityHelper.discoverEntities(_).length).getOrElse(0)\n            (optMaxUniqueSimilarity.getOrElse(0.0F), nameLength)\n        }.triplets.flatMap { triplet \u003d\u003e\n            val (srcMaxUniqueSimilarity, srcNameLength) \u003d triplet.srcAttr\n            val (dstMaxUniqueSimilarity, dstNameLength) \u003d triplet.dstAttr\n            if (srcMaxUniqueSimilarity \u003d\u003d dstMaxUniqueSimilarity \u0026\u0026 srcMaxUniqueSimilarity \u003d\u003d triplet.attr) {\n                if (srcNameLength \u003e dstNameLength) {\n                    Some(triplet.dstId -\u003e triplet.srcId)\n                } else {\n                    Some(triplet.srcId -\u003e triplet.dstId)\n                }\n            } else {\n                None\n            }\n        }.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n    \n    dedupRDDBldr +\u003d dupIds\n    \n    vertices \u003d dedupVertices(vertices, dupIds).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n    \n    newVerticeCount \u003d vertices.count()\n    i +\u003d 1\n} while (newVerticeCount !\u003d verticeCount \u0026\u0026 i \u003c MaxIter)\n\nif (i \u003d\u003d MaxIter) {\n    println(s\"Reached the max number of iterations ($MaxIter)\")\n} else {\n    println(s\"Number of iterations: $i\")\n}",
+      "dateUpdated": "Mar 4, 2016 1:56:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true,
+        "editorHide": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1442828027393_1574604950",
+      "id": "20150921-093347_111753566",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "g: org.apache.spark.graphx.Graph[(String, Option[Seq[Seq[String]]]),Float] \u003d null\nverticeCount: Long \u003d 0\nvertices: org.apache.spark.rdd.RDD[(Long, (String, Option[Seq[Seq[String]]]))] \u003d MapPartitionsRDD[2638] at flatMap at \u003cconsole\u003e:90\nnewVerticeCount: Long \u003d 485\ni: Int \u003d 0\nNumber of iterations: 1\n"
+      },
+      "dateCreated": "Sep 21, 2015 9:33:47 AM",
+      "dateStarted": "Mar 4, 2016 1:56:39 PM",
+      "dateFinished": "Mar 4, 2016 1:56:45 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Normalize the disambig. table",
+      "text": "val disIds \u003d\n    org.apache.spark.graphx.Graph(\n        vertices \u003d authorVerticesAttrs.map { case (id, _) \u003d\u003e id -\u003e id },\n        edges \u003d (dedupRDDBldr.result().reduce(_ ++ _)).distinct.map { case (vid1, vid2) \u003d\u003e\n            org.apache.spark.graphx.Edge(vid1, vid2, null)\n        },\n        defaultVertexAttr \u003d 0L,\n        edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n        vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER\n    ).pregel[Option[Long]](None)(\n        vprog \u003d (_, attr, msg) \u003d\u003e msg.getOrElse(attr),\n        sendMsg \u003d { triplet \u003d\u003e\n            if (triplet.srcAttr !\u003d triplet.dstAttr) {\n                Iterator((triplet.srcId, Some(triplet.dstAttr)))\n            } else {\n                Iterator.empty\n            }\n        },\n        mergeMsg \u003d _ orElse _\n    ).vertices.toDF(\"id\", \"dis_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n    \nval disNames \u003d authors.join(disIds.select(\u0027dis_id).distinct, \u0027id \u003d\u003d\u003d \u0027dis_id).select(\n    \u0027dis_id, \u0027last_name as \"author_dis_last_name\", \u0027given_names as \"author_dis_given_names\", generateFullName(\u0027last_name, \u0027given_names) as \"author_dis_name\"\n)\n\nval disAuthors \u003d authors.join(disIds, \"id\").join(disNames, \"dis_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ndisAuthors.registerTempTable(\"dis_authors\")",
+      "dateUpdated": "Mar 4, 2016 1:56:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "title": true,
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1443084839859_-1819819492",
+      "id": "20150924-085359_2129499178",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "disIds: org.apache.spark.sql.DataFrame \u003d [id: bigint, dis_id: bigint]\ndisNames: org.apache.spark.sql.DataFrame \u003d [dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string]\ndisAuthors: org.apache.spark.sql.DataFrame \u003d [did: int, pub_id: bigint, id: bigint, raw: string, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: array\u003csmallint\u003e, is_valid: boolean, generated_full_name: string, group_key: string, dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string]\n"
+      },
+      "dateCreated": "Sep 24, 2015 8:53:59 AM",
+      "dateStarted": "Mar 4, 2016 1:56:40 PM",
+      "dateFinished": "Mar 4, 2016 1:56:56 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Metrics",
+      "text": "val uniqueAuthorCount \u003d authors.select(\u0027last_name, \u0027given_names).distinct.count()\nval disAuthorCount \u003d uniqueAuthorCount - disAuthors.select(\u0027dis_id).distinct.count()",
+      "dateUpdated": "Mar 4, 2016 1:56:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true,
+        "editorHide": true,
+        "enabled": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1443003152026_403933376",
+      "id": "20150923-101232_1822629808",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "uniqueAuthorCount: Long \u003d 493\ndisAuthorCount: Long \u003d 8\n"
+      },
+      "dateCreated": "Sep 23, 2015 10:12:32 AM",
+      "dateStarted": "Mar 4, 2016 1:56:45 PM",
+      "dateFinished": "Mar 4, 2016 1:57:02 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Write",
+      "text": "OptSaveMode.foreach(disAuthors.coalesce(NumPartitions).write.mode(_).parquet(s\"$DisambigDir/disambiguated_authors-did_$DatasetId.parquet\"))",
+      "dateUpdated": "Mar 4, 2016 1:56:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true,
+        "enabled": true,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1443003358040_1088141158",
+      "id": "20150923-101558_1492836970",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Sep 23, 2015 10:15:58 AM",
+      "dateStarted": "Mar 4, 2016 1:56:56 PM",
+      "dateFinished": "Mar 4, 2016 1:57:04 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "disAuthors.show()",
+      "dateUpdated": "Mar 4, 2016 1:56:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "tableHide": false,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1444896016048_1654117934",
+      "id": "20151015-080016_1876506031",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---+------+----+--------------------+------------+---------------+-----------+--------------------+------+--------+------------+--------+-------------------+----------------+------+--------------------+----------------------+------------------+\n|did|pub_id|  id|                 raw|is_anonymous|      last_name|maiden_name|         given_names|suffix|nickname|affiliations|is_valid|generated_full_name|       group_key|dis_id|author_dis_last_name|author_dis_given_names|   author_dis_name|\n+---+------+----+--------------------+------------+---------------+-----------+--------------------+------+--------+------------+--------+-------------------+----------------+------+--------------------+----------------------+------------------+\n|  1|  1306| 631|         Smith, J.E.|       false|          Smith|       null|[WrappedArray(J),...|  null|    null|        null|    true|          SMITH J E|          SMITHJ|   631|               Smith|  [WrappedArray(J),...|         SMITH J E|\n|  1|   110| 831|          Macchi, M.|       false|         Macchi|       null|   [WrappedArray(M)]|  null|    null|        null|    true|           MACCHI M|         MACCHIM|   831|              Macchi|     [WrappedArray(M)]|          MACCHI M|\n|  1|  1465|3231|           Punie, Y.|       false|          Punie|       null|   [WrappedArray(Y)]|  null|    null|        null|    true|            PUNIE Y|          PUNIEY|  3231|               Punie|     [WrappedArray(Y)]|           PUNIE Y|\n|  1|   760| 865|       Fleischer, T.|       false|      Fleischer|       null|   [WrappedArray(T)]|  null|    null|        null|    true|        FLEISCHER T|      FLEISCHERT|  3631|           Fleischer|  [WrappedArray(Tor...| FLEISCHER TORSTEN|\n|  1|  3590|3631|Fleischer, T (Fle...|       false|      Fleischer|       null|[WrappedArray(Tor...|  null|    null|         [3]|    true|  FLEISCHER TORSTEN|      FLEISCHERT|  3631|           Fleischer|  [WrappedArray(Tor...| FLEISCHER TORSTEN|\n|  1|  3563|5031|Coenen, C (Coenen...|       false|         Coenen|       null|[WrappedArray(Chr...|  null|    null|         [1]|    true| COENEN CHRISTOPHER|         COENENC|  5031|              Coenen|  [WrappedArray(Chr...|COENEN CHRISTOPHER|\n|  1|    80|2286|Coenen, C (Coenen...|       false|         Coenen|       null|[WrappedArray(Chr...|  null|    null|        null|    true| COENEN CHRISTOPHER|         COENENC|  5031|              Coenen|  [WrappedArray(Chr...|COENEN CHRISTOPHER|\n|  1|  1640|  78|Coenen, C (Coenen...|       false|         Coenen|       null|[WrappedArray(Chr...|  null|    null|        null|    true| COENEN CHRISTOPHER|         COENENC|  5031|              Coenen|  [WrappedArray(Chr...|COENEN CHRISTOPHER|\n|  1|  3072|2138|Coenen, C (Coenen...|       false|         Coenen|       null|[WrappedArray(Chr...|  null|    null|         [2]|    true| COENEN CHRISTOPHER|         COENENC|  5031|              Coenen|  [WrappedArray(Chr...|COENEN CHRISTOPHER|\n|  1|  2424| 224|        Yuan, B.J.C.|       false|           Yuan|       null|[WrappedArray(B),...|  null|    null|        null|    true|         YUAN B J C|           YUANB|  1632|                Yuan|  [WrappedArray(B),...|        YUAN B J C|\n|  1|  2678|1632|        Yuan, B.J.C.|       false|           Yuan|       null|[WrappedArray(B),...|  null|    null|        null|    true|         YUAN B J C|           YUANB|  1632|                Yuan|  [WrappedArray(B),...|        YUAN B J C|\n|  1|   734|2832|        Bardsley, S.|       false|       Bardsley|       null|   [WrappedArray(S)]|  null|    null|        null|    true|         BARDSLEY S|       BARDSLEYS|  2832|            Bardsley|     [WrappedArray(S)]|        BARDSLEY S|\n|  1|  3124|3032|Pelle, S (Pelle, ...|       false|          Pelle|       null|[WrappedArray(Sop...|  null|    null|         [1]|    true|       PELLE SOPHIE|          PELLES|  3032|               Pelle|  [WrappedArray(Sop...|      PELLE SOPHIE|\n|  1|  1985|3232|           Brown, N.|       false|          Brown|       null|   [WrappedArray(N)]|  null|    null|        null|    true|            BROWN N|          BROWNN|  3232|               Brown|     [WrappedArray(N)]|           BROWN N|\n|  1|   210|  33|Warwick, K (Warwi...|       false|        Warwick|       null|[WrappedArray(Kev...|  null|    null|        null|    true|      WARWICK KEVIN|        WARWICKK|    33|             Warwick|  [WrappedArray(Kev...|     WARWICK KEVIN|\n|  1|   760| 833|         Schippl, J.|       false|        Schippl|       null|   [WrappedArray(J)]|  null|    null|        null|    true|          SCHIPPL J|        SCHIPPLJ|   833|             Schippl|     [WrappedArray(J)]|         SCHIPPL J|\n|  1|  3176|1633|Bennett, MG (Benn...|       false|        Bennett|       null|[WrappedArray(Mic...|  null|    null|         [5]|    true|  BENNETT MICHAEL G|        BENNETTM|  1633|             Bennett|  [WrappedArray(Mic...| BENNETT MICHAEL G|\n|  1|   234|3233|         Herault, B.|       false|        Herault|       null|   [WrappedArray(B)]|  null|    null|        null|    true|          HERAULT B|        HERAULTB|  3233|             Herault|     [WrappedArray(B)]|         HERAULT B|\n|  1|  2730|  34|      Byeongwon Park|       false|           Park|       null|[WrappedArray(Bye...|  null|    null|        null|    true|     PARK BYEONGWON|           PARKB|    34|                Park|  [WrappedArray(Bye...|    PARK BYEONGWON|\n|  1|  1097|  35| Holtmannspotter, D.|       false|Holtmannspotter|       null|   [WrappedArray(D)]|  null|    null|        null|    true|  HOLTMANNSPOTTER D|HOLTMANNSPOTTERD|    35|     Holtmannspotter|     [WrappedArray(D)]| HOLTMANNSPOTTER D|\n+---+------+----+--------------------+------------+---------------+-----------+--------------------+------+--------+------------+--------+-------------------+----------------+------+--------------------+----------------------+------------------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Oct 15, 2015 8:00:16 AM",
+      "dateStarted": "Mar 4, 2016 1:57:03 PM",
+      "dateFinished": "Mar 4, 2016 1:57:04 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "dateUpdated": "Mar 4, 2016 1:56:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorHide": true,
+        "tableHide": false,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1456910232434_973767808",
+      "id": "20160302-101712_1522932981",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Mar 2, 2016 10:17:12 AM",
+      "dateStarted": "Mar 4, 2016 1:57:04 PM",
+      "dateFinished": "Mar 4, 2016 1:57:04 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "[23] Author disambiguation",
+  "id": "2AXRAFHP8",
+  "angularObjects": {
+    "2BECU381X": [],
+    "2BFE4973F": [],
+    "2BDUP8TX1": [],
+    "2BC2TVSBR": [],
+    "2BEK1W1PD": [],
+    "2BEV8A6Z4": [],
+    "2BCVF5P5F": [],
+    "2BEMYV7QQ": [],
+    "2BFPPNXXV": [],
+    "2BD9VECZR": [],
+    "2BE14FKBG": [],
+    "2BEKWFP9V": [],
+    "2BDPVAN2T": [],
+    "2BDMC46FS": [],
+    "2BFC9NN6P": [],
+    "2BE7P7NCM": [],
+    "2BFQQPY3C": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}
