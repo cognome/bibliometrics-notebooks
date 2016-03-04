@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Bibliometrics on Web of Science at scale with Apache Spark by cognome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Bibliometrics on Web of Science at scale with Apache Spark</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/cognome/bibliometrics-notebooks" class="btn">View on GitHub</a>
+      <a href="https://github.com/cognome/bibliometrics-notebooks/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/cognome/bibliometrics-notebooks/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="context" class="anchor" href="#context" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Context</h1>
+
+<p>Our goal was to identify key opinion leaders in a research area in life sciences through the analysis of the academic literature and to do it at scale.</p>
+
+<p>The planned source was a copy of the bibliographic database <a href="https://www.nlm.nih.gov/pubs/factsheets/medline.html">MEDLINE</a>. There would have been more than 22 million references to journal articles to process. The current source is search results from <a href="https://apps.webofknowledge.com">Web of Science</a>.</p>
+
+<p>To process the data, we chose to experiment around three open source technologies:</p>
+
+<ul>
+<li>
+<a href="https://spark.apache.org">Apache Spark</a>, a general engine for large-scale data processing,</li>
+<li>
+<a href="https://zeppelin.incubator.apache.org">Apache Zeppelin</a>, a web-based notebook with built-in Spark integration,</li>
+<li>
+<a href="http://www.scala-lang.org">Scala</a>, a functional and object-oriented programming language.</li>
+</ul>
+
+<p>So, this is experimental work. This isn't finished nor production ready.</p>
+
+<h1>
+<a id="method" class="anchor" href="#method" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Method</h1>
+
+<h2>
+<a id="data-collection" class="anchor" href="#data-collection" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data collection</h2>
+
+<p>The data are collected by crawling the search results of a query performed against Web of Science. They are persisted as JSON files. We would come back to this project later.</p>
+
+<h2>
+<a id="data-processing" class="anchor" href="#data-processing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data processing</h2>
+
+<p>Once we have collected the data, HTML web pages, we process them in 8 steps:</p>
+
+<ol>
+<li>import web pages,</li>
+<li>parse web pages,</li>
+<li>build entities (publication, author, institution, journal),</li>
+<li>disambiguate entities,</li>
+<li>identify the city mentioned in an affiliation,</li>
+<li>identify the institution mentioned in an affiliation,</li>
+<li>compute indicators for the defined entities,</li>
+<li>export indicators and entities for further analysis.</li>
+</ol>
+
+<p>This is a data pipeline approach. It can be replicated for other sources, like press releases.</p>
+
+<h2>
+<a id="challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Challenges</h2>
+
+<p>During this project, we encounter several challenges.</p>
+
+<h3>
+<a id="debugging" class="anchor" href="#debugging" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Debugging</h3>
+
+<p>One of the main painful challenge was to be able to debug the distributed execution of the processing code. To tackle this challenge, we implement three solutions:</p>
+
+<ul>
+<li>use a notebook approach to separate the execution of blocks of code,</li>
+<li>for each step, do sanity checks to detect unexpected cases,</li>
+<li>at the end of each step, persist the data to prevent processed data loss.</li>
+</ul>
+
+<p>This tends to ensure that an unexpected case won't break the following steps. It also makes the debugging easier as errors are more likely to be detected near the code to investigate.</p>
+
+<p>Sanity checks and data persistence are costly but, considering the significant investigating and processing time wasted to find where the error occurred, it's worth it.</p>
+
+<h3>
+<a id="parsing" class="anchor" href="#parsing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Parsing</h3>
+
+<p>The HTML of the web pages is parsed with the Java library <a href="http://jsoup.org">jsoup</a>.</p>
+
+<p>Web of Science web pages aren’t well structured HTML. We don't know in advance which fields could be or not in a web page. So, it's difficult to create a simple and generic parsing method.</p>
+
+<p>The session provided by Web of Science becomes invalid several times during the crawling. Restarting the crawling can only be done at the results page level. So, all the already crawled web pages will be crawled one more time and need to be deduplicated.</p>
+
+<h3>
+<a id="entity-building" class="anchor" href="#entity-building" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Entity building</h3>
+
+<p>The scraped fields are grouped together to build entities (publications, authors, institutions, journals) and some are parsed to extract structured data, like the publication year. Each entity has also identifiers to keep track of the relations between the entities.</p>
+
+<p>The challenge here is about parsing the author full names. There are many forms. They can depend on the way they have been entered or on cultural factors. It is especially true for distinguishing middle names from compound first names.</p>
+
+<h3>
+<a id="entity-disambiguation" class="anchor" href="#entity-disambiguation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Entity disambiguation</h3>
+
+<p>There are two notebooks for the entity disambiguation step.</p>
+
+<h4>
+<a id="frist-version" class="anchor" href="#frist-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Frist version</h4>
+
+<p>The aim of this proof of concept is to disambiguate entities according to their properties and their relationships with other entities and to do it with GraphX, the Spark's API for graph-parallel computation.</p>
+
+<p>The main idea of the algorithm is to build a graph of the entity mentions to disambiguate - here, authors - linked to each other through properties - like the last name and the first name initial - and related other entities - like publications - and to compute a score of similarity based of these relationships. Basically, two author mentions with the same last name and the same first name initial are more likely to be the same author. Likewise, two author mentions with at least a common publication can't be the same author. The algorithm is extensible and other properties or other related entities like the affiliations can be used.</p>
+
+<h4>
+<a id="second-version" class="anchor" href="#second-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Second version</h4>
+
+<p>The aim of this other version is to handle the case of authors with the same first name initial but a different first name or different middle names.</p>
+
+<h3>
+<a id="entity-extraction-and-entity-linking" class="anchor" href="#entity-extraction-and-entity-linking" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Entity extraction and Entity linking</h3>
+
+<h4>
+<a id="city" class="anchor" href="#city" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>City</h4>
+
+<p>The knowledge base about the geographical names (cities, states, countries, continents) is <a href="http://www.geonames.org">GeoNames</a>.</p>
+
+<p>We create a rule-based algorithm in Scala which performs entity extraction and entity linking, at the same time, on affiliation strings. The algorithm uses Scala Option chaining with orElse. The limits of the algorithm are related to the ambiguous and incomplete cases (the city or the country is missing).</p>
+
+<h4>
+<a id="institution" class="anchor" href="#institution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Institution</h4>
+
+<p>As institution names are almost always at the beginning of the affiliation string, we extract them in this way.</p>
+
+<p>Due to a lack of time there is no entity linking for the institutions. However, it was planned to link institution to a knowledge base like <a href="http://wiki.dbpedia.org">DBpedia</a>.</p>
+
+<p>Web of Science do some entity linking. The result can be found in an "enhanced names" field for each affiliation. There can be multiple enhanced names for a unique affiliation string, for example: multiple institutions mentioned in the affiliation string or an university system added by Web of Science.</p>
+
+<p>We can't use the associations between affiliation strings and enhanced names because some identical affiliation strings have different enhanced names, the rules behind the entity linking done by Web of Science seem not to be trivial, and doing so requires to verify that we take into account other parameters like the acquisition of a company by an other.</p>
+
+<p>It should be noted that the affiliation strings contain a lot of context-dependent abbreviations (contexts: research area, language, country, ...) which makes the institution identification harder.</p>
+
+<h3>
+<a id="indicator-computation" class="anchor" href="#indicator-computation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Indicator computation</h3>
+
+<p>Basic indicators are computed:</p>
+
+<ul>
+<li>several counts,</li>
+<li>an impact score,</li>
+<li>the number of co-publications between two authors or two institutions.</li>
+</ul>
+
+<p>We defined the impact as the number of times a publication has been cited divided by the number of years since the publication. If the publication year is the current year, we set the impact to zero. Using this notion of impact, we define the impact of:</p>
+
+<ul>
+<li>an author as the sum of the impact of the publications authored by the author,</li>
+<li>an institution as the sum of the impact of the publications authored by the authors affiliated to the institution,</li>
+<li>a city, a country and a continent as the sum of the impact of the institutions which have been located in the location.</li>
+</ul>
+
+<p>The institution and location indicators consider only publications which publication year is the latest for the author.</p>
+
+<h1>
+<a id="results" class="anchor" href="#results" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Results</h1>
+
+<p>The data produced after the execution of all the steps are finally exported to CSV files. The data can be later used for further analysis in other tools, like <a href="https://www.tableau.com">Tableau</a> or <a href="https://cran.r-project.org">R</a>, or to create visualizations in collaboration with a designer.</p>
+
+<h1>
+<a id="next-steps" class="anchor" href="#next-steps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Next steps</h1>
+
+<p>As it's necessary to extract information, on one hand from not well structured HTML pages, and on the other hand from manually entered and Web of Science further processed fields, there are many 'not seen yet' cases to handle and a critical need for efficient and accurate disambiguation algorithms. So, as well as some inline comments improvement and coding style harmonization, the main next steps would be to detect and handle properly more 'unexpected' cases and to improve disambiguation, entity extraction and entity linking.</p>
+
+<h1>
+<a id="conclusion" class="anchor" href="#conclusion" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conclusion</h1>
+
+<p>The methodological and technological foundations are here. One can reproduce or extend the analysis on a Web of Science corpus or on an other bibliographic database.</p>
+
+<p>The association of Apache Spark, a distributed data processing framework with high-level interfaces (DataFrame, GraphX, ...), and of Apache Zeppelin, a web-based notebook which lets execute Spark code in an interactive way and with a direct access and basic visualization of the data, demonstrates the usefulness, the flexibility and the scalability of a data pipeline built with these technologies to deliver a playground for applying bibliometric methods to academic literature at scale.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/cognome/bibliometrics-notebooks">Bibliometrics on Web of Science at scale with Apache Spark</a> is maintained by <a href="https://github.com/cognome">cognome</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
