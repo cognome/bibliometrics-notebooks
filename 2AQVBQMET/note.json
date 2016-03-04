@@ -3,7 +3,7 @@
     {
       "title": "Configuration",
       "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -18,7 +18,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -26,21 +27,17 @@
       },
       "jobName": "paragraph_1431936468314_955362637",
       "id": "20150518-080748_1976524985",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nWorkDir: String \u003d /tmp/anticipation\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\n"
-      },
       "dateCreated": "May 18, 2015 8:07:48 AM",
       "dateStarted": "Mar 4, 2016 10:13:36 AM",
       "dateFinished": "Mar 4, 2016 10:13:36 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions (after GeoNames city identification)",
       "text": "// \"is_valid \u003d true\" by design\nval institutions \u003d sqlc.read.parquet(s\"$DisambigDir/geonames_city_identified_institutions-did_$DatasetId.parquet\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ninstitutions.registerTempTable(\"institutions\")",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -55,7 +52,8 @@
         "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -63,20 +61,16 @@
       },
       "jobName": "paragraph_1431936666420_288701707",
       "id": "20150518-081106_646100340",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int]\n"
-      },
       "dateCreated": "May 18, 2015 8:11:06 AM",
       "dateStarted": "Mar 4, 2016 10:13:36 AM",
       "dateFinished": "Mar 4, 2016 10:13:37 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "institutions.printSchema()",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -88,10 +82,10 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "editorHide": true
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -99,21 +93,17 @@
       },
       "jobName": "paragraph_1431936671763_756571694",
       "id": "20150518-081111_1431342975",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "root\n |-- pub_id: long (nullable \u003d true)\n |-- idx: short (nullable \u003d true)\n |-- address: string (nullable \u003d true)\n |-- enhanced_names: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- city_geoname_id: integer (nullable \u003d true)\n\n"
-      },
       "dateCreated": "May 18, 2015 8:11:11 AM",
       "dateStarted": "Mar 4, 2016 10:13:37 AM",
       "dateFinished": "Mar 4, 2016 10:13:37 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Case sensitivity",
       "text": "//assert(institutions.select(\u0027address).distinct.count() !\u003d institutions.selectExpr(\"lower(address)\").distinct.count())\n// addresses ARE case sensitive\n\nval enhancedNames \u003d institutions.explode(\"enhanced_names\", \"enhanced_name\")((a: Seq[String]) \u003d\u003e Option(a).getOrElse(Seq.empty)).select(\u0027enhanced_name).distinct.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nassert(enhancedNames.count() \u003d\u003d enhancedNames.selectExpr(\"lower(enhanced_name)\").distinct.count())\n// enhanced names are NOT case sensitive",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -126,9 +116,10 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -136,20 +127,16 @@
       },
       "jobName": "paragraph_1431950193978_1155031845",
       "id": "20150518-115633_247819602",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "enhancedNames: org.apache.spark.sql.DataFrame \u003d [enhanced_name: string]\n"
-      },
       "dateCreated": "May 18, 2015 11:56:33 AM",
       "dateStarted": "Mar 4, 2016 10:13:37 AM",
       "dateFinished": "Mar 4, 2016 10:13:42 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "import scala.util.hashing.MurmurHash3\n\ndef hash(s: String): Long \u003d MurmurHash3.stringHash(s).toLong\n\nval hashUDF \u003d udf { (s: String) \u003d\u003e hash(s) }",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -163,7 +150,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -171,21 +159,17 @@
       },
       "jobName": "paragraph_1431937739476_226876962",
       "id": "20150518-082859_585271702",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "import scala.util.hashing.MurmurHash3\nhash: (s: String)Long\nhashUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,LongType,List(StringType))\n"
-      },
       "dateCreated": "May 18, 2015 8:28:59 AM",
       "dateStarted": "Mar 4, 2016 10:13:37 AM",
       "dateFinished": "Mar 4, 2016 10:13:42 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "institutions2",
       "text": "val institutions2 \u003d institutions.withColumn(\n    \"lc_address\", lower(\u0027address)\n).withColumn(\n    \"lc_address_id\", hashUDF(\u0027lc_address)\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ninstitutions2.registerTempTable(\"institutions_2\")",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -200,7 +184,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -208,21 +193,17 @@
       },
       "jobName": "paragraph_1431937621612_-1813831204",
       "id": "20150518-082701_558839981",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions2: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int, lc_address: string, lc_address_id: bigint]\n"
-      },
       "dateCreated": "May 18, 2015 8:27:01 AM",
       "dateStarted": "Mar 4, 2016 10:13:42 AM",
       "dateFinished": "Mar 4, 2016 10:13:42 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Sanity checks",
       "text": "/*\n- no hash collisions\n*/\n\nassert(institutions2.select(\u0027lc_address, \u0027lc_address_id).distinct.groupBy(\u0027lc_address).count().filter(\u0027count \u003e 1).count() \u003d\u003d 0)",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -236,7 +217,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -244,20 +227,16 @@
       },
       "jobName": "paragraph_1431937991340_518484336",
       "id": "20150518-083311_2062971282",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 18, 2015 8:33:11 AM",
       "dateStarted": "Mar 4, 2016 10:13:42 AM",
       "dateFinished": "Mar 4, 2016 10:13:46 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val addressCount \u003d institutions2.count()\nval distinctAddressCount \u003d institutions2.select(\u0027lc_address_id).distinct.count()\n\ndef addressPercentage(x: Long): Float \u003d (x / addressCount.toFloat) * 100\ndef distinctAddressPercentage(x: Long): Float \u003d (x / distinctAddressCount.toFloat) * 100\n\nval distinctCounts \u003d Seq(\n    institutions2.filter(\u0027enhanced_names.isNotNull).select(\u0027lc_address_id).distinct.count(),\n    institutions2.filter(\u0027enhanced_names.isNull).select(\u0027lc_address_id).distinct.count(),\n    institutions2.selectExpr(\"lc_address_id\", \"sort_array(enhanced_names)\").distinct.groupBy(\u0027lc_address_id).count().filter(\u0027count \u003e 1).count(),\n    institutions2.explode(\"enhanced_names\", \"enhanced_name\")((a: Seq[String]) \u003d\u003e Option(a).getOrElse(Seq.empty)).selectExpr(\"lower(enhanced_name)\").distinct.count())\n\nval distinctPercentages \u003d distinctCounts.map(distinctAddressPercentage)",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -269,9 +248,10 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -279,21 +259,17 @@
       },
       "jobName": "paragraph_1431936937939_-998685081",
       "id": "20150518-081537_873671911",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "addressCount: Long \u003d 2580\ndistinctAddressCount: Long \u003d 2308\naddressPercentage: (x: Long)Float\ndistinctAddressPercentage: (x: Long)Float\ndistinctCounts: Seq[Long] \u003d List(1933, 377, 2, 770)\ndistinctPercentages: Seq[Float] \u003d List(83.75217, 16.33449, 0.08665511, 33.362217)\n"
-      },
       "dateCreated": "May 18, 2015 8:15:37 AM",
       "dateStarted": "Mar 4, 2016 10:13:43 AM",
       "dateFinished": "Mar 4, 2016 10:13:54 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics 1/2",
       "text": "println(s\"addresses: $addressCount\")\nprintln(f\"distinct addresses: $distinctAddressCount (${addressPercentage(distinctAddressCount)}%.2f %%)\")\nprintln()\nprintln(f\"distinct addresses with enhanced name(s): ${distinctCounts(0)} (${distinctPercentages(0)}%.2f %%)\")\nprintln(f\"distinct addresses without enhanced name(s): ${distinctCounts(1)} (${distinctPercentages(1)}%.2f %%)\")\nprintln(f\"distinct addresses with different enhanced name(s) associations: ${distinctCounts(2)} (${distinctPercentages(2)}%.2f %%)\")\nprintln()\nprintln(f\"distinct enhanced names: ${distinctCounts(3)} (${distinctPercentages(3)}%.2f %%)\")",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -306,9 +282,10 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -316,21 +293,17 @@
       },
       "jobName": "paragraph_1431936632171_-1005639565",
       "id": "20150518-081032_1744749749",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "addresses: 2580\ndistinct addresses: 2308 (89.46 %)\n\ndistinct addresses with enhanced name(s): 1933 (83.75 %)\ndistinct addresses without enhanced name(s): 377 (16.33 %)\ndistinct addresses with different enhanced name(s) associations: 2 (0.09 %)\n\ndistinct enhanced names: 770 (33.36 %)\n"
-      },
       "dateCreated": "May 18, 2015 8:10:32 AM",
       "dateStarted": "Mar 4, 2016 10:13:46 AM",
       "dateFinished": "Mar 4, 2016 10:13:55 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics 2/2",
       "text": "// Number of enhanced names by distinct lower case address\ninstitutions2.selectExpr(\"lc_address_id\", \"sort_array(enhanced_names) as sorted_enhanced_names\").distinct.selectExpr(\"size(sorted_enhanced_names) as enhanced_name_count\").describe(\"enhanced_name_count\").show()",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -344,7 +317,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -352,20 +327,16 @@
       },
       "jobName": "paragraph_1431941253455_-1422551440",
       "id": "20150518-092733_1956192139",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+-------+-------------------+\n|summary|enhanced_name_count|\n+-------+-------------------+\n|  count|               1933|\n|   mean|  1.189342990170719|\n| stddev|  0.439100610209024|\n|    min|                  1|\n|    max|                  4|\n+-------+-------------------+\n\n"
-      },
       "dateCreated": "May 18, 2015 9:27:33 AM",
       "dateStarted": "Mar 4, 2016 10:13:55 AM",
       "dateFinished": "Mar 4, 2016 10:13:56 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql\nselect distinct c, lc_address, enhanced_names\nfrom\ninstitutions_2 t\njoin (\n    select lc_address_id, count(*) as c\n    from (\n        select distinct lc_address_id, sort_array(enhanced_names)\n        from institutions_2\n        ) t1\n    group by lc_address_id\n    ) t2\non t.lc_address_id \u003d t2.lc_address_id\nwhere c \u003e 1\norder by c, t.lc_address desc\nlimit 50",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -402,7 +373,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -410,21 +382,17 @@
       },
       "jobName": "paragraph_1431939172183_-1082975215",
       "id": "20150518-085252_556193791",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "c\tlc_address\tenhanced_names\n2\tkarlsruhe inst technol, inst technol assessment \u0026 syst anal, d-76021 karlsruhe, germany\tnull\n2\tkarlsruhe inst technol, inst technol assessment \u0026 syst anal, d-76021 karlsruhe, germany\tWrappedArray(Karlsruhe Institute of Technology)\n2\tempa, st gallen, switzerland\tnull\n2\tempa, st gallen, switzerland\tWrappedArray(Swiss Federal Laboratories for Materials Science \u0026 Technology (EMPA))\n"
-      },
       "dateCreated": "May 18, 2015 8:52:52 AM",
       "dateStarted": "Mar 4, 2016 10:13:55 AM",
       "dateFinished": "Mar 4, 2016 10:14:01 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "aggregatedEnhancedNames (sorted)",
       "text": "val aggregatedEnhancedNames \u003d institutions2.select(\u0027lc_address_id, \u0027enhanced_names).map { r \u003d\u003e\n    (r.getLong(0), collection.mutable.Set(Option(r.getSeq[String](1)).getOrElse(Seq.empty):_*))\n}.reduceByKey(_ ++\u003d _).mapValues(e \u003d\u003e if (e.isEmpty) None else Some(e.toSeq.sorted)).toDF(\"address_dis_id\", \"aggregated_enhanced_names\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -436,10 +404,11 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -447,21 +416,17 @@
       },
       "jobName": "paragraph_1431938516181_462261735",
       "id": "20150518-084156_1267379790",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "aggregatedEnhancedNames: org.apache.spark.sql.DataFrame \u003d [address_dis_id: bigint, aggregated_enhanced_names: array\u003cstring\u003e]\n"
-      },
       "dateCreated": "May 18, 2015 8:41:56 AM",
       "dateStarted": "Mar 4, 2016 10:13:56 AM",
       "dateFinished": "Mar 4, 2016 10:14:01 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "println(\"distinct addresses with enhanced name(s), gain: \" + (distinctCounts(1) - aggregatedEnhancedNames.filter(\u0027aggregated_enhanced_names.isNull).count()))",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -475,7 +440,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -483,20 +450,16 @@
       },
       "jobName": "paragraph_1431942586248_713661989",
       "id": "20150518-094946_658707374",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "distinct addresses with enhanced name(s), gain: 2\n"
-      },
       "dateCreated": "May 18, 2015 9:49:46 AM",
       "dateStarted": "Mar 4, 2016 10:14:01 AM",
       "dateFinished": "Mar 4, 2016 10:14:02 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val firstBlockUDF \u003d udf { (s: String) \u003d\u003e s.split(\u0027,\u0027).head.trim }",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -510,7 +473,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -518,21 +482,17 @@
       },
       "jobName": "paragraph_1431942591614_1086498997",
       "id": "20150518-094951_810394006",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "firstBlockUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,List(StringType))\n"
-      },
       "dateCreated": "May 18, 2015 9:49:51 AM",
       "dateStarted": "Mar 4, 2016 10:14:02 AM",
       "dateFinished": "Mar 4, 2016 10:14:02 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions3",
       "text": "val institutions3 \u003d institutions2.withColumn(\n    \"first_block\", firstBlockUDF(\u0027address)\n).join(\n    aggregatedEnhancedNames, \u0027lc_address_id \u003d\u003d\u003d \u0027address_dis_id\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ninstitutions3.registerTempTable(\"institutions_3\")",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -547,7 +507,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -555,20 +516,16 @@
       },
       "jobName": "paragraph_1431942611998_1867016598",
       "id": "20150518-095011_587427407",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions3: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int, lc_address: string, lc_address_id: bigint, first_block: string, address_dis_id: bigint, aggregated_enhanced_names: array\u003cstring\u003e]\n"
-      },
       "dateCreated": "May 18, 2015 9:50:11 AM",
       "dateStarted": "Mar 4, 2016 10:14:02 AM",
       "dateFinished": "Mar 4, 2016 10:14:02 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select first_block, address, enhanced_names, aggregated_enhanced_names, lc_address_id, city_geoname_id, pub_id from institutions_3 where enhanced_names IS NULL limit 4",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -614,20 +571,16 @@
       },
       "jobName": "paragraph_1431942763767_-93299829",
       "id": "20150518-095243_526014691",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "first_block\taddress\tenhanced_names\taggregated_enhanced_names\tlc_address_id\tcity_geoname_id\tpub_id\nThiagarajar Coll Engn\tThiagarajar Coll Engn, Madurai, Tamil Nadu, India\tnull\tnull\t75260865\t1264521\t3077\nYuan Ze Univ\tYuan Ze Univ, Coll Management, Taoyuan, Taiwan\tnull\tnull\t-2115815756\tnull\t211\nUniv Siegen\tUniv Siegen, Inst Prod Engn, D-57076 Siegen, Germany\tnull\tnull\t1935891825\t2832495\t3978\nJain PharmaBiotech\tJain PharmaBiotech, CH-4057 Basel, Switzerland\tnull\tnull\t-769004940\t2661604\t33\n"
-      },
       "dateCreated": "May 18, 2015 9:52:43 AM",
       "dateStarted": "Mar 4, 2016 10:14:02 AM",
       "dateFinished": "Mar 4, 2016 10:14:02 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%md # FIXME Refactor \u0026 Adapt experimental code ",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "text": "%md ### FIXME Refactor \u0026 Adapt experimental code",
+      "dateUpdated": "Mar 4, 2016 5:36:50 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -639,9 +592,10 @@
           "groups": [],
           "scatter": {}
         },
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/markdown",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -649,20 +603,16 @@
       },
       "jobName": "paragraph_1431943352327_-128453186",
       "id": "20150518-100232_2099753557",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch1\u003eFIXME Refactor \u0026amp; Adapt experimental code\u003c/h1\u003e\n"
-      },
       "dateCreated": "May 18, 2015 10:02:32 AM",
       "dateStarted": "Mar 4, 2016 10:13:36 AM",
       "dateFinished": "Mar 4, 2016 10:13:36 AM",
-      "status": "FINISHED",
+      "status": "ERROR",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val chooseUDF \u003d udf { (a: Seq[String], b: String) \u003d\u003e Option(a).getOrElse(Seq(b)) }",
-      "dateUpdated": "Mar 4, 2016 10:13:36 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -676,7 +626,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -684,21 +635,17 @@
       },
       "jobName": "paragraph_1431949567610_-1184718685",
       "id": "20150518-114607_1834045610",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "chooseUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction2\u003e,ArrayType(StringType,true),List(ArrayType(StringType,true), StringType))\n"
-      },
       "dateCreated": "May 18, 2015 11:46:07 AM",
       "dateStarted": "Mar 4, 2016 10:14:02 AM",
       "dateFinished": "Mar 4, 2016 10:14:03 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions4",
       "text": "val institutions4 \u003d institutions3.withColumn(\n    \"institution_names\", chooseUDF(\u0027aggregated_enhanced_names, \u0027first_block)\n).select(\n    // original fields\n    \u0027pub_id, \u0027idx, \u0027address, \u0027enhanced_names,\n    // GeoNames identification result fields (from previous step)\n    \u0027city_geoname_id,\n    // institution names identification result fields\n    \u0027address_dis_id, \u0027institution_names\n    // institution names identification debug fields\n    //\u0027aggregated_enhanced_names\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 10:13:37 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -713,7 +660,8 @@
         "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -721,21 +669,17 @@
       },
       "jobName": "paragraph_1431948900234_-318209444",
       "id": "20150518-113500_918682956",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions4: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int, address_dis_id: bigint, institution_names: array\u003cstring\u003e]\n"
-      },
       "dateCreated": "May 18, 2015 11:35:00 AM",
       "dateStarted": "Mar 4, 2016 10:14:03 AM",
       "dateFinished": "Mar 4, 2016 10:14:03 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Write",
       "text": "OptSaveMode.foreach(institutions4.write.mode(_).parquet(s\"$DisambigDir/institution_names_identified_institutions-did_$DatasetId.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 10:13:37 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -749,7 +693,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -757,20 +703,16 @@
       },
       "jobName": "paragraph_1431946590030_-626487426",
       "id": "20150518-105630_1173281448",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 18, 2015 10:56:30 AM",
       "dateStarted": "Mar 4, 2016 10:14:03 AM",
       "dateFinished": "Mar 4, 2016 10:14:04 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "institutions4.show()",
-      "dateUpdated": "Mar 4, 2016 10:13:37 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -783,7 +725,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -791,20 +735,16 @@
       },
       "jobName": "paragraph_1431947068244_641746761",
       "id": "20150518-110428_2001526186",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+------+---+--------------------+--------------------+---------------+--------------+--------------------+\n|pub_id|idx|             address|      enhanced_names|city_geoname_id|address_dis_id|   institution_names|\n+------+---+--------------------+--------------------+---------------+--------------+--------------------+\n|  3077|  2|Thiagarajar Coll ...|                null|        1264521|      75260865|[Thiagarajar Coll...|\n|   211|  2|Yuan Ze Univ, Col...|                null|           null|   -2115815756|      [Yuan Ze Univ]|\n|   531|  1|Seoul Natl Univ, ...|[Seoul National U...|        1835848|    1890112819|[Seoul National U...|\n|  3928|  1|Oak Ridge Natl La...|[Oak Ridge Nation...|        4646571|    1309377531|[Oak Ridge Nation...|\n|  3978|  2|Univ Siegen, Inst...|                null|        2832495|    1935891825|       [Univ Siegen]|\n|  1354|  4|Univ Mayor, Sch L...| [Universidad Mayor]|           null|     -72390302| [Universidad Mayor]|\n|    33|  1|Jain PharmaBiotec...|                null|        2661604|    -769004940|[Jain PharmaBiotech]|\n|   762|  1|Jain PharmaBiotec...|                null|        2661604|    -769004940|[Jain PharmaBiotech]|\n|   974|  3|Shanghai Univ Ele...|[Shanghai Univers...|        1796236|     214520686|[Shanghai Univers...|\n|  2236|  1|Univ G DAnnunzio,...|[G d\u0027Annunzio Uni...|        3178796|     472816324|[G d\u0027Annunzio Uni...|\n|  3781|  1|ETH,INST PHARMAZE...|[Swiss Federal In...|        2657896|     246743961|[Swiss Federal In...|\n|  3770|  1|Berlin Inst Techn...|[Technical Univer...|        2950159|    -283219381|[Technical Univer...|\n|  1488|  1|Univ Sci \u0026 Techno...|                null|        1835235|    1793197807|[Univ Sci \u0026 Technol]|\n|  2940|  1|Arizona State Uni...|[Arizona State Un...|        5317058|     758323850|[Arizona State Un...|\n|  1354|  2|Arizona State Uni...|[Arizona State Un...|        5317058|     758323850|[Arizona State Un...|\n|  1883|  2|Univ Rochester, M...|[University of Ro...|        5134086|    1132954903|[University of Ro...|\n|  1649|  1|Univ Rochester, D...|[University of Ro...|        5134086|   -1831307480|[University of Ro...|\n|   684|  1|Delft Univ Techno...|[Delft University...|        2757345|     743717125|[Delft University...|\n|  3599|  1|Delft Univ Techno...|[Delft University...|        2757345|     743717125|[Delft University...|\n|   863|  1|Yeditepe Univ, De...|[Yeditepe Univers...|         745044|    1837747411|[Yeditepe Univers...|\n+------+---+--------------------+--------------------+---------------+--------------+--------------------+\nonly showing top 20 rows\n\n"
-      },
       "dateCreated": "May 18, 2015 11:04:28 AM",
       "dateStarted": "Mar 4, 2016 10:14:03 AM",
       "dateFinished": "Mar 4, 2016 10:14:04 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "",
-      "dateUpdated": "Mar 4, 2016 10:13:37 AM",
+      "dateUpdated": "Mar 4, 2016 5:36:35 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -817,7 +757,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -825,38 +767,17 @@
       },
       "jobName": "paragraph_1431966529885_1901883279",
       "id": "20150518-162849_1924110306",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT"
-      },
       "dateCreated": "May 18, 2015 4:28:49 PM",
       "dateStarted": "Mar 4, 2016 10:14:04 AM",
       "dateFinished": "Mar 4, 2016 10:14:04 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],
   "name": "[25] Institution names identification",
   "id": "2AQVBQMET",
-  "angularObjects": {
-    "2BECU381X": [],
-    "2BFE4973F": [],
-    "2BDUP8TX1": [],
-    "2BC2TVSBR": [],
-    "2BEK1W1PD": [],
-    "2BEV8A6Z4": [],
-    "2BCVF5P5F": [],
-    "2BEMYV7QQ": [],
-    "2BFPPNXXV": [],
-    "2BD9VECZR": [],
-    "2BE14FKBG": [],
-    "2BEKWFP9V": [],
-    "2BDPVAN2T": [],
-    "2BDMC46FS": [],
-    "2BFC9NN6P": [],
-    "2BE7P7NCM": [],
-    "2BFQQPY3C": []
-  },
+  "angularObjects": {},
   "config": {
     "looknfeel": "default"
   },

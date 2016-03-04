@@ -2,7 +2,7 @@
   "paragraphs": [
     {
       "text": "%md\n\n##### Memo:\n- Investigate name similarities.",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:02 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -14,8 +14,8 @@
           "groups": [],
           "scatter": {}
         },
-        "editorHide": true,
-        "tableHide": false,
+        "editorHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/markdown",
         "enabled": true
       },
@@ -25,21 +25,17 @@
       },
       "jobName": "paragraph_1431439807979_-1159984564",
       "id": "20150512-141007_1380198489",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch5\u003eMemo:\u003c/h5\u003e\n\u003cul\u003e\n\u003cli\u003eInvestigate name similarities.\u003c/li\u003e\n\u003c/ul\u003e\n"
-      },
       "dateCreated": "May 12, 2015 2:10:07 PM",
       "dateStarted": "Mar 4, 2016 10:10:20 AM",
       "dateFinished": "Mar 4, 2016 10:10:21 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Configuration",
       "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval ProcessingDir \u003d s\"$WorkDir/processing\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:02 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -63,21 +59,17 @@
       },
       "jobName": "paragraph_1431420461270_181164652",
       "id": "20150512-084741_1631006924",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nWorkDir: String \u003d /tmp/anticipation\nProcessingDir: String \u003d /tmp/anticipation/processing\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\n"
-      },
       "dateCreated": "May 12, 2015 8:47:41 AM",
       "dateStarted": "Mar 4, 2016 10:10:20 AM",
       "dateFinished": "Mar 4, 2016 10:10:20 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Journals",
       "text": "val journals \u003d sqlc.read.parquet(s\"$ProcessingDir/journals.parquet\").filter(\u0027did \u003d\u003d\u003d DatasetId \u0026\u0026 \u0027is_valid \u003d\u003d\u003d true).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\njournals.registerTempTable(\"journals\")",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -89,11 +81,11 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "editorHide": true
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -101,20 +93,16 @@
       },
       "jobName": "paragraph_1431420397581_1489018109",
       "id": "20150512-084637_543535926",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "journals: org.apache.spark.sql.DataFrame \u003d [did: int, pub_id: bigint, name: string, volume: string, issue: string, pages: string, supplement: string, date: string, is_valid: boolean]\n"
-      },
       "dateCreated": "May 12, 2015 8:46:37 AM",
       "dateStarted": "Mar 4, 2016 10:10:20 AM",
       "dateFinished": "Mar 4, 2016 10:10:21 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "journals.printSchema()",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -126,10 +114,10 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "editorHide": true
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -137,20 +125,16 @@
       },
       "jobName": "paragraph_1431421239128_1501723045",
       "id": "20150512-090039_1894394730",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "root\n |-- did: integer (nullable \u003d true)\n |-- pub_id: long (nullable \u003d true)\n |-- name: string (nullable \u003d true)\n |-- volume: string (nullable \u003d true)\n |-- issue: string (nullable \u003d true)\n |-- pages: string (nullable \u003d true)\n |-- supplement: string (nullable \u003d true)\n |-- date: string (nullable \u003d true)\n |-- is_valid: boolean (nullable \u003d true)\n\n"
-      },
       "dateCreated": "May 12, 2015 9:00:39 AM",
       "dateStarted": "Mar 4, 2016 10:10:20 AM",
       "dateFinished": "Mar 4, 2016 10:10:21 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "journals.select(\u0027name).distinct.selectExpr(\"lower(name) as lc_name\").groupBy(\u0027lc_name).count().filter(\u0027count \u003e 1).count()\n// Journal names are case sensitive",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -164,7 +148,7 @@
         },
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false
       },
       "settings": {
@@ -173,20 +157,16 @@
       },
       "jobName": "paragraph_1431420447943_-1717601818",
       "id": "20150512-084727_496761996",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res213: Long \u003d 54\n"
-      },
       "dateCreated": "May 12, 2015 8:47:27 AM",
       "dateStarted": "Mar 4, 2016 10:10:21 AM",
       "dateFinished": "Mar 4, 2016 10:10:25 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql\nselect *\nfrom (\n    select lc_name, names, size(names) as s\n    from (\n        select lc_name, collect_set(name) as names\n        from (select lower(name) as lc_name, name from journals) t1\n        group by lc_name\n        ) t2\n    ) t3\nwhere s \u003e 1\norder by s desc\nlimit 8",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -232,20 +212,16 @@
       },
       "jobName": "paragraph_1431421234919_-140000512",
       "id": "20150512-090034_1391828141",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "lc_name\tnames\ts\nnanoethics\tWrappedArray(NanoEthics, NANOETHICS, Nanoethics)\t3\nnanoscience and nanotechnologies: opportunities and uncertainties\tWrappedArray(Nanoscience and nanotechnologies: Opportunities and Uncertainties, Nanoscience and nanotechnologies: opportunities and uncertainties, Nanoscience and nanotechnologies: Opportunities and uncertainties)\t3\neuropean law review\tWrappedArray(EUROPEAN LAW REVIEW, European Law Review)\t2\nscience as culture\tWrappedArray(SCIENCE AS CULTURE, Science as Culture)\t2\nvaccine\tWrappedArray(VACCINE, Vaccine)\t2\nbiointerphases\tWrappedArray(Biointerphases, BIOINTERPHASES)\t2\nplos one\tWrappedArray(PLoS One, PLOS ONE)\t2\nethics and information technology\tWrappedArray(ETHICS AND INFORMATION TECHNOLOGY, Ethics and Information Technology)\t2\n"
-      },
       "dateCreated": "May 12, 2015 9:00:34 AM",
       "dateStarted": "Mar 4, 2016 10:10:21 AM",
       "dateFinished": "Mar 4, 2016 10:10:27 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "import scala.util.hashing.MurmurHash3\n\ndef hash(s: String): Long \u003d MurmurHash3.stringHash(s).toLong\n\nval hashUDF \u003d udf { (s: String) \u003d\u003e hash(s) }",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -257,10 +233,10 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "editorHide": true
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -268,21 +244,17 @@
       },
       "jobName": "paragraph_1431439592593_-1656986554",
       "id": "20150512-140632_1168181757",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "import scala.util.hashing.MurmurHash3\nhash: (s: String)Long\nhashUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,LongType,List(StringType))\n"
-      },
       "dateCreated": "May 12, 2015 2:06:32 PM",
       "dateStarted": "Mar 4, 2016 10:10:26 AM",
       "dateFinished": "Mar 4, 2016 10:10:27 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Journals2",
       "text": "val journals2 \u003d journals.withColumn(\n    \"dis_name\", upper(\u0027name)\n).withColumn(\n    \"dis_id\", hashUDF(\u0027dis_name)\n).select(\n    // original fields\n    \u0027pub_id,\n    // disambiguation result fields\n    \u0027dis_id, \u0027dis_name\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -295,8 +267,8 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
-        "editorHide": true,
+        "tableHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/scala",
         "enabled": true
       },
@@ -306,21 +278,17 @@
       },
       "jobName": "paragraph_1431422376744_381128979",
       "id": "20150512-091936_931305758",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "journals2: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, dis_id: bigint, dis_name: string]\n"
-      },
       "dateCreated": "May 12, 2015 9:19:36 AM",
       "dateStarted": "Mar 4, 2016 10:10:27 AM",
       "dateFinished": "Mar 4, 2016 10:10:27 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Sanity Checks",
       "text": "/*\n- no hash collisions\n- no journal duplicates in a publication\n*/\n\nassert(journals2.select(\u0027dis_name, \u0027dis_id).distinct.groupBy(\u0027dis_name).count().filter(\u0027count \u003e 1).count() \u003d\u003d 0)\nassert(journals2.count() \u003d\u003d journals2.distinct.count())",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -333,7 +301,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true,
         "editorHide": false
@@ -344,21 +312,17 @@
       },
       "jobName": "paragraph_1431439318484_357748034",
       "id": "20150512-140158_1732921418",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 12, 2015 2:01:58 PM",
       "dateStarted": "Mar 4, 2016 10:10:27 AM",
       "dateFinished": "Mar 4, 2016 10:10:32 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Write",
       "text": "OptSaveMode.foreach(journals2.write.mode(_).parquet(s\"$DisambigDir/disambiguated_journals-did_$DatasetId.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -373,7 +337,7 @@
         "title": true,
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false
       },
       "settings": {
@@ -382,20 +346,16 @@
       },
       "jobName": "paragraph_1431439626593_-1301231739",
       "id": "20150512-140706_975622307",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 12, 2015 2:07:06 PM",
       "dateStarted": "Mar 4, 2016 10:10:27 AM",
       "dateFinished": "Mar 4, 2016 10:10:32 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "journals2.show()",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -409,7 +369,7 @@
         },
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false
       },
       "settings": {
@@ -418,20 +378,16 @@
       },
       "jobName": "paragraph_1431440202859_734268899",
       "id": "20150512-141642_1634593606",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+------+-----------+--------------------+\n|pub_id|     dis_id|            dis_name|\n+------+-----------+--------------------+\n|  3678| 1741735827| ECONOMY AND SOCIETY|\n|  3673| -497113829|BIOTECHNOLOGY LAW...|\n|   712| 1599547037|ENERGY \u0026 ENVIRONM...|\n|  1285|-1155830387|        EMBO REPORTS|\n|   687| 1131242511|ENVIRONMENTAL HEA...|\n|  3132|-1428341236|    NATURE MATERIALS|\n|  4407|  201940275|DOWN ON THE FARM:...|\n| 13353| -191564751|          NANOETHICS|\n|  1219|-2043449142|LATE LESSONS FROM...|\n|  4518| -953919913|         LAW \u0026 POL\u0027Y|\n|  6777|-1232617371|TECHNOSCIENTIFIC ...|\n|   641| 1842348735|INTERPRETATION AN...|\n|  1886| -686289875|RESPONSIVE REGULA...|\n|  3062|-1574281250|          LAW POLICY|\n|   526|  967282946|           FORESIGHT|\n|  2734|-1653976653|JOURNAL OF NANOPA...|\n|  1531|  762565499|  COVALENCE MEDICINE|\n|  7970|-1099448819|SCRIPTED-J LAW, T...|\n|   136|  967282946|           FORESIGHT|\n|  5681| 1817627743|TEMPS ET RECIT II...|\n+------+-----------+--------------------+\nonly showing top 20 rows\n\n"
-      },
       "dateCreated": "May 12, 2015 2:16:42 PM",
       "dateStarted": "Mar 4, 2016 10:10:32 AM",
       "dateFinished": "Mar 4, 2016 10:10:32 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "",
-      "dateUpdated": "Mar 4, 2016 10:10:20 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:03 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -445,8 +401,8 @@
         },
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "tableHide": false,
-        "editorHide": true
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -454,38 +410,17 @@
       },
       "jobName": "paragraph_1431962439080_-154670159",
       "id": "20150518-152039_1585903234",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT"
-      },
       "dateCreated": "May 18, 2015 3:20:39 PM",
       "dateStarted": "Mar 4, 2016 10:10:32 AM",
       "dateFinished": "Mar 4, 2016 10:10:32 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],
   "name": "[21] Journal disambiguation",
   "id": "2AM88JEZ8",
-  "angularObjects": {
-    "2BECU381X": [],
-    "2BFE4973F": [],
-    "2BDUP8TX1": [],
-    "2BC2TVSBR": [],
-    "2BEK1W1PD": [],
-    "2BEV8A6Z4": [],
-    "2BCVF5P5F": [],
-    "2BEMYV7QQ": [],
-    "2BFPPNXXV": [],
-    "2BD9VECZR": [],
-    "2BE14FKBG": [],
-    "2BEKWFP9V": [],
-    "2BDPVAN2T": [],
-    "2BDMC46FS": [],
-    "2BFC9NN6P": [],
-    "2BE7P7NCM": [],
-    "2BFQQPY3C": []
-  },
+  "angularObjects": {},
   "config": {
     "looknfeel": "default"
   },

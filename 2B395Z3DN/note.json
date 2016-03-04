@@ -3,7 +3,7 @@
     {
       "title": "Configuration",
       "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\nval CsvDelimiter \u003d \"\\t\"\n\nval GeonamesDir \u003d \"/tmp/geonames\"\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"\nval IndicatorsDir \u003d s\"$WorkDir/indicators\"\nval CsvDir \u003d s\"$WorkDir/csv\"\nval GraphDir \u003d s\"$WorkDir/graphml\"",
-      "dateUpdated": "Mar 4, 2016 2:12:13 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -18,7 +18,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -26,20 +27,16 @@
       },
       "jobName": "paragraph_1431936520000_-1298619013",
       "id": "20150518-080840_1159554573",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nCsvDelimiter: String \u003d \"\t\"\nGeonamesDir: String \u003d /tmp/geonames\nWorkDir: String \u003d /tmp/anticipation\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\nIndicatorsDir: String \u003d /tmp/anticipation/indicators\nCsvDir: String \u003d /tmp/anticipation/csv\nGraphDir: String \u003d /tmp/anticipation/graphml\n"
-      },
       "dateCreated": "May 18, 2015 8:08:40 AM",
       "dateStarted": "Mar 4, 2016 2:12:13 PM",
       "dateFinished": "Mar 4, 2016 2:12:40 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "def explodeList[A](l: Seq[A]) \u003d Option(l).getOrElse(Seq.empty)\n\ndef csvWriter(df: org.apache.spark.sql.DataFrame) \u003d df.repartition(1).write.format(\"com.databricks.spark.csv\").option(\"header\", \"true\").option(\"delimiter\", CsvDelimiter)",
-      "dateUpdated": "Mar 4, 2016 2:12:13 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -53,7 +50,8 @@
         },
         "enabled": true,
         "editorMode": "ace/mode/scala",
-        "tableHide": true
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -61,25 +59,21 @@
       },
       "jobName": "paragraph_1456935565102_-1506208928",
       "id": "20160302-171925_1850163816",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "explodeList: [A](l: Seq[A])Seq[A]\ncsvWriter: (df: org.apache.spark.sql.DataFrame)org.apache.spark.sql.DataFrameWriter\n"
-      },
       "dateCreated": "Mar 2, 2016 5:19:25 PM",
       "dateStarted": "Mar 4, 2016 2:12:17 PM",
       "dateFinished": "Mar 4, 2016 2:12:41 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institution indicators",
       "text": "%md\n\nRestriction for all indicators to publications which publication year is the latest for the author.\nNo restriction to a specific city.\n\n#### impact\nsum of the impact of the publications authored by the institution\n\n#### impact_from_authors\nsum of the impact of the publications authored by authors affiliated to the institution\n\n#### author_count\nnumber of authors affiliated to the institution\n\n#### pub_count\nnumber of publications funded by the institution (via author affiliations)\n\n#### conf_count\nnumber of publications funded by the institution (via author affiliations) which are considered as conferences",
-      "dateUpdated": "Mar 4, 2016 2:12:14 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "title": true,
         "graph": {
           "mode": "table",
@@ -90,7 +84,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -98,20 +93,16 @@
       },
       "jobName": "paragraph_1431959250540_1272416062",
       "id": "20150518-142730_1118355590",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003cp\u003eRestriction for all indicators to publications which publication year is the latest for the author.\n\u003cbr  /\u003eNo restriction to a specific city.\u003c/p\u003e\n\u003ch4\u003eimpact\u003c/h4\u003e\n\u003cp\u003esum of the impact of the publications authored by the institution\u003c/p\u003e\n\u003ch4\u003eimpact_from_authors\u003c/h4\u003e\n\u003cp\u003esum of the impact of the publications authored by authors affiliated to the institution\u003c/p\u003e\n\u003ch4\u003eauthor_count\u003c/h4\u003e\n\u003cp\u003enumber of authors affiliated to the institution\u003c/p\u003e\n\u003ch4\u003epub_count\u003c/h4\u003e\n\u003cp\u003enumber of publications funded by the institution (via author affiliations)\u003c/p\u003e\n\u003ch4\u003econf_count\u003c/h4\u003e\n\u003cp\u003enumber of publications funded by the institution (via author affiliations) which are considered as conferences\u003c/p\u003e\n"
-      },
       "dateCreated": "May 18, 2015 2:27:30 PM",
       "dateStarted": "Mar 4, 2016 2:12:14 PM",
       "dateFinished": "Mar 4, 2016 2:12:16 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val publicationIndicators \u003d sqlc.read.parquet(s\"$IndicatorsDir/publication_instances_and_indicators-did_$DatasetId.parquet\")\nval authors \u003d sqlc.read.parquet(s\"$DisambigDir/disambiguated_authors-did_$DatasetId.parquet\").withColumnRenamed(\"id\", \"author_id\").withColumnRenamed(\"dis_id\", \"author_dis_id\").withColumnRenamed(\"dis_name\", \"author_dis_name\").withColumnRenamed(\"pub_id\", \"author_pub_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nval authorIndicators \u003d sqlc.read.parquet(s\"$IndicatorsDir/author_indicators-did_$DatasetId.parquet\")",
-      "dateUpdated": "Mar 4, 2016 2:12:14 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -124,7 +115,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -132,21 +125,17 @@
       },
       "jobName": "paragraph_1445964359850_2014329771",
       "id": "20151027-164559_2053468703",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "publicationIndicators: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categories: array\u003cstring\u003e, scielo_collections: array\u003cstring\u003e, pub_dis_id: bigint, dis_title: string, pub_lifetime: smallint, pub_impact: float]\nauthors: org.apache.spark.sql.DataFrame \u003d [did: int, author_pub_id: bigint, author_id: bigint, raw: string, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: array\u003csmallint\u003e, is_valid: boolean, generated_full_name: string, group_key: string, author_dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string]\nauthorIndicators: org.apache.spark.sql.DataFrame \u003d [author_dis_id: bigint, author_dis_name: string, author_first_pub_year: smallint, author_latest_pub_year: smallint, author_impact: double, author_pub_count: bigint, author_conf_count: bigint]\n"
-      },
       "dateCreated": "Oct 27, 2015 4:45:59 PM",
       "dateStarted": "Mar 4, 2016 2:12:40 PM",
       "dateFinished": "Mar 4, 2016 2:12:44 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions",
       "text": "val institutions \u003d sqlc.read.parquet(s\"$DisambigDir/institution_names_identified_institutions-did_$DatasetId.parquet\").withColumnRenamed(\"pub_id\", \"inst_pub_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:14 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -161,7 +150,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -169,23 +159,19 @@
       },
       "jobName": "paragraph_1431960376960_-1056077703",
       "id": "20150518-144616_628592171",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions: org.apache.spark.sql.DataFrame \u003d [inst_pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int, address_dis_id: bigint, institution_names: array\u003cstring\u003e]\n"
-      },
       "dateCreated": "May 18, 2015 2:46:16 PM",
       "dateStarted": "Mar 4, 2016 2:12:41 PM",
       "dateFinished": "Mar 4, 2016 2:12:44 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "institutions2 (explode)",
       "text": "val institutions2 \u003d institutions.explode(\"institution_names\", \"inst_name\")(explodeList[String]).drop(\"institution_names\").repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ninstitutions2.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:15 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -207,21 +193,17 @@
       },
       "jobName": "paragraph_1431965017197_-1239397210",
       "id": "20150518-160337_721707673",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions2: org.apache.spark.sql.DataFrame \u003d [inst_pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int, address_dis_id: bigint, inst_name: string]\n+-----------+---+--------------------+--------------------+---------------+--------------+--------------------+\n|inst_pub_id|idx|             address|      enhanced_names|city_geoname_id|address_dis_id|           inst_name|\n+-----------+---+--------------------+--------------------+---------------+--------------+--------------------+\n|       2220|  2|UCLAN Sch Hlth, C...|                null|        2639912|    2076729739|      UCLAN Sch Hlth|\n|       2393|  2|Charite Univ Med ...|[Charite Medical ...|        2950159|    2065217362|Charite Medical U...|\n|       2296|  1|Delft Univ Techno...|[Delft University...|        2757345|   -1656581198|Delft University ...|\n|        762|  1|Jain PharmaBiotec...|                null|        2661604|    -769004940|  Jain PharmaBiotech|\n|       1430|  6|Univ Chicago, Dep...|[University of Ch...|        4887398|     686314053|University of Chi...|\n+-----------+---+--------------------+--------------------+---------------+--------------+--------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 18, 2015 4:03:37 PM",
       "dateStarted": "Mar 4, 2016 2:12:44 PM",
       "dateFinished": "Mar 4, 2016 2:12:48 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Institution instances",
       "text": "OptSaveMode.foreach(csvWriter(institutions2).mode(_).save(s\"$CsvDir/institution_instances-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:15 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -235,7 +217,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -243,23 +227,19 @@
       },
       "jobName": "paragraph_1432033123102_-283652004",
       "id": "20150519-105843_168377854",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 19, 2015 10:58:43 AM",
       "dateStarted": "Mar 4, 2016 2:12:45 PM",
       "dateFinished": "Mar 4, 2016 2:12:49 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "institutionsToAuthors",
       "text": "val institutionsToPublications \u003d institutions2.join(\n    publicationIndicators, \u0027inst_pub_id \u003d\u003d\u003d \u0027pub_id, \"left_outer\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ninstitutionsToPublications.registerTempTable(\"institutions_to_publications\")\n\ninstitutionsToPublications.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:15 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -281,21 +261,17 @@
       },
       "jobName": "paragraph_1431973279838_1157297434",
       "id": "20150518-182119_887170008",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionsToPublications: org.apache.spark.sql.DataFrame \u003d [inst_pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int, address_dis_id: bigint, inst_name: string, pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categories: array\u003cstring\u003e, scielo_collections: array\u003cstring\u003e, pub_dis_id: bigint, dis_title: string, pub_lifetime: smallint, pub_impact: float]\n+-----------+---+--------------------+--------------------+---------------+--------------+--------------------+------+-------+-----------+----------+----+-----------+--------------------+--------------------+-------------+--------------------+--------------------+--------------------+--------------------+-----------------+------------------+----------+--------------------+------------+----------+\n|inst_pub_id|idx|             address|      enhanced_names|city_geoname_id|address_dis_id|           inst_name|pub_id|is_main|is_backward|is_forward|year|times_cited|      document_types|            abstract|is_conference|     author_keywords|       keywords_plus|      research_areas|      wos_categories|scielo_categories|scielo_collections|pub_dis_id|           dis_title|pub_lifetime|pub_impact|\n+-----------+---+--------------------+--------------------+---------------+--------------+--------------------+------+-------+-----------+----------+----+-----------+--------------------+--------------------+-------------+--------------------+--------------------+--------------------+--------------------+-----------------+------------------+----------+--------------------+------------+----------+\n|       2220|  2|UCLAN Sch Hlth, C...|                null|        2639912|    2076729739|      UCLAN Sch Hlth|  2220|  false|      false|      true|2015|          0|           [Article]|This study consid...|        false|[Genomic technolo...|[GENETICALLY-MODI...|[Agriculture, Soc...|[Agriculture, Mul...|             null|              null|      2220|ETHICAL ISSUES AN...|           1|       0.0|\n|       2393|  2|Charite Univ Med ...|[Charite Medical ...|        2950159|    2065217362|Charite Medical U...|  2393|  false|       true|     false|2010|         93|            [Review]|The term neuroenh...|        false|[Modafinil, Methy...|[EVENT-RELATED PO...|[Pharmacology \u0026 P...|[Pharmacology \u0026 P...|             null|              null|      2393|MODAFINIL AND MET...|           6|      15.5|\n|       2296|  1|Delft Univ Techno...|[Delft University...|        2757345|   -1656581198|Delft University ...|  2296|  false|       true|     false|2009|         25|[Editorial Material]|                null|        false|                null|                null|[Biochemistry \u0026 M...|[Biochemistry \u0026 M...|             null|              null|      2296|LAB-SCALE INTERVE...|           7| 3.5714285|\n|        762|  1|Jain PharmaBiotec...|                null|        2661604|    -769004940|  Jain PharmaBiotech|   762|  false|       true|     false|2007|        151|           [Article]|Background: Nanob...|        false|                null|[CONJUGATED GOLD ...|[Medical Laborato...|[Medical Laborato...|             null|              null|       762|APPLICATIONS OF N...|           9| 16.777779|\n|       1430|  6|Univ Chicago, Dep...|[University of Ch...|        4887398|     686314053|University of Chi...|  1430|  false|      false|      true|2012|         33|           [Article]|This study compar...|        false|[Abrupt change, c...|        [THRESHOLDS]|[Public, Environm...|[Public, Environm...|             null|              null|      1430|ROBUST CLIMATE PO...|           4|      8.25|\n+-----------+---+--------------------+--------------------+---------------+--------------+--------------------+------+-------+-----------+----------+----+-----------+--------------------+--------------------+-------------+--------------------+--------------------+--------------------+--------------------+-----------------+------------------+----------+--------------------+------------+----------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 18, 2015 6:21:19 PM",
       "dateStarted": "Mar 4, 2016 2:12:49 PM",
       "dateFinished": "Mar 4, 2016 2:12:51 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Institutions to publications",
       "text": "val institutionsToPublicationsExport \u003d institutionsToPublications.select(\u0027pub_dis_id, \u0027inst_name).distinct.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nOptSaveMode.foreach(csvWriter(institutionsToPublicationsExport).mode(_).save(s\"$CsvDir/institutions_publications-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:15 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -309,7 +285,9 @@
           "scatter": {}
         },
         "enabled": true,
-        "title": true
+        "title": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -317,25 +295,21 @@
       },
       "jobName": "paragraph_1435648014198_-1854198071",
       "id": "20150630-070654_2134577862",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionsToPublicationsExport: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, inst_name: string]\n"
-      },
       "dateCreated": "Jun 30, 2015 7:06:54 AM",
       "dateStarted": "Mar 4, 2016 2:12:49 PM",
       "dateFinished": "Mar 4, 2016 2:12:54 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "authors2 (explode)",
       "text": "val authors2 \u003d authors.explode(\"affiliations\", \"affiliation_idx\")(explodeList[Short]).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:16 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
-        "tableHide": false,
+        "tableHide": true,
         "title": false,
         "graph": {
           "mode": "table",
@@ -346,7 +320,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -354,128 +329,16 @@
       },
       "jobName": "paragraph_1431961556191_-1126196713",
       "id": "20150518-150556_1757701132",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "authors2: org.apache.spark.sql.DataFrame \u003d [did: int, author_pub_id: bigint, author_id: bigint, raw: string, is_anonymous: boolean, last_name: string, maiden_name: string, given_names: array\u003carray\u003cstring\u003e\u003e, suffix: string, nickname: string, affiliations: array\u003csmallint\u003e, is_valid: boolean, generated_full_name: string, group_key: string, author_dis_id: bigint, author_dis_last_name: string, author_dis_given_names: array\u003carray\u003cstring\u003e\u003e, author_dis_name: string, affiliation_idx: smallint]\n"
-      },
       "dateCreated": "May 18, 2015 3:05:56 PM",
       "dateStarted": "Mar 4, 2016 2:12:51 PM",
       "dateFinished": "Mar 4, 2016 2:12:55 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val institutionsToAuthors \u003d institutionsToPublications.join(\n    authors2, \u0027author_pub_id \u003d\u003d\u003d \u0027inst_pub_id \u0026\u0026 \u0027idx \u003d\u003d\u003d \u0027affiliation_idx, \"left_outer\"\n).join(\n    authorIndicators, authors2(\"author_dis_id\") \u003d\u003d\u003d authorIndicators(\"author_dis_id\"), \"left_outer\"\n).select(\n    \u0027inst_name, \u0027address_dis_id,\n    \u0027pub_dis_id, \u0027is_main, \u0027year, \u0027is_conference, \u0027pub_impact,\n    authorIndicators(\"author_dis_id\"), \u0027author_latest_pub_year, \u0027author_impact,\n    \u0027city_geoname_id\n).distinct.coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ninstitutionsToAuthors.registerTempTable(\"institutions_to_authors\")\n\ninstitutionsToAuthors.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:16 PM",
-      "config": {
-        "colWidth": 12.0,
-        "editorMode": "ace/mode/scala",
-        "tableHide": false,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1435648043839_-1949569826",
-      "id": "20150630-070723_353492565",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionsToAuthors: org.apache.spark.sql.DataFrame \u003d [inst_name: string, address_dis_id: bigint, pub_dis_id: bigint, is_main: boolean, year: smallint, is_conference: boolean, pub_impact: float, author_dis_id: bigint, author_latest_pub_year: smallint, author_impact: double, city_geoname_id: int]\n+--------------------+--------------+----------+-------+----+-------------+----------+-------------+----------------------+-------------+---------------+\n|           inst_name|address_dis_id|pub_dis_id|is_main|year|is_conference|pub_impact|author_dis_id|author_latest_pub_year|author_impact|city_geoname_id|\n+--------------------+--------------+----------+-------+----+-------------+----------+-------------+----------------------+-------------+---------------+\n|Lappeenranta Univ...|   -1361542471|       269|  false|2015|        false|       0.0|         null|                  null|         null|         648900|\n|University of Stu...|    -696794450|      1561|  false|2006|        false|      12.0|         null|                  null|         null|        2825297|\n|Centre National d...|     251313347|       297|  false|2005|        false| 51.272728|         null|                  null|         null|        2973783|\n|United States For...|    -291657693|      2470|  false|2012|        false|      0.75|         null|                  null|         null|        4140963|\n|Ecole Polytechniq...|    -342546167|      3044|  false|2008|        false|    21.875|         null|                  null|         null|        2659994|\n+--------------------+--------------+----------+-------+----+-------------+----------+-------------+----------------------+-------------+---------------+\nonly showing top 5 rows\n\n"
-      },
-      "dateCreated": "Jun 30, 2015 7:07:23 AM",
-      "dateStarted": "Mar 4, 2016 2:12:55 PM",
-      "dateFinished": "Mar 4, 2016 2:13:01 PM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "title": "CSV Export - Institutions publications authors",
-      "text": "OptSaveMode.foreach(institutionsToAuthors.write.mode(_).parquet(s\"$IndicatorsDir/institutions_publications_authors-did_$DatasetId.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:16 PM",
-      "config": {
-        "colWidth": 12.0,
-        "editorMode": "ace/mode/scala",
-        "title": false,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1432034693162_19570048",
-      "id": "20150519-112453_1616774671",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
-      "dateCreated": "May 19, 2015 11:24:53 AM",
-      "dateStarted": "Mar 4, 2016 2:12:55 PM",
-      "dateFinished": "Mar 4, 2016 2:13:03 PM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "title": "Sanity Checks",
-      "text": "/*\n- each address has a publication\n*/\n\nassert(institutionsToAuthors.filter(\u0027pub_dis_id.isNull).count() \u003d\u003d 0)",
-      "dateUpdated": "Mar 4, 2016 2:12:17 PM",
-      "config": {
-        "colWidth": 12.0,
-        "editorMode": "ace/mode/scala",
-        "tableHide": false,
-        "title": false,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1431974200510_425418014",
-      "id": "20150518-183640_1235672594",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
-      "dateCreated": "May 18, 2015 6:36:40 PM",
-      "dateStarted": "Mar 4, 2016 2:13:01 PM",
-      "dateFinished": "Mar 4, 2016 2:13:04 PM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "text": "val distinctAddressesCount \u003d institutionsToAuthors.select(\u0027address_dis_id).distinct.count()\nval distinctAddressesWithoutAuthorCount \u003d institutionsToAuthors.filter(\u0027author_dis_id.isNull).select(\u0027address_dis_id).distinct.count()",
-      "dateUpdated": "Mar 4, 2016 2:12:17 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:40 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -489,7 +352,108 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1435648043839_-1949569826",
+      "id": "20150630-070723_353492565",
+      "dateCreated": "Jun 30, 2015 7:07:23 AM",
+      "dateStarted": "Mar 4, 2016 2:12:55 PM",
+      "dateFinished": "Mar 4, 2016 2:13:01 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "CSV Export - Institutions publications authors",
+      "text": "OptSaveMode.foreach(institutionsToAuthors.write.mode(_).parquet(s\"$IndicatorsDir/institutions_publications_authors-did_$DatasetId.parquet\"))",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1432034693162_19570048",
+      "id": "20150519-112453_1616774671",
+      "dateCreated": "May 19, 2015 11:24:53 AM",
+      "dateStarted": "Mar 4, 2016 2:12:55 PM",
+      "dateFinished": "Mar 4, 2016 2:13:03 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Sanity Checks",
+      "text": "/*\n- each address has a publication\n*/\n\nassert(institutionsToAuthors.filter(\u0027pub_dis_id.isNull).count() \u003d\u003d 0)",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "tableHide": true,
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1431974200510_425418014",
+      "id": "20150518-183640_1235672594",
+      "dateCreated": "May 18, 2015 6:36:40 PM",
+      "dateStarted": "Mar 4, 2016 2:13:01 PM",
+      "dateFinished": "Mar 4, 2016 2:13:04 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val distinctAddressesCount \u003d institutionsToAuthors.select(\u0027address_dis_id).distinct.count()\nval distinctAddressesWithoutAuthorCount \u003d institutionsToAuthors.filter(\u0027author_dis_id.isNull).select(\u0027address_dis_id).distinct.count()",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "tableHide": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -497,26 +461,22 @@
       },
       "jobName": "paragraph_1431974840479_-1632482903",
       "id": "20150518-184720_1543453279",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "distinctAddressesCount: Long \u003d 2308\ndistinctAddressesWithoutAuthorCount: Long \u003d 2236\n"
-      },
       "dateCreated": "May 18, 2015 6:47:20 PM",
       "dateStarted": "Mar 4, 2016 2:13:04 PM",
       "dateFinished": "Mar 4, 2016 2:13:08 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "metrics",
       "text": "println(f\"distinct addresses without associated author: $distinctAddressesWithoutAuthorCount (${ (distinctAddressesWithoutAuthorCount / distinctAddressesCount.toFloat) * 100 }%.2f %%) \")",
-      "dateUpdated": "Mar 4, 2016 2:12:17 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
-        "editorHide": true,
+        "editorHide": false,
         "title": false,
         "graph": {
           "mode": "table",
@@ -535,20 +495,16 @@
       },
       "jobName": "paragraph_1431973323502_1190847209",
       "id": "20150518-182203_1115968971",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "distinct addresses without associated author: 2236 (96.88 %) \n"
-      },
       "dateCreated": "May 18, 2015 6:22:03 PM",
       "dateStarted": "Mar 4, 2016 2:13:05 PM",
       "dateFinished": "Mar 4, 2016 2:13:09 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val distinctInstNamesCount \u003d institutions2.select(\u0027inst_name).distinct.count()\nval distinctInstNamesWithoutAuthorCount \u003d distinctInstNamesCount - institutionsToAuthors.filter(\u0027author_dis_id.isNull).select(\u0027inst_name).distinct.count()",
-      "dateUpdated": "Mar 4, 2016 2:12:18 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -562,7 +518,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -570,25 +527,21 @@
       },
       "jobName": "paragraph_1431975800640_1194986381",
       "id": "20150518-190320_1894576759",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "distinctInstNamesCount: Long \u003d 1117\ndistinctInstNamesWithoutAuthorCount: Long \u003d 25\n"
-      },
       "dateCreated": "May 18, 2015 7:03:20 PM",
       "dateStarted": "Mar 4, 2016 2:13:09 PM",
       "dateFinished": "Mar 4, 2016 2:13:12 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "println(f\"distinct institution names without an associated author: $distinctInstNamesWithoutAuthorCount (${ (distinctInstNamesWithoutAuthorCount / distinctInstNamesCount.toFloat) * 100 }%.2f %%) \")",
-      "dateUpdated": "Mar 4, 2016 2:12:18 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
-        "editorHide": true,
+        "editorHide": false,
         "title": false,
         "graph": {
           "mode": "table",
@@ -599,7 +552,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -607,21 +561,17 @@
       },
       "jobName": "paragraph_1431960477709_-1229630106",
       "id": "20150518-144757_1213872539",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "distinct institution names without an associated author: 25 (2.24 %) \n"
-      },
       "dateCreated": "May 18, 2015 2:47:57 PM",
       "dateStarted": "Mar 4, 2016 2:13:09 PM",
       "dateFinished": "Mar 4, 2016 2:13:12 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "InstitutionIndicators",
       "text": "val institutionsSelfIndicators \u003d institutionsToPublications.filter(\n    \u0027pub_dis_id.isNotNull \u0026\u0026 \u0027is_main \u003d\u003d\u003d true\n).groupBy(\n    \u0027inst_name\n).agg(\n    sum(\u0027pub_impact) as \"inst_impact\",\n    count(\u0027pub_dis_id) as \"inst_pub_count\",\n    sum(\u0027is_conference.cast(\"int\")) as \"inst_conf_count\",\n    min(\u0027year) as \"inst_first_pub_year\"\n)\n\nval institutionDepths \u003d institutionsToPublications.groupBy(\n    \u0027inst_name\n).agg(\n    max(\u0027is_main) as \"is_from_main_pub\"\n)\n\nval institutionIndicatorsFromAuthors \u003d institutionsToAuthors.filter(\n    \u0027pub_dis_id.isNotNull \u0026\u0026 \u0027author_dis_id.isNotNull \u0026\u0026 \u0027year \u003d\u003d\u003d \u0027author_latest_pub_year \u0026\u0026 \u0027is_main \u003d\u003d\u003d true\n).groupBy(\n    \u0027inst_name\n).agg(\n    \"pub_impact\" -\u003e \"sum\",\n    \"author_dis_id\" -\u003e \"count\"\n).withColumnRenamed(\n    \"SUM(pub_impact)\", \"inst_impact_from_authors\"\n).withColumnRenamed(\n    \"COUNT(author_dis_id)\", \"inst_author_count\"\n)\n\nval institutionIndicators \u003d institutionsSelfIndicators.as(\"i1\").join(\n    institutionDepths.as(\"i2\"), $\"i1.inst_name\" \u003d\u003d\u003d $\"i2.inst_name\", \"left_outer\"\n).join(\n    institutionIndicatorsFromAuthors.as(\"i3\"), $\"i1.inst_name\" \u003d\u003d\u003d $\"i3.inst_name\", \"left_outer\"\n).select(\n    $\"i1.inst_name\", \u0027is_from_main_pub, \u0027inst_impact, \u0027inst_impact_from_authors, \u0027inst_author_count, \u0027inst_pub_count, \u0027inst_conf_count, \u0027inst_first_pub_year\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:18 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "tableHide": true,
         "colWidth": 12.0,
@@ -645,21 +595,17 @@
       },
       "jobName": "paragraph_1431964170099_2014459296",
       "id": "20150518-154930_887946128",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionsSelfIndicators: org.apache.spark.sql.DataFrame \u003d [inst_name: string, inst_impact: double, inst_pub_count: bigint, inst_conf_count: bigint, inst_first_pub_year: smallint]\ninstitutionDepths: org.apache.spark.sql.DataFrame \u003d [inst_name: string, is_from_main_pub: boolean]\ninstitutionIndicatorsFromAuthors: org.apache.spark.sql.DataFrame \u003d [inst_name: string, inst_impact_from_authors: double, inst_author_count: bigint]\ninstitutionIndicators: org.apache.spark.sql.DataFrame \u003d [inst_name: string, is_from_main_pub: boolean, inst_impact: double, inst_impact_from_authors: double, inst_author_count: bigint, inst_pub_count: bigint, inst_conf_count: bigint, inst_first_pub_year: smallint]\n"
-      },
       "dateCreated": "May 18, 2015 3:49:30 PM",
       "dateStarted": "Mar 4, 2016 2:13:12 PM",
       "dateFinished": "Mar 4, 2016 2:13:15 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Institution indicators",
       "text": "OptSaveMode.foreach(csvWriter(institutionIndicators).mode(_).save(s\"$CsvDir/institution_indicators-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:18 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -673,7 +619,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -681,21 +629,17 @@
       },
       "jobName": "paragraph_1432032631761_454579324",
       "id": "20150519-105031_1063840499",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 19, 2015 10:50:31 AM",
       "dateStarted": "Mar 4, 2016 2:13:12 PM",
       "dateFinished": "Mar 4, 2016 2:13:21 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "institutionIndicators.describe(\"inst_impact\", \"inst_impact_from_authors\", \"inst_author_count\", \"inst_pub_count\", \"inst_conf_count\", \"inst_first_pub_year\").show()\ninstitutionIndicators.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:18 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -710,7 +654,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -718,24 +663,20 @@
       },
       "jobName": "paragraph_1431960972503_-357311880",
       "id": "20150518-145612_648575566",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+-------+------------------+------------------------+------------------+-----------------+---------------+-------------------+\n|summary|       inst_impact|inst_impact_from_authors| inst_author_count|   inst_pub_count|inst_conf_count|inst_first_pub_year|\n+-------+------------------+------------------------+------------------+-----------------+---------------+-------------------+\n|  count|                98|                      67|                67|               98|             98|                 98|\n|   mean|0.3869047639321308|     0.49875622098125627|2.1194029850746268|1.469387755102041|            0.0| 2013.1224489795918|\n| stddev|0.7684106549195472|      1.2162093268830787|1.7748019696948953|1.022243247866791|            0.0|                NaN|\n|    min|               0.0|                     0.0|                 1|                1|              0|               2012|\n|    max| 5.666666686534882|       8.000000029802322|                10|                6|              0|               2014|\n+-------+------------------+------------------------+------------------+-----------------+---------------+-------------------+\n\n+--------------------+----------------+-----------+------------------------+-----------------+--------------+---------------+-------------------+\n|           inst_name|is_from_main_pub|inst_impact|inst_impact_from_authors|inst_author_count|inst_pub_count|inst_conf_count|inst_first_pub_year|\n+--------------------+----------------+-----------+------------------------+-----------------+--------------+---------------+-------------------+\n|University of Bergen|            true|        0.0|                     0.0|                3|             1|              0|               2014|\n|Australian Nation...|            true|        3.0|                     3.0|                2|             2|              0|               2012|\n|     Univ Strasbourg|            true|        0.0|                     0.0|                1|             2|              0|               2014|\n|Italian Natl Bioe...|            true|        0.0|                     0.0|                1|             1|              0|               2013|\n|Multi Inst Res Cl...|            true|        0.0|                     0.0|                1|             1|              0|               2014|\n+--------------------+----------------+-----------+------------------------+-----------------+--------------+---------------+-------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 18, 2015 2:56:12 PM",
       "dateStarted": "Mar 4, 2016 2:13:15 PM",
       "dateFinished": "Mar 4, 2016 2:13:22 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n\n#### Institution Cities",
-      "dateUpdated": "Mar 4, 2016 2:12:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "graph": {
           "mode": "table",
           "height": 300.0,
@@ -745,7 +686,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -753,20 +695,16 @@
       },
       "jobName": "paragraph_1435581648712_-1477462907",
       "id": "20150629-124048_1431192265",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch4\u003eInstitution Cities\u003c/h4\u003e\n"
-      },
       "dateCreated": "Jun 29, 2015 12:40:48 PM",
       "dateStarted": "Mar 4, 2016 2:12:19 PM",
       "dateFinished": "Mar 4, 2016 2:12:19 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val institutionsCities \u003d institutions2.select(\u0027inst_name, \u0027city_geoname_id).distinct.repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ninstitutionsCities.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -789,21 +727,17 @@
       },
       "jobName": "paragraph_1435581674505_-1432416638",
       "id": "20150629-124114_198043254",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionsCities: org.apache.spark.sql.DataFrame \u003d [inst_name: string, city_geoname_id: int]\n+--------------------+---------------+\n|           inst_name|city_geoname_id|\n+--------------------+---------------+\n|Birkbeck Universi...|        2643743|\n|Nanotechnol Ind A...|        2800866|\n|              Irstea|        3036364|\n|University of Her...|        2647349|\n|University of Mas...|        4956184|\n+--------------------+---------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Jun 29, 2015 12:41:14 PM",
       "dateStarted": "Mar 4, 2016 2:13:21 PM",
       "dateFinished": "Mar 4, 2016 2:13:25 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Institution cities",
       "text": "OptSaveMode.foreach(csvWriter(institutionsCities).mode(_).save(s\"$CsvDir/institutions_cities-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -817,7 +751,9 @@
           "scatter": {}
         },
         "enabled": true,
-        "title": true
+        "title": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -825,26 +761,22 @@
       },
       "jobName": "paragraph_1435581698426_1349949490",
       "id": "20150629-124138_1529645903",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Jun 29, 2015 12:41:38 PM",
       "dateStarted": "Mar 4, 2016 2:13:22 PM",
       "dateFinished": "Mar 4, 2016 2:13:26 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Geo Indicators",
       "text": "%md\n\nPOI: GeoNames city / country / continent.\n\nRestriction for all indicators to publications which publication year is the latest for the author.\n\n#### impact\nsum of the impact of the institutions located in the POI\n\n#### impact_from_authors\nsum of the impact_from_authors of the institutions located in the POI\n\n#### author_count\nnumber of authors affiliated to the institution located in the POI\n\n#### pub_count\nnumber of publications funded by the institution located in the POI (via author affiliations)\n\n#### conf_count\nnumber of publications funded by the institution located in the POI (via author affiliations) which are considered as conferences",
-      "dateUpdated": "Mar 4, 2016 2:12:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "title": true,
         "graph": {
           "mode": "table",
@@ -863,20 +795,16 @@
       },
       "jobName": "paragraph_1431976311264_679924740",
       "id": "20150518-191151_347775214",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003cp\u003ePOI: GeoNames city / country / continent.\u003c/p\u003e\n\u003cp\u003eRestriction for all indicators to publications which publication year is the latest for the author.\u003c/p\u003e\n\u003ch4\u003eimpact\u003c/h4\u003e\n\u003cp\u003esum of the impact of the institutions located in the POI\u003c/p\u003e\n\u003ch4\u003eimpact_from_authors\u003c/h4\u003e\n\u003cp\u003esum of the impact_from_authors of the institutions located in the POI\u003c/p\u003e\n\u003ch4\u003eauthor_count\u003c/h4\u003e\n\u003cp\u003enumber of authors affiliated to the institution located in the POI\u003c/p\u003e\n\u003ch4\u003epub_count\u003c/h4\u003e\n\u003cp\u003enumber of publications funded by the institution located in the POI (via author affiliations)\u003c/p\u003e\n\u003ch4\u003econf_count\u003c/h4\u003e\n\u003cp\u003enumber of publications funded by the institution located in the POI (via author affiliations) which are considered as conferences\u003c/p\u003e\n"
-      },
       "dateCreated": "May 18, 2015 7:11:51 PM",
       "dateStarted": "Mar 4, 2016 2:12:20 PM",
       "dateFinished": "Mar 4, 2016 2:12:20 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val distinctInstNamesCitiesCount \u003d institutionsCities.count()\nval instNamesWithSeveralCities \u003d institutionsCities.groupBy(\u0027inst_name).count()\nval instNamesWithSeveralCitiesCount \u003d instNamesWithSeveralCities.filter(\u0027count \u003e 1).count()",
-      "dateUpdated": "Mar 4, 2016 2:12:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -890,7 +818,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -898,58 +827,17 @@
       },
       "jobName": "paragraph_1432021201470_-27248222",
       "id": "20150519-074001_1663014006",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "distinctInstNamesCitiesCount: Long \u003d 1292\ninstNamesWithSeveralCities: org.apache.spark.sql.DataFrame \u003d [inst_name: string, count: bigint]\ninstNamesWithSeveralCitiesCount: Long \u003d 120\n"
-      },
       "dateCreated": "May 19, 2015 7:40:01 AM",
       "dateStarted": "Mar 4, 2016 2:13:25 PM",
       "dateFinished": "Mar 4, 2016 2:13:28 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "println(f\"distinct institution names which are in several cities: $instNamesWithSeveralCitiesCount (${(instNamesWithSeveralCitiesCount / distinctInstNamesCitiesCount.toFloat) * 100 }%.2f %%)\")",
-      "dateUpdated": "Mar 4, 2016 2:12:20 PM",
-      "config": {
-        "colWidth": 12.0,
-        "editorMode": "ace/mode/scala",
-        "editorHide": true,
-        "title": false,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1432020930988_1242824866",
-      "id": "20150519-073530_1592802892",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "distinct institution names which are in several cities: 120 (9.29 %)\n"
-      },
-      "dateCreated": "May 19, 2015 7:35:30 AM",
-      "dateStarted": "Mar 4, 2016 2:13:26 PM",
-      "dateFinished": "Mar 4, 2016 2:13:29 PM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "title": "Metrics",
-      "text": "instNamesWithSeveralCities.describe(\"count\").show()",
-      "dateUpdated": "Mar 4, 2016 2:12:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -964,7 +852,42 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1432020930988_1242824866",
+      "id": "20150519-073530_1592802892",
+      "dateCreated": "May 19, 2015 7:35:30 AM",
+      "dateStarted": "Mar 4, 2016 2:13:26 PM",
+      "dateFinished": "Mar 4, 2016 2:13:29 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Metrics",
+      "text": "instNamesWithSeveralCities.describe(\"count\").show()",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "title": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -972,21 +895,17 @@
       },
       "jobName": "paragraph_1432133494674_-732227495",
       "id": "20150520-145134_2020470677",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+-------+------------------+\n|summary|             count|\n+-------+------------------+\n|  count|              1117|\n|   mean|1.1566696508504923|\n| stddev|0.5920865877520362|\n|    min|                 1|\n|    max|                12|\n+-------+------------------+\n\n"
-      },
       "dateCreated": "May 20, 2015 2:51:34 PM",
       "dateStarted": "Mar 4, 2016 2:13:29 PM",
       "dateFinished": "Mar 4, 2016 2:13:30 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Cities (Population \u003e\u003d 500)",
       "text": "val cities \u003d sqlc.read.parquet(\n    s\"$GeonamesDir/allCountries.parquet\"\n).filter(\n    \u0027feature_class \u003d\u003d\u003d \"P\" \u0026\u0026 \u0027population \u003e\u003d 500\n).select(\n    \u0027geoname_id, \u0027ascii_name, \u0027latitude, \u0027longitude, \u0027feature_class, \u0027feature_code, \u0027admin_1_code, \u0027country_iso\n).withColumnRenamed(\n    \"geoname_id\", \"city_geoname_id\"\n).withColumnRenamed(\n    \"admin_1_code\", \"state\"\n).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1001,7 +920,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1009,21 +929,17 @@
       },
       "jobName": "paragraph_1432019675138_990640837",
       "id": "20150519-071435_1412768942",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "cities: org.apache.spark.sql.DataFrame \u003d [city_geoname_id: int, ascii_name: string, latitude: float, longitude: float, feature_class: string, feature_code: string, state: string, country_iso: string]\n"
-      },
       "dateCreated": "May 19, 2015 7:14:35 AM",
       "dateStarted": "Mar 4, 2016 2:13:29 PM",
       "dateFinished": "Mar 4, 2016 2:13:31 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Countries",
       "text": "val countries \u003d sqlc.read.parquet(\n    s\"$GeonamesDir/countries.parquet\"\n).filter(\n    \u0027geoname_id.isNotNull // geoname_id is null for \u0027Netherlands Antilles\u0027 and \u0027Serbia and Montenegro\u0027 which don\u0027t exist anymore\n).select(\n    \u0027geoname_id, \u0027iso, \u0027name, \u0027continent_name\n).withColumnRenamed(\n    \"geoname_id\", \"country_geoname_id\"\n).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1038,7 +954,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1046,21 +963,17 @@
       },
       "jobName": "paragraph_1432019823760_1971932778",
       "id": "20150519-071703_1911661633",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "countries: org.apache.spark.sql.DataFrame \u003d [country_geoname_id: int, iso: string, name: string, continent_name: string]\n"
-      },
       "dateCreated": "May 19, 2015 7:17:03 AM",
       "dateStarted": "Mar 4, 2016 2:13:31 PM",
       "dateFinished": "Mar 4, 2016 2:13:31 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Geo",
       "text": "val geo \u003d cities.join(\n    countries, \u0027country_iso \u003d\u003d\u003d \u0027iso\n).withColumnRenamed(\n    \"ascii_name\", \"city_name\"\n).withColumnRenamed(\n    \"latitude\", \"city_latitude\"\n).withColumnRenamed(\n    \"longitude\", \"city_longitude\"\n).withColumnRenamed(\n    \"name\", \"country_name\"\n).select(\n    \u0027city_geoname_id, \u0027city_name, \u0027city_latitude, \u0027city_longitude, \u0027state, \u0027country_iso,\n    \u0027country_geoname_id, \u0027country_name, \u0027continent_name \n).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1075,7 +988,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1083,20 +997,16 @@
       },
       "jobName": "paragraph_1432019671465_1554667400",
       "id": "20150519-071431_1829471681",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "geo: org.apache.spark.sql.DataFrame \u003d [city_geoname_id: int, city_name: string, city_latitude: float, city_longitude: float, state: string, country_iso: string, country_geoname_id: int, country_name: string, continent_name: string]\n"
-      },
       "dateCreated": "May 19, 2015 7:14:31 AM",
       "dateStarted": "Mar 4, 2016 2:13:31 PM",
       "dateFinished": "Mar 4, 2016 2:13:32 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "geo.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1109,7 +1019,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1117,21 +1029,17 @@
       },
       "jobName": "paragraph_1432030177578_1949619436",
       "id": "20150519-100937_1550489992",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+---------------+-----------+-------------+--------------+-----+-----------+------------------+-------------+--------------+\n|city_geoname_id|  city_name|city_latitude|city_longitude|state|country_iso|country_geoname_id| country_name|continent_name|\n+---------------+-----------+-------------+--------------+-----+-----------+------------------+-------------+--------------+\n|         615758|    Ananuri|     42.16583|      44.70139|   00|         GE|            614540|      Georgia|          Asia|\n|         614351|   Gurjaani|     41.74292|      45.80111|   67|         GE|            614540|      Georgia|          Asia|\n|         611403|Ts\u0027khinvali|     42.22764|      43.96861|   73|         GE|            614540|      Georgia|          Asia|\n|         615583|  Bakuriani|     41.74972|       43.5325|   13|         GE|            614540|      Georgia|          Asia|\n|        3381117|   Macouria|      4.91216|     -52.37432|   00|         GF|           3381670|French Guiana| South America|\n+---------------+-----------+-------------+--------------+-----+-----------+------------------+-------------+--------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 19, 2015 10:09:37 AM",
       "dateStarted": "Mar 4, 2016 2:13:31 PM",
       "dateFinished": "Mar 4, 2016 2:13:41 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Geo references",
       "text": "OptSaveMode.foreach(csvWriter(geo).mode(_).save(s\"$CsvDir/geo_references-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:22 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1145,7 +1053,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1153,24 +1063,20 @@
       },
       "jobName": "paragraph_1432030192051_-789007910",
       "id": "20150519-100952_514923138",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 19, 2015 10:09:52 AM",
       "dateStarted": "Mar 4, 2016 2:13:32 PM",
       "dateFinished": "Mar 4, 2016 2:13:43 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n#### City Indicators",
-      "dateUpdated": "Mar 4, 2016 2:12:22 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "graph": {
           "mode": "table",
           "height": 300.0,
@@ -1180,7 +1086,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1188,21 +1095,17 @@
       },
       "jobName": "paragraph_1435582350765_-799352576",
       "id": "20150629-125230_1715833501",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch4\u003eCity Indicators\u003c/h4\u003e\n"
-      },
       "dateCreated": "Jun 29, 2015 12:52:30 PM",
       "dateStarted": "Mar 4, 2016 2:12:22 PM",
       "dateFinished": "Mar 4, 2016 2:12:22 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CityIndicators",
       "text": "val cityIndicators \u003d institutionIndicators.filter(\n    \u0027is_from_main_pub \u003d\u003d\u003d true\n).withColumnRenamed(\n    \"inst_name\", \"org_inst_name\"\n).join(\n    institutionsCities, \u0027org_inst_name \u003d\u003d\u003d \u0027inst_name\n).filter(\n    \u0027city_geoname_id.isNotNull // \"year \u003d author_latest_pub_year\" by design (cf institutionIndicators)\n).groupBy(\n    \u0027city_geoname_id\n).agg(\n    sum(\u0027inst_impact) as \"city_impact\",\n    sum(\u0027inst_impact_from_authors) as \"city_impact_from_authors\",\n    sum(\u0027inst_author_count) as \"city_author_count\",\n    sum(\u0027inst_pub_count) as \"city_pub_count\",\n    sum(\u0027inst_conf_count) as \"city_conf_count\"\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:22 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1217,7 +1120,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1225,23 +1129,19 @@
       },
       "jobName": "paragraph_1432022180632_-71313221",
       "id": "20150519-075620_224608363",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "cityIndicators: org.apache.spark.sql.DataFrame \u003d [city_geoname_id: int, city_impact: double, city_impact_from_authors: double, city_author_count: bigint, city_pub_count: bigint, city_conf_count: bigint]\n"
-      },
       "dateCreated": "May 19, 2015 7:56:20 AM",
       "dateStarted": "Mar 4, 2016 2:13:41 PM",
       "dateFinished": "Mar 4, 2016 2:13:44 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "cityIndicators.describe(\"city_impact\", \"city_impact_from_authors\", \"city_author_count\", \"city_pub_count\", \"city_conf_count\").show()\ncityIndicators.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:22 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -1263,21 +1163,17 @@
       },
       "jobName": "paragraph_1432022177313_-146739329",
       "id": "20150519-075617_944019528",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+-------+------------------+------------------------+------------------+------------------+---------------+\n|summary|       city_impact|city_impact_from_authors| city_author_count|    city_pub_count|city_conf_count|\n+-------+------------------+------------------------+------------------+------------------+---------------+\n|  count|                96|                      70|                70|                96|             96|\n|   mean|0.5043402807787061|      0.6011904788868768|2.6285714285714286|           1.90625|            0.0|\n| stddev|0.9625788968135425|      1.3260884188643303|2.4033989536929243|1.6012893567892927|            0.0|\n|    min|               0.0|                     0.0|                 1|                 1|              0|\n|    max| 5.666666686534882|       8.000000029802322|                11|                 8|              0|\n+-------+------------------+------------------------+------------------+------------------+---------------+\n\n+---------------+------------------+------------------------+-----------------+--------------+---------------+\n|city_geoname_id|       city_impact|city_impact_from_authors|city_author_count|city_pub_count|city_conf_count|\n+---------------+------------------+------------------------+-----------------+--------------+---------------+\n|        5122432|               0.0|                     0.0|                3|             1|              0|\n|        2740637|0.6666666865348816|      1.0000000298023224|                3|             2|              0|\n|        4641239|               0.0|                     0.0|                2|             2|              0|\n|        3168843|0.3333333432674408|                     0.0|                2|             2|              0|\n|        3143244|               0.5|                    null|             null|             1|              0|\n+---------------+------------------+------------------------+-----------------+--------------+---------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 19, 2015 7:56:17 AM",
       "dateStarted": "Mar 4, 2016 2:13:43 PM",
       "dateFinished": "Mar 4, 2016 2:13:48 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - City indicators",
       "text": "OptSaveMode.foreach(csvWriter(cityIndicators).mode(_).save(s\"$CsvDir/city_indicators-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:23 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:41 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1291,7 +1187,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1299,24 +1197,20 @@
       },
       "jobName": "paragraph_1432034050286_1718500242",
       "id": "20150519-111410_863089501",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 19, 2015 11:14:10 AM",
       "dateStarted": "Mar 4, 2016 2:13:44 PM",
       "dateFinished": "Mar 4, 2016 2:13:50 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n#### Country Indicators",
-      "dateUpdated": "Mar 4, 2016 2:12:23 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "graph": {
           "mode": "table",
           "height": 300.0,
@@ -1326,7 +1220,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1334,21 +1229,17 @@
       },
       "jobName": "paragraph_1435582627985_-269939734",
       "id": "20150629-125707_1102763158",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch4\u003eCountry Indicators\u003c/h4\u003e\n"
-      },
       "dateCreated": "Jun 29, 2015 12:57:07 PM",
       "dateStarted": "Mar 4, 2016 2:12:23 PM",
       "dateFinished": "Mar 4, 2016 2:12:23 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CountryIndicators",
       "text": "val countryIndicators \u003d cityIndicators.join(\n    geo, cityIndicators(\"city_geoname_id\") \u003d\u003d\u003d geo(\"city_geoname_id\")\n).groupBy(\n    \u0027country_geoname_id, \u0027country_name, \u0027continent_name, \u0027country_iso\n).agg(\n    sum(\u0027city_impact) as \"country_impact\",\n    sum(\u0027city_impact_from_authors) as \"country_impact_from_authors\",\n    sum(\u0027city_author_count) as \"country_author_count\",\n    sum(\u0027city_pub_count) as \"country_pub_count\",\n    sum(\u0027city_conf_count) as \"country_conf_count\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:23 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1363,7 +1254,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1371,21 +1263,17 @@
       },
       "jobName": "paragraph_1432024263818_-1244640311",
       "id": "20150519-083103_620113882",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "countryIndicators: org.apache.spark.sql.DataFrame \u003d [country_geoname_id: int, country_name: string, continent_name: string, country_iso: string, country_impact: double, country_impact_from_authors: double, country_author_count: bigint, country_pub_count: bigint, country_conf_count: bigint]\n"
-      },
       "dateCreated": "May 19, 2015 8:31:03 AM",
       "dateStarted": "Mar 4, 2016 2:13:49 PM",
       "dateFinished": "Mar 4, 2016 2:13:51 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "countryIndicators.describe(\"country_impact\", \"country_impact_from_authors\", \"country_author_count\", \"country_pub_count\", \"country_conf_count\").show()\ncountryIndicators.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:23 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1400,7 +1288,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1408,21 +1297,17 @@
       },
       "jobName": "paragraph_1432025468230_812957412",
       "id": "20150519-085108_1379843456",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+-------+------------------+---------------------------+--------------------+------------------+------------------+\n|summary|    country_impact|country_impact_from_authors|country_author_count| country_pub_count|country_conf_count|\n+-------+------------------+---------------------------+--------------------+------------------+------------------+\n|  count|                24|                         19|                  19|                24|                24|\n|   mean|2.0173611231148243|          2.214912290635862|    9.68421052631579|             7.625|               0.0|\n| stddev|2.8750985568379126|          2.925777231653852|  16.167064087793943|11.528271408440498|               0.0|\n|    min|               0.0|                        0.0|                   1|                 1|                 0|\n|    max|              11.0|         10.083333373069763|                  76|                57|                 0|\n+-------+------------------+---------------------------+--------------------+------------------+------------------+\n\n+------------------+------------+--------------+-----------+------------------+---------------------------+--------------------+-----------------+------------------+\n|country_geoname_id|country_name|continent_name|country_iso|    country_impact|country_impact_from_authors|country_author_count|country_pub_count|country_conf_count|\n+------------------+------------+--------------+-----------+------------------+---------------------------+--------------------+-----------------+------------------+\n|           1733045|    Malaysia|          Asia|         MY|               0.0|                        0.0|                   2|                1|                 0|\n|           1605651|    Thailand|          Asia|         TH|               2.0|                        2.0|                   4|                4|                 0|\n|           2782113|     Austria|        Europe|         AT|               0.0|                        0.0|                   1|                2|                 0|\n|           3175395|       Italy|        Europe|         IT|1.3333333730697632|         0.3333333432674408|                  11|               13|                 0|\n|           2264397|    Portugal|        Europe|         PT|1.1666666865348816|         1.5000000298023224|                   4|                3|                 0|\n+------------------+------------+--------------+-----------+------------------+---------------------------+--------------------+-----------------+------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 19, 2015 8:51:08 AM",
       "dateStarted": "Mar 4, 2016 2:13:50 PM",
       "dateFinished": "Mar 4, 2016 2:13:55 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV Export - Country Indicators",
       "text": "OptSaveMode.foreach(csvWriter(countryIndicators).mode(_).save(s\"$CsvDir/country_indicators-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:24 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1436,7 +1321,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1444,25 +1331,21 @@
       },
       "jobName": "paragraph_1432029286900_72522619",
       "id": "20150519-095446_1667042865",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 19, 2015 9:54:46 AM",
       "dateStarted": "Mar 4, 2016 2:13:51 PM",
       "dateFinished": "Mar 4, 2016 2:13:56 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n#### Continent Indicators",
-      "dateUpdated": "Mar 4, 2016 2:12:24 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
-        "tableHide": false,
+        "editorHide": false,
+        "tableHide": true,
         "graph": {
           "mode": "table",
           "height": 300.0,
@@ -1480,21 +1363,17 @@
       },
       "jobName": "paragraph_1435583163104_1565663331",
       "id": "20150629-130603_631268481",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch4\u003eContinent Indicators\u003c/h4\u003e\n"
-      },
       "dateCreated": "Jun 29, 2015 1:06:03 PM",
       "dateStarted": "Mar 4, 2016 2:12:24 PM",
       "dateFinished": "Mar 4, 2016 2:12:24 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "ContinentIndicators",
       "text": "val continentIndicators \u003d countryIndicators.groupBy(\n    \u0027continent_name\n).agg(\n    sum(\u0027country_impact) as \"continent_impact\",\n    sum(\u0027country_impact_from_authors) as \"continent_impact_from_authors\",\n    sum(\u0027country_author_count) as \"continent_author_count\",\n    sum(\u0027country_pub_count) as \"continent_pub_count\",\n    sum(\u0027country_conf_count) as \"continent_conf_count\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:12:24 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1509,7 +1388,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1517,21 +1397,17 @@
       },
       "jobName": "paragraph_1432025499384_-1062061896",
       "id": "20150519-085139_350220626",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "continentIndicators: org.apache.spark.sql.DataFrame \u003d [continent_name: string, continent_impact: double, continent_impact_from_authors: double, continent_author_count: bigint, continent_pub_count: bigint, continent_conf_count: bigint]\n"
-      },
       "dateCreated": "May 19, 2015 8:51:39 AM",
       "dateStarted": "Mar 4, 2016 2:13:56 PM",
       "dateFinished": "Mar 4, 2016 2:13:56 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "continentIndicators.describe(\"continent_impact\", \"continent_impact_from_authors\", \"continent_author_count\", \"continent_pub_count\", \"continent_conf_count\").show()\ncontinentIndicators.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:24 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1546,7 +1422,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1554,25 +1431,21 @@
       },
       "jobName": "paragraph_1432025702269_405617764",
       "id": "20150519-085502_188618360",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+-------+-----------------+-----------------------------+----------------------+-------------------+--------------------+\n|summary| continent_impact|continent_impact_from_authors|continent_author_count|continent_pub_count|continent_conf_count|\n+-------+-----------------+-----------------------------+----------------------+-------------------+--------------------+\n|  count|                5|                            5|                     5|                  5|                   5|\n|   mean|9.683333390951157|            8.416666704416276|                  36.8|               36.6|                 0.0|\n| stddev|7.798219248000077|            6.761615573980567|    31.858436873142413| 29.404761519182564|                 0.0|\n|    min|              0.0|                          0.0|                     2|                  3|                   0|\n|    max|23.41666689515114|           19.750000149011612|                    81|                 81|                   0|\n+-------+-----------------+-----------------------------+----------------------+-------------------+--------------------+\n\n+--------------+-----------------+-----------------------------+----------------------+-------------------+--------------------+\n|continent_name| continent_impact|continent_impact_from_authors|continent_author_count|continent_pub_count|continent_conf_count|\n+--------------+-----------------+-----------------------------+----------------------+-------------------+--------------------+\n|       Oceania|             11.0|                          6.0|                    14|                 21|                   0|\n|        Europe|23.41666689515114|           19.750000149011612|                    69|                 81|                   0|\n| South America|              0.0|                          0.0|                     2|                  3|                   0|\n| North America|8.666666716337204|           11.583333373069763|                    81|                 61|                   0|\n|          Asia|5.333333343267441|                         4.75|                    18|                 17|                   0|\n+--------------+-----------------+-----------------------------+----------------------+-------------------+--------------------+\n\n"
-      },
       "dateCreated": "May 19, 2015 8:55:02 AM",
       "dateStarted": "Mar 4, 2016 2:13:56 PM",
       "dateFinished": "Mar 4, 2016 2:13:59 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Continent indicators",
       "text": "OptSaveMode.foreach(csvWriter(continentIndicators).mode(_).save(s\"$CsvDir/continent_indicators-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:25 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "graph": {
           "mode": "table",
@@ -1583,7 +1456,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1591,25 +1465,21 @@
       },
       "jobName": "paragraph_1432025747852_-1442269907",
       "id": "20150519-085547_1610625836",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 19, 2015 8:55:47 AM",
       "dateStarted": "Mar 4, 2016 2:13:57 PM",
       "dateFinished": "Mar 4, 2016 2:13:59 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Collaboration indicators",
       "text": "%md\n\n#### co_pub_count\nnumber of common publications between two institutions",
-      "dateUpdated": "Mar 4, 2016 2:12:25 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "title": true,
         "graph": {
           "mode": "table",
@@ -1620,7 +1490,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1628,21 +1499,17 @@
       },
       "jobName": "paragraph_1432051397569_334213176",
       "id": "20150519-160317_1055430484",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch4\u003eco_pub_count\u003c/h4\u003e\n\u003cp\u003enumber of common publications between two institutions\u003c/p\u003e\n"
-      },
       "dateCreated": "May 19, 2015 4:03:17 PM",
       "dateStarted": "Mar 4, 2016 2:12:25 PM",
       "dateFinished": "Mar 4, 2016 2:12:25 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "institutionCollaborations",
       "text": "val institutionCollaborations \u003d sqlc.sql(\"SELECT pub_dis_id, collect_set(inst_name) AS inst_names, year FROM institutions_to_publications WHERE is_main\u003dtrue GROUP BY pub_dis_id, year\").flatMap { r \u003d\u003e\n    val pid \u003d r.getLong(0)\n    val year \u003d r.getShort(2)\n    r.getSeq[String](1).combinations(2).toSeq.map { e \u003d\u003e\n        val pairs \u003d e.sorted\n        (pairs(0), pairs(1), pid, year)\n    }\n}.toDF(\n    \"inst_name_1\", \"inst_name_2\", \"pub_dis_id\", \"year\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ninstitutionCollaborations.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:25 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1657,7 +1524,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1665,21 +1533,17 @@
       },
       "jobName": "paragraph_1432137146614_-913925101",
       "id": "20150520-155226_1015586473",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionCollaborations: org.apache.spark.sql.DataFrame \u003d [inst_name_1: string, inst_name_2: string, pub_dis_id: bigint, year: smallint]\n+--------------------+--------------------+----------+----+\n|         inst_name_1|         inst_name_2|pub_dis_id|year|\n+--------------------+--------------------+----------+----+\n|University of Ten...|University of Ten...|      3928|2014|\n|Oak Ridge Natl La...|University of Ten...|      3928|2014|\n|Oak Ridge Nationa...|University of Ten...|      3928|2014|\n|United States Dep...|University of Ten...|      3928|2014|\n|Oak Ridge Natl La...|University of Ten...|      3928|2014|\n+--------------------+--------------------+----------+----+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 20, 2015 3:52:26 PM",
       "dateStarted": "Mar 4, 2016 2:13:59 PM",
       "dateFinished": "Mar 4, 2016 2:14:02 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Institution collaborations",
       "text": "OptSaveMode.foreach(csvWriter(institutionCollaborations).mode(_).save(s\"$CsvDir/institution_collaborations-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:25 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1693,7 +1557,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1701,21 +1567,17 @@
       },
       "jobName": "paragraph_1432137397368_149857991",
       "id": "20150520-155637_663524772",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 20, 2015 3:56:37 PM",
       "dateStarted": "Mar 4, 2016 2:14:00 PM",
       "dateFinished": "Mar 4, 2016 2:14:02 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "institutionCollaborationIndicators",
       "text": "val institutionCollaborationIndicators \u003d institutionCollaborations.groupBy(\n    \u0027inst_name_1, \u0027inst_name_2\n).agg(\n    count(\u0027pub_dis_id) as \"co_pub_count\",\n    min(\u0027year) as \"start_year\"\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ninstitutionCollaborationIndicators.registerTempTable(\"institution_collaboration_indicators\")",
-      "dateUpdated": "Mar 4, 2016 2:12:26 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1730,7 +1592,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1738,21 +1601,17 @@
       },
       "jobName": "paragraph_1432137630609_2043544460",
       "id": "20150520-160030_2138283901",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionCollaborationIndicators: org.apache.spark.sql.DataFrame \u003d [inst_name_1: string, inst_name_2: string, co_pub_count: bigint, start_year: smallint]\n"
-      },
       "dateCreated": "May 20, 2015 4:00:30 PM",
       "dateStarted": "Mar 4, 2016 2:14:02 PM",
       "dateFinished": "Mar 4, 2016 2:14:03 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "institutionCollaborationIndicators.describe(\"co_pub_count\", \"start_year\").show()\ninstitutionCollaborationIndicators.show(5)",
-      "dateUpdated": "Mar 4, 2016 2:12:26 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1767,7 +1626,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1775,21 +1635,17 @@
       },
       "jobName": "paragraph_1432137683930_1861619527",
       "id": "20150520-160123_1766180316",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+-------+------------------+----------+\n|summary|      co_pub_count|start_year|\n+-------+------------------+----------+\n|  count|                80|        80|\n|   mean|            1.0125|   2013.35|\n| stddev|0.1111024302164453|       NaN|\n|    min|                 1|      2012|\n|    max|                 2|      2014|\n+-------+------------------+----------+\n\n+--------------------+--------------------+------------+----------+\n|         inst_name_1|         inst_name_2|co_pub_count|start_year|\n+--------------------+--------------------+------------+----------+\n| Dept Commun Studies|Instituto Univers...|           1|      2012|\n|   Durham University|University of Cop...|           1|      2014|\n|Karlsruhe Institu...|University of Lju...|           1|      2012|\n|   Austrian Acad Sci|Karlsruhe Institu...|           1|      2014|\n|            CETCOPRA|University of Pan...|           1|      2014|\n+--------------------+--------------------+------------+----------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "May 20, 2015 4:01:23 PM",
       "dateStarted": "Mar 4, 2016 2:14:03 PM",
       "dateFinished": "Mar 4, 2016 2:14:04 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "CSV export - Institution collaboration indicators",
       "text": "OptSaveMode.foreach(csvWriter(institutionCollaborationIndicators).mode(_)save(s\"$CsvDir/institution_collaboration_indicators-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:12:26 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -1803,7 +1659,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1811,20 +1669,16 @@
       },
       "jobName": "paragraph_1432138188740_1462382629",
       "id": "20150520-160948_1829471681",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 20, 2015 4:09:48 PM",
       "dateStarted": "Mar 4, 2016 2:14:03 PM",
       "dateFinished": "Mar 4, 2016 2:14:04 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select co_pub_count, count(*) c from institution_collaboration_indicators group by co_pub_count order by c desc",
-      "dateUpdated": "Mar 4, 2016 2:12:26 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/sql",
@@ -1860,8 +1714,9 @@
             }
           }
         },
-        "editorHide": true,
-        "enabled": true
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1869,21 +1724,17 @@
       },
       "jobName": "paragraph_1432138348461_1215940830",
       "id": "20150520-161228_1375560947",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "co_pub_count\tc\n1\t79\n2\t1\n"
-      },
       "dateCreated": "May 20, 2015 4:12:28 PM",
       "dateStarted": "Mar 4, 2016 2:14:04 PM",
       "dateFinished": "Mar 4, 2016 2:14:06 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institution collaboration graph",
       "text": "val institutionCollaborationGraph \u003d {\n    import org.apache.tinkerpop.gremlin.structure.T\n    val g \u003d org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph.open()\n    val verticesMap \u003d institutionIndicators.filter(\u0027is_from_main_pub \u003d\u003d\u003d true).select(\n        \u0027inst_name, \u0027inst_impact, \u0027inst_impact_from_authors, \u0027inst_author_count, \u0027inst_pub_count, \u0027inst_conf_count, \u0027inst_first_pub_year\n    ).collect().map { r \u003d\u003e\n        val id \u003d r.getString(0)\n        val v \u003d g.addVertex(\n            T.id, id,\n            T.label, id,\n            \"impact\",Option(r(1)).asInstanceOf[Option[java.lang.Double]].getOrElse(new java.lang.Double(0D)),\n            \"impact_from_authors\",Option(r(2)).asInstanceOf[Option[java.lang.Double]].getOrElse(new java.lang.Double(0D)),\n            \"author_count\", Option(r(3)).asInstanceOf[Option[java.lang.Long]].getOrElse(new java.lang.Long(0L)),\n            \"pub_count\", Option(r(4)).asInstanceOf[Option[java.lang.Long]].getOrElse(new java.lang.Long(0L)),\n            \"conf_count\", Option(r(5)).asInstanceOf[Option[java.lang.Long]].getOrElse(new java.lang.Long(0L)),\n            \"first_pub_year\", new java.lang.Short(r.getShort(6)))\n        id -\u003e v\n    }.toMap\n    institutionCollaborationIndicators.collect().foreach { r \u003d\u003e\n        verticesMap(r.getString(0)).addEdge(\n            \"collaborates_with\",\n            verticesMap(r.getString(1)),\n            \"co_pub_count\", new java.lang.Long(r.getLong(2)),\n            \"start_year\", new java.lang.Short(r.getShort(3)))\n    }\n    g\n}\nval institutionCollaborationPath \u003d s\"$GraphDir/institution-collaborations.graphml\"\ninstitutionCollaborationGraph.io(org.apache.tinkerpop.gremlin.structure.io.IoCore.graphml()).writeGraph(institutionCollaborationPath)",
-      "dateUpdated": "Mar 4, 2016 2:12:27 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1897,7 +1748,9 @@
         },
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "title": true
+        "title": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1905,19 +1758,15 @@
       },
       "jobName": "paragraph_1445962980942_-160078899",
       "id": "20151027-162300_1323115097",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionCollaborationGraph: org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph \u003d tinkergraph[vertices:98 edges:80]\ninstitutionCollaborationPath: String \u003d /tmp/anticipation/graphml/institution-collaborations.graphml\n"
-      },
       "dateCreated": "Oct 27, 2015 4:23:00 PM",
       "dateStarted": "Mar 4, 2016 2:14:05 PM",
       "dateFinished": "Mar 4, 2016 2:14:07 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
-      "dateUpdated": "Mar 4, 2016 2:12:27 PM",
+      "dateUpdated": "Mar 4, 2016 5:38:42 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1930,7 +1779,9 @@
           "scatter": {}
         },
         "enabled": true,
-        "editorMode": "ace/mode/scala"
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1938,38 +1789,17 @@
       },
       "jobName": "paragraph_1456999268318_1175713372",
       "id": "20160303-110108_1056964009",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT"
-      },
       "dateCreated": "Mar 3, 2016 11:01:08 AM",
       "dateStarted": "Mar 4, 2016 2:14:06 PM",
       "dateFinished": "Mar 4, 2016 2:14:07 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],
   "name": "[33] Institution indicators",
   "id": "2B395Z3DN",
-  "angularObjects": {
-    "2BECU381X": [],
-    "2BFE4973F": [],
-    "2BDUP8TX1": [],
-    "2BC2TVSBR": [],
-    "2BEK1W1PD": [],
-    "2BEV8A6Z4": [],
-    "2BCVF5P5F": [],
-    "2BEMYV7QQ": [],
-    "2BFPPNXXV": [],
-    "2BD9VECZR": [],
-    "2BE14FKBG": [],
-    "2BEKWFP9V": [],
-    "2BDPVAN2T": [],
-    "2BDMC46FS": [],
-    "2BFC9NN6P": [],
-    "2BE7P7NCM": [],
-    "2BFQQPY3C": []
-  },
+  "angularObjects": {},
   "config": {
     "looknfeel": "default"
   },

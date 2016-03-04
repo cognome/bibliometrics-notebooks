@@ -2,7 +2,7 @@
   "paragraphs": [
     {
       "text": "%md\nThe aim of this proof of concept is to disambiguate entities according to their properties and their relationships with other entities and to do it with GraphX, the Spark\u0027s API for graph-parallel computation.",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -17,7 +17,7 @@
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/markdown",
-        "tableHide": false
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -35,7 +35,7 @@
     {
       "title": "Configuration",
       "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\n\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval ProcessingDir \u003d s\"$WorkDir/processing\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -48,7 +48,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true,
         "editorHide": false
@@ -69,7 +69,7 @@
     {
       "title": "",
       "text": "def buildName(nameParts: Seq[String]) \u003d nameParts.mkString(\"-\")\n\nval extractFirstName \u003d sqlc.udf.register(\"extract_first_name\", { givenNames: Seq[Seq[String]] \u003d\u003e Option(givenNames).flatMap(_.headOption).map(buildName) })\n\nval extractMiddleNames \u003d sqlc.udf.register(\"extract_middle_names\", { givenNames: Seq[Seq[String]] \u003d\u003e Option(givenNames).filter(_.size \u003e 1).map(_.tail.map(buildName)) })",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -84,7 +84,7 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": false,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false
       },
       "settings": {
@@ -103,7 +103,7 @@
     {
       "title": "Authors",
       "text": "val authors \u003d sqlc.read.parquet(\n        s\"$ProcessingDir/authors.parquet\"\n    ).filter(\n        \u0027did \u003d\u003d\u003d DatasetId \u0026\u0026 \u0027is_valid \u003d\u003d\u003d true\n    ).withColumn(\n        \"first_name\", extractFirstName(\u0027given_names)\n    ).withColumn(\n        \"middle_names\", extractMiddleNames(\u0027given_names)\n    ).repartition(\n        NumPartitions\n    ).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -115,7 +115,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -137,7 +137,7 @@
     {
       "title": "",
       "text": "authors.printSchema()",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -149,7 +149,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -171,7 +171,7 @@
     {
       "title": "Metrics  1/2",
       "text": "val authorCount \u003d authors.count()\n\ndef authorPercentage(x: Long): Float \u003d (x / authorCount.toFloat) * 100\n\nval authorCounts \u003d Seq(\n    authors.filter(\"first_name is null\").count(),\n    authors.filter(\"size(middle_names) \u003e 0\").count(),\n    authors.filter(\"nickname is not null\").count(),\n    authors.filter(\"suffix is not null\").count(),\n    authors.selectExpr(\"lower(last_name)\").distinct.count(),\n    authors.selectExpr(\"lower(first_name)\").distinct.count(),\n    authors.explode(\"middle_names\", \"middle_name\")((a: Seq[String]) \u003d\u003e Option(a).getOrElse(Seq.empty)).selectExpr(\"lower(middle_name)\").distinct.count(),\n    authors.selectExpr(\"lower(nickname)\").distinct.count(),\n    authors.selectExpr(\"lower(suffix)\").distinct.count())\n\nval authorPercentages \u003d authorCounts.map(authorPercentage)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -184,7 +184,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala"
@@ -205,7 +205,7 @@
     {
       "title": "Metrics 2/2",
       "text": "println(s\"authors: $authorCount\")\nprintln()\nprintln(f\"authors without first name: ${authorCounts(0)} (${authorPercentages(0)}%.2f %%)\")\nprintln(f\"authors with middle names: ${authorCounts(1)} (${authorPercentages(1)}%.2f %%)\")\nprintln(f\"authors with nickname name: ${authorCounts(2)} (${authorPercentages(2)}%.2f %%)\")\nprintln(f\"authors with suffix: ${authorCounts(3)} (${authorPercentages(3)}%.2f %%)\")\nprintln()\nprintln(f\"distinct author last names: ${authorCounts(4)} (${authorPercentages(4)}%.2f %%)\")\nprintln(f\"distinct author first names: ${authorCounts(5)} (${authorPercentages(5)}%.2f %%)\")\nprintln(f\"distinct author middle names: ${authorCounts(6)} (${authorPercentages(6)}%.2f %%)\")\nprintln(f\"distinct author nicknames: ${authorCounts(7)} (${authorPercentages(7)}%.2f %%)\")\nprintln(f\"distinct author suffixes: ${authorCounts(8)} (${authorPercentages(8)}%.2f %%)\")",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -218,7 +218,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala"
@@ -239,7 +239,7 @@
     {
       "title": "Imports",
       "text": "import org.apache.spark.rdd.RDD\nimport org.apache.spark.graphx._",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -252,7 +252,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala"
@@ -273,7 +273,7 @@
     {
       "title": "Labels",
       "text": "type Label \u003d Byte\n\nval AuthorL: Label \u003d 0\nval PublicationL: Label \u003d 1\nval AlgoKeyL: Label \u003d 2",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -285,7 +285,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -307,7 +307,7 @@
     {
       "title": "Sanity checks",
       "text": "/*\n- authors.id is unique for a given authors.did\n- authors.last_name is always defined\n*/\n\nassert(authors.select(\u0027id).distinct.count() \u003d\u003d authors.select(\u0027id).count())\nassert(authors.filter(\u0027last_name.isNull).count() \u003d\u003d 0)",
-      "dateUpdated": "Mar 4, 2016 4:05:47 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -319,7 +319,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -341,7 +341,7 @@
     {
       "title": "algoKeyUDF",
       "text": "val algoKeyUDF \u003d udf { (lastName: String, firstName: String) \u003d\u003e (lastName + Option(firstName).map(e \u003d\u003e \" \" + e.take(1)).getOrElse(\"\")).toLowerCase() }",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -353,7 +353,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "editorHide": false,
         "enabled": true,
@@ -375,7 +375,7 @@
     {
       "title": "Authors with algo key",
       "text": "val authors2 \u003d authors.withColumn(\"algo_key\", algoKeyUDF(\u0027last_name, \u0027first_name)).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -387,7 +387,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -409,7 +409,7 @@
     {
       "title": "Vertices",
       "text": "val authorVertices \u003d authors2.select(\u0027id).map(r \u003d\u003e (r.getLong(0).toString, AuthorL))\nval publicationVertices \u003d authors2.select(\u0027pub_id).distinct.map(r \u003d\u003e (r.getLong(0).toString, PublicationL))\n\nval algoKeyVertices \u003d authors2.select(\u0027algo_key).distinct.map(r \u003d\u003e (r.getString(0), AlgoKeyL))\n\nval vertices \u003d (authorVertices ++ publicationVertices ++ algoKeyVertices).zipWithUniqueId().map(_.swap).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -421,7 +421,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -443,7 +443,7 @@
     {
       "title": "ID mapping",
       "text": "val authorIdMapping \u003d sc.broadcast(vertices.filter(_._2._2 \u003d\u003d AuthorL).map { case (vid, (entityId, _)) \u003d\u003e (entityId.toLong, vid) }.collect().toMap)\nval publicationIdMapping \u003d sc.broadcast(vertices.filter(_._2._2 \u003d\u003d PublicationL).map { case (vid, (entityId, _)) \u003d\u003e (entityId.toLong, vid) }.collect().toMap)\nval algoKeyIdMapping \u003d sc.broadcast(vertices.filter(_._2._2 \u003d\u003d AlgoKeyL).map { case (vid, (entityId, _)) \u003d\u003e (entityId, vid) }.collect().toMap)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -455,7 +455,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -477,7 +477,7 @@
     {
       "title": "Metrics",
       "text": "authorIdMapping.value.size\npublicationIdMapping.value.size\nalgoKeyIdMapping.value.size",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -490,7 +490,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -511,7 +511,7 @@
     {
       "title": "Edges",
       "text": "val publicationEdges \u003d authors2.select(\u0027id, \u0027pub_id).map { r \u003d\u003e\n    val srcId \u003d authorIdMapping.value(r.getLong(0))\n    val dstId \u003d publicationIdMapping.value(r.getLong(1))\n    Edge(srcId, dstId, 0)\n}.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval algoKeyEdges \u003d authors2.select(\u0027id, \u0027algo_key).map { r \u003d\u003e\n    val srcId \u003d authorIdMapping.value(r.getLong(0))\n    val dstId \u003d algoKeyIdMapping.value(r.getString(1))\n    Edge(srcId, dstId, 1)\n}.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval edges \u003d publicationEdges ++ algoKeyEdges",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -523,7 +523,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -545,7 +545,7 @@
     {
       "title": "Sanity checks",
       "text": "assert(publicationEdges.count \u003d\u003d publicationEdges.distinct.count)\nassert(algoKeyEdges.count \u003d\u003d algoKeyEdges.distinct.count)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -558,7 +558,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -579,7 +579,7 @@
     {
       "title": "Graph",
       "text": "val graph \u003d Graph[(String, Label), Int](\n    vertices,\n    edges,\n    edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n    vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -591,7 +591,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -613,7 +613,7 @@
     {
       "title": "Metrics",
       "text": "graph.numVertices\ngraph.numEdges",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -626,7 +626,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -647,7 +647,7 @@
     {
       "title": "Neighbors IDs",
       "text": "val nbrs \u003d graph.collectNeighborIds(EdgeDirection.In).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:44 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -659,7 +659,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -681,7 +681,7 @@
     {
       "title": "Metrics",
       "text": "nbrs.values.map(_.size).max",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:16 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -694,7 +694,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -715,7 +715,7 @@
     {
       "title": "Neighbors Graph",
       "text": "val nbrsGraph: Graph[Array[VertexId], Int] \u003d graph.outerJoinVertices(nbrs) { (_, _, optNbrs) \u003d\u003e optNbrs.getOrElse(Array.empty[VertexId]) }",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -727,7 +727,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -749,7 +749,7 @@
     {
       "title": "similarity Vertices",
       "text": "val simVertices \u003d graph.vertices.filter(_._2._2 \u003d\u003d AuthorL)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -761,7 +761,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -783,7 +783,7 @@
     {
       "title": "similarity Edges",
       "text": "def sortIdPair(id1: VertexId, id2: VertexId) : (VertexId, VertexId) \u003d if (id1 \u003c\u003d id2) (id1, id2) else (id2, id1)\n\ndef reduceFunc(w1: Int, w2: Int): Int \u003d if (w1 * w2 !\u003d 0) w1 + w2 else 0\n\nval simEdges \u003d nbrsGraph.triplets.flatMap(t \u003d\u003e t.dstAttr.filterNot(_ \u003d\u003d t.srcId).map(dstId \u003d\u003e (sortIdPair(t.srcId, dstId), t.attr))).reduceByKey(reduceFunc).map { case ((srcId, dstId), attr) \u003d\u003e Edge(srcId, dstId, attr) }",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -795,7 +795,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -817,7 +817,7 @@
     {
       "title": "similarity Graph",
       "text": "val simGraph \u003d Graph[(String, Label), Int](\n    simVertices,\n    simEdges,\n    edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n    vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -829,7 +829,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -851,7 +851,7 @@
     {
       "title": "Metrics",
       "text": "simGraph.numVertices\nsimGraph.numEdges",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -864,7 +864,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -885,7 +885,7 @@
     {
       "title": "Similarity Threshold",
       "text": "val simThreshold \u003d 1 // To be tuned",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -898,7 +898,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -919,7 +919,7 @@
     {
       "title": "connected components Similarity Graph",
       "text": "val ccSimGraph: Graph[VertexId, Int] \u003d simGraph.subgraph(epred \u003d t \u003d\u003e t.attr \u003e\u003d simThreshold).connectedComponents().persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -931,7 +931,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -953,7 +953,7 @@
     {
       "title": "maximum Neighbors Similarity",
       "text": "def sendSimilarity(ctx: EdgeContext[VertexId, Int, Int]) \u003d {\n  val w \u003d ctx.attr\n  ctx.sendToSrc(w)\n  ctx.sendToDst(w)\n}\n\nval maxNbrsSimilarity: VertexRDD[Int] \u003d ccSimGraph.aggregateMessages[Int](sendSimilarity, (w1, w2) \u003d\u003e Math.max(w1, w2), TripletFields.EdgeOnly)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -965,7 +965,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -987,7 +987,7 @@
     {
       "title": "Connected Components Maximum Similarity Graph",
       "text": "val ccMaxSimGraph: Graph[(VertexId, Int), Int] \u003d ccSimGraph.outerJoinVertices(maxNbrsSimilarity) { (_, cc, optMax) \u003d\u003e (cc, optMax.getOrElse(0)) }.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -999,7 +999,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -1021,7 +1021,7 @@
     {
       "title": "maximum Similarity Degree",
       "text": "def sendMaxSimDeg(ctx: EdgeContext[(VertexId, Int), Int, Int]) \u003d {\n  if (ctx.srcAttr._2 \u003d\u003d ctx.attr) ctx.sendToSrc(1)\n  if (ctx.dstAttr._2 \u003d\u003d ctx.attr) ctx.sendToDst(1)\n}\n\nval maxSimDegree: VertexRDD[Int] \u003d ccMaxSimGraph.aggregateMessages[Int](sendMaxSimDeg, _ + _)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1033,7 +1033,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -1055,7 +1055,7 @@
     {
       "title": "result Similarity Graph",
       "text": "val resultSimGraph: Graph[(VertexId, Int, Int), Int] \u003d ccMaxSimGraph.outerJoinVertices(maxSimDegree) { case (_, (cc, maxSim), maxSimDegOpt) \u003d\u003e (cc, maxSim, maxSimDegOpt.getOrElse(0)) }.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1067,7 +1067,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -1089,7 +1089,7 @@
     {
       "title": "Metrics",
       "text": "resultSimGraph.numVertices\nresultSimGraph.numEdges",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1102,7 +1102,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -1123,7 +1123,7 @@
     {
       "title": "Disambiguated Authors",
       "text": "val authorVertexIdMapping \u003d sc.broadcast(authorIdMapping.value.map(_.swap))\n\nval disambiguatedAuthors \u003d resultSimGraph.vertices.map {\n    case (vid, (cc, maxSim, maxSimDeg)) \u003d\u003e (authorVertexIdMapping.value(vid), cc, maxSim, maxSimDeg)\n}.toDF(\"original_id\", \"dis_id\", \"max_sim\", \"max_sim_deg\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ndisambiguatedAuthors.registerTempTable(\"disambiguated_authors\")",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1135,7 +1135,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -1157,7 +1157,7 @@
     {
       "title": "Metrics 1/2",
       "text": "val disambiguatedAuthorCount \u003d disambiguatedAuthors.select(\u0027dis_id).distinct.count()\n\nval disambiguatedAuthorPercentage \u003d authorPercentage(disambiguatedAuthorCount)",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1169,7 +1169,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
@@ -1191,7 +1191,7 @@
     {
       "title": "Metrics 2/2",
       "text": "println(f\"disambiguated authors: $disambiguatedAuthorCount ($disambiguatedAuthorPercentage%.2f %%)\")",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1204,7 +1204,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala"
@@ -1225,7 +1225,7 @@
     {
       "title": "Authors with disambiguated authors",
       "text": "// Specific did and is_valid \u003d true\nval authors3 \u003d disambiguatedAuthors.join(authors2, \u0027id \u003d\u003d\u003d \u0027original_id)\n\nauthors3.registerTempTable(\"authors_3\")",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1237,7 +1237,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -1259,7 +1259,7 @@
     {
       "title": "Sanity checks",
       "text": "/*\n- no authors were lost during processing\n- one algo_key by dis_id\n*/\n\nassert(authors.count() \u003d\u003d authors3.count())\n\nassert(authors3.select(\u0027algo_key, \u0027dis_id).distinct.groupBy(\u0027algo_key).count().filter(\u0027count \u003e 1).count() \u003d\u003d 0) // FIXME Should be the same amount!",
-      "dateUpdated": "Mar 4, 2016 4:05:36 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1272,7 +1272,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -1293,7 +1293,7 @@
     {
       "title": "Debug",
       "text": "val publications \u003d sqlc.read.parquet(\n        s\"$ProcessingDir/publications.parquet\"\n    ).filter(\n        \u0027did \u003d\u003d\u003d DatasetId \u0026\u0026 \u0027is_valid \u003d\u003d\u003d true\n    ).repartition(\n        NumPartitions\n    ).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\npublications.registerTempTable(\"publications\")",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1305,7 +1305,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "editorHide": false,
         "editorMode": "ace/mode/scala",
@@ -1327,7 +1327,7 @@
     {
       "title": "FIXME: Incorrect \"By:\"",
       "text": "%sql\nselect c, algo_key, t3.pub_id, title, year, times_cited, is_valid\nfrom (\n    select *\n    from (\n        select algo_key, pub_id, count(*) c\n        from (select distinct algo_key, pub_id, dis_id from authors_3) t1\n        group by algo_key, pub_id\n        ) t2\n    where c \u003e 1\n    ) t3\njoin publications\non t3.pub_id \u003d publications.pub_id\norder by c desc, algo_key asc\nlimit 8",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1358,7 +1358,7 @@
           }
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/sql",
         "enabled": true,
         "editorHide": false
@@ -1379,7 +1379,7 @@
     {
       "title": "name Normalization",
       "text": "def cleanName(p: String): String \u003d p.replace(\" \u0027\", \"\u0027\").replace(\"\u0027 \", \"\u0027\").replace(\"\u0027\u0027\", \"\").replace(\"|\", \"\")\n\n// Not suitable for suffixes and for initials: currently not used\n// capitalizeName(p.toLowerCase(), Seq(\u0027 \u0027, \u0027\u0027\u0027, \u0027-\u0027))\ndef capitalizeName(p: String, separators: Seq[Char]): String \u003d {\n    var s \u003d p\n    separators.foreach(sep \u003d\u003e s \u003d s.split(sep).map(_.capitalize).mkString(sep.toString))\n    s\n}\n\ndef normalizeName(p: String): String \u003d cleanName(p).toUpperCase().split(\u0027 \u0027).map(e \u003d\u003e if (e.length \u003d\u003d 1) s\"$e.\" else e).mkString(\" \")\n\n// Nickname is currently ignored\ndef generateFullName(firstName: Option[String], middleNames: Option[Seq[String]], lastName: String, suffix: Option[String]): String \u003d {\n    normalizeName(\n        Seq(\n            firstName,\n            middleNames.map(_.mkString(\" \")),\n            Some(lastName + suffix.map(e \u003d\u003e s\", $e\").getOrElse(\"\"))\n        ).flatten.mkString(\" \"))\n}\n\nval generateFullNameUDF \u003d udf { (firstName: String, middleNames: Seq[String], lastName: String, suffix: String) \u003d\u003e generateFullName(Option(firstName), Option(middleNames), lastName, Option(suffix)) }",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1392,7 +1392,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -1413,7 +1413,7 @@
     {
       "title": "Authors with generated full name",
       "text": "val authors4 \u003d authors3.withColumn(\n    \"generated_full_name\", generateFullNameUDF(\u0027first_name, \u0027middle_names, \u0027last_name, \u0027suffix)\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nauthors4.registerTempTable(\"authors_4\")",
-      "dateUpdated": "Mar 4, 2016 4:04:45 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1425,7 +1425,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -1447,7 +1447,7 @@
     {
       "title": "Sanity Checks",
       "text": "/*\n- no unchecked characters\n*/\n\nassert(authors4.select(\u0027generated_full_name).map(_.getString(0)).filter(e \u003d\u003e !e.matches(\"\"\"[A-Z \u0027\\-\\.\\,]+\"\"\")).count() \u003d\u003d 0)",
-      "dateUpdated": "Mar 4, 2016 4:05:07 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1463,7 +1463,7 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
-        "tableHide": false
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1471,20 +1471,16 @@
       },
       "jobName": "paragraph_1431442825826_1012014324",
       "id": "20150512-150025_225408404",
-      "result": {
-        "code": "ERROR",
-        "type": "TEXT",
-        "msg": "\u003cconsole\u003e:26: error: not found: value authors4\nassert(authors4.select(\u0027generated_full_name).map(_.getString(0)).filter(e \u003d\u003e !e.matches(\"\"\"[A-Z \u0027\\-\\.\\,]+\"\"\")).count() \u003d\u003d 0)\n       ^\n"
-      },
       "dateCreated": "May 12, 2015 3:00:25 PM",
       "dateStarted": "Mar 4, 2016 4:05:07 PM",
       "dateFinished": "Mar 4, 2016 4:05:36 PM",
       "status": "ERROR",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql\nselect generated_full_name, first_name, middle_names, last_name, suffix, raw, dis_id\nfrom authors_4\nlimit 8",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1514,7 +1510,7 @@
             }
           }
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/sql",
         "enabled": true,
         "editorHide": false
@@ -1535,7 +1531,7 @@
     {
       "title": "",
       "text": "%sql\nselect generated_full_name, first_name, middle_names, last_name, suffix, raw, dis_id\nfrom authors_4\nwhere instr(generated_full_name, \"${symbol\u003d-,-|\\\u0027|.}\") \u003e 0\nlimit 8",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1571,7 +1567,7 @@
           }
         },
         "title": false,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/sql",
         "enabled": true,
         "editorHide": false
@@ -1611,7 +1607,7 @@
     {
       "title": "Normalized full name selection",
       "text": "def selectFullName(fullNames: Map[String, Int]) \u003d {\n    val maxOcc \u003d fullNames.values.max\n    fullNames.filter(_._2 \u003d\u003d maxOcc).keys.maxBy(_.length)\n}\n\nval selectFullNamesUDF \u003d udf { (fullNames: Map[String, Int]) \u003d\u003e selectFullName(fullNames) }",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1624,7 +1620,7 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -1645,7 +1641,7 @@
     {
       "title": "aggregated Full Names",
       "text": "val aggregatedFullNames \u003d authors4.select(\n    \u0027dis_id, \u0027generated_full_name\n).map(\n    r \u003d\u003e (r.getLong(0), r.getString(1))\n).aggregateByKey(collection.mutable.HashMap.empty[String, Int])(\n    (acc, v) \u003d\u003e {\n        acc(v) \u003d acc.getOrElse(v, 0) + 1 // withDefaultValue() doesn\u0027t pass the Kryo serialization\n        acc\n    },\n    (acc1, acc2) \u003d\u003e {\n        val (smallest, largest) \u003d if (acc1.size \u003c\u003d acc2.size) (acc1, acc2) else (acc2, acc1)\n        largest ++\u003d smallest.map { case (k, v) \u003d\u003e k -\u003e (v + largest.getOrElse(k, 0)) }\n    }\n).toDF(\n    \"dis_id\", \"full_names\"\n).withColumn(\n    \"dis_name\", selectFullNamesUDF(\u0027full_names)\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\naggregatedFullNames.registerTempTable(\"aggregated_full_names\")",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1657,7 +1653,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -1678,7 +1674,7 @@
     },
     {
       "text": "%sql select dis_name, full_names, dis_id from aggregated_full_names where size(full_names) \u003e 2 limit 8",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1708,7 +1704,7 @@
             }
           }
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/sql",
         "enabled": true,
         "editorHide": false
@@ -1729,7 +1725,7 @@
     {
       "title": "Final authors DataFrame",
       "text": "val authors5 \u003d authors4.join(\n    aggregatedFullNames, authors4(\"dis_id\") \u003d\u003d\u003d aggregatedFullNames(\"dis_id\")\n).select(\n    // original fields\n    \u0027pub_id, \u0027id, \u0027raw, \u0027last_name, \u0027first_name, \u0027middle_names, \u0027suffix, \u0027nickname, \u0027affiliations,\n    // disambiguation result fields\n    authors4(\"dis_id\"), \u0027dis_name,\n    // disambiguation debug fields\n    \u0027generated_full_name //\u0027max_sim, \u0027max_sim_deg, \u0027algo_key, \u0027full_names\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nauthors5.registerTempTable(\"authors_5\")",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1741,7 +1737,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
@@ -1762,7 +1758,7 @@
     },
     {
       "text": "%sql\nselect dis_name, generated_full_name, first_name, middle_names, last_name, suffix, raw, dis_id\nfrom authors_5\nwhere dis_name \u003c\u003e generated_full_name\nlimit 8",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1797,7 +1793,7 @@
             }
           }
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/sql",
         "enabled": true,
         "editorHide": false
@@ -1817,7 +1813,7 @@
     },
     {
       "text": "val possibleWrongFullNamesC \u003d authors5.filter(\"dis_name \u003c\u003e generated_full_name\").count()\nval possibleWrongFullNamesP \u003d authorPercentage(possibleWrongFullNamesC)",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1829,7 +1825,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -1850,7 +1846,7 @@
     {
       "title": "Metrics",
       "text": "println(f\"authors with maybe a wrong full name: $possibleWrongFullNamesC ($possibleWrongFullNamesP%.2f %%)\")",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1866,7 +1862,7 @@
         "editorHide": false,
         "enabled": true,
         "editorMode": "ace/mode/scala",
-        "tableHide": false
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1883,7 +1879,7 @@
     },
     {
       "text": "authors5.show()",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1895,7 +1891,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false
@@ -1916,7 +1912,7 @@
     {
       "title": "Write",
       "text": "OptSaveMode.foreach(authors5.write.mode(_).parquet(s\"$DisambigDir/disambiguated_authors_pOC-did_$DatasetId.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1932,7 +1928,7 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
-        "tableHide": false
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1949,7 +1945,7 @@
     },
     {
       "text": "",
-      "dateUpdated": "Mar 4, 2016 4:04:46 PM",
+      "dateUpdated": "Mar 4, 2016 5:34:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1964,7 +1960,7 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "editorHide": false,
-        "tableHide": false
+        "tableHide": true
       },
       "settings": {
         "params": {},

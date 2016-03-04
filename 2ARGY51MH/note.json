@@ -3,7 +3,7 @@
     {
       "title": "Configuration",
       "text": "val OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\nval CsvDelimiter \u003d \"\\t\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval RawDir \u003d s\"$WorkDir/raw\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"\nval IndicatorsDir \u003d s\"$WorkDir/indicators\"\nval CsvDir \u003d s\"$WorkDir/csv\"",
-      "dateUpdated": "Mar 4, 2016 2:14:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -18,7 +18,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -26,20 +27,16 @@
       },
       "jobName": "paragraph_1435571062459_32848159",
       "id": "20150629-094422_504316531",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nCsvDelimiter: String \u003d \"\t\"\nWorkDir: String \u003d /tmp/anticipation\nRawDir: String \u003d /tmp/anticipation/raw\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\nIndicatorsDir: String \u003d /tmp/anticipation/indicators\nCsvDir: String \u003d /tmp/anticipation/csv\n"
-      },
       "dateCreated": "Jun 29, 2015 9:44:22 AM",
       "dateStarted": "Mar 4, 2016 2:14:19 PM",
       "dateFinished": "Mar 4, 2016 2:14:20 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "def csvWriter(df: org.apache.spark.sql.DataFrame) \u003d df.repartition(1).write.format(\"com.databricks.spark.csv\").option(\"header\", \"true\").option(\"delimiter\", CsvDelimiter)",
-      "dateUpdated": "Mar 4, 2016 2:14:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -53,7 +50,8 @@
         },
         "enabled": true,
         "editorMode": "ace/mode/scala",
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -61,20 +59,16 @@
       },
       "jobName": "paragraph_1456921388102_-1224291523",
       "id": "20160302-132308_1649246792",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "csvWriter: (df: org.apache.spark.sql.DataFrame)org.apache.spark.sql.DataFrameWriter\n"
-      },
       "dateCreated": "Mar 2, 2016 1:23:08 PM",
       "dateStarted": "Mar 4, 2016 2:14:19 PM",
       "dateFinished": "Mar 4, 2016 2:14:20 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n### Reference Exports",
-      "dateUpdated": "Mar 4, 2016 2:14:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -88,7 +82,8 @@
         },
         "enabled": true,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -96,21 +91,17 @@
       },
       "jobName": "paragraph_1456993441921_1080421601",
       "id": "20160303-092401_374217712",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch3\u003eReference Exports\u003c/h3\u003e\n"
-      },
       "dateCreated": "Mar 3, 2016 9:24:01 AM",
       "dateStarted": "Mar 4, 2016 2:14:19 PM",
       "dateFinished": "Mar 4, 2016 2:14:19 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Citation edges",
       "text": "val citationEdges \u003d sqlc.read.parquet(s\"$RawDir/citation_edges.parquet\").select(\n    \u0027srcId, \u0027dstId, array_contains(\u0027attr.getField(\"_2\"), \"backward\") as \"is_backward\", array_contains(\u0027attr.getField(\"_2\"), \"forward\") as \"is_forward\"\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:14:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -124,7 +115,9 @@
         },
         "editorMode": "ace/mode/scala",
         "title": true,
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -132,21 +125,17 @@
       },
       "jobName": "paragraph_1443185369911_-1446392345",
       "id": "20150925-124929_14147875",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "citationEdges: org.apache.spark.sql.DataFrame \u003d [srcId: bigint, dstId: bigint, is_backward: boolean, is_forward: boolean]\n"
-      },
       "dateCreated": "Sep 25, 2015 12:49:29 PM",
       "dateStarted": "Mar 4, 2016 2:14:20 PM",
       "dateFinished": "Mar 4, 2016 2:14:21 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Backward references",
       "text": "val backwardReferences \u003d citationEdges.filter(\u0027is_backward \u003d\u003d\u003d true).select(\u0027srcId as \"main_id\", \u0027dstId as \"backward_id\")\nOptSaveMode.foreach(csvWriter(backwardReferences).mode(_).save(s\"$CsvDir/backward_refs-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -160,7 +149,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -168,21 +159,17 @@
       },
       "jobName": "paragraph_1437397372846_1316954040",
       "id": "20150720-130252_1446815700",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "backwardReferences: org.apache.spark.sql.DataFrame \u003d [main_id: bigint, backward_id: bigint]\n"
-      },
       "dateCreated": "Jul 20, 2015 1:02:52 PM",
       "dateStarted": "Mar 4, 2016 2:14:20 PM",
       "dateFinished": "Mar 4, 2016 2:14:21 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Forward references",
       "text": "val forwardReferences \u003d citationEdges.filter(\u0027is_forward \u003d\u003d\u003d true).select(\u0027dstId as \"main_id\", \u0027srcId as \"forward_id\")\nOptSaveMode.foreach(csvWriter(forwardReferences).mode(_).save(s\"$CsvDir/forward_refs-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -196,7 +183,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -204,20 +193,16 @@
       },
       "jobName": "paragraph_1437397856230_551958856",
       "id": "20150720-131056_1233677282",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "forwardReferences: org.apache.spark.sql.DataFrame \u003d [main_id: bigint, forward_id: bigint]\n"
-      },
       "dateCreated": "Jul 20, 2015 1:10:56 PM",
       "dateStarted": "Mar 4, 2016 2:14:21 PM",
       "dateFinished": "Mar 4, 2016 2:14:22 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n### Publication Exports",
-      "dateUpdated": "Mar 4, 2016 2:14:19 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -231,7 +216,8 @@
         },
         "enabled": true,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -239,20 +225,16 @@
       },
       "jobName": "paragraph_1456993355599_709985031",
       "id": "20160303-092235_253853540",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch3\u003ePublication Exports\u003c/h3\u003e\n"
-      },
       "dateCreated": "Mar 3, 2016 9:22:35 AM",
       "dateStarted": "Mar 4, 2016 2:14:20 PM",
       "dateFinished": "Mar 4, 2016 2:14:20 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val publicationIndicators \u003d sqlc.read.parquet(s\"$IndicatorsDir/publication_instances_and_indicators-did_$DatasetId.parquet\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -266,7 +248,8 @@
         },
         "enabled": true,
         "editorMode": "ace/mode/scala",
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -274,21 +257,17 @@
       },
       "jobName": "paragraph_1456993467097_-3770152",
       "id": "20160303-092427_164828494",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "publicationIndicators: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categories: array\u003cstring\u003e, scielo_collections: array\u003cstring\u003e, pub_dis_id: bigint, dis_title: string, pub_lifetime: smallint, pub_impact: float]\n"
-      },
       "dateCreated": "Mar 3, 2016 9:24:27 AM",
       "dateStarted": "Mar 4, 2016 2:14:22 PM",
       "dateFinished": "Mar 4, 2016 2:14:22 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Publications CSV",
       "text": "val slimPublications \u003d publicationIndicators.drop(\"abstract\").drop(\"author_keywords\").drop(\"keywords_plus\").drop(\"research_areas\").drop(\"wos_categories\").drop(\"scielo_categories\").drop(\"scielo_collections\")\nslimPublications.show(5)\nOptSaveMode.foreach(csvWriter(slimPublications).mode(_).save(s\"$CsvDir/publication_instances_and_indicators-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -303,7 +282,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -311,21 +291,17 @@
       },
       "jobName": "paragraph_1456933295651_1554569631",
       "id": "20160302-164135_1476314091",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "slimPublications: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, is_conference: boolean, pub_dis_id: bigint, dis_title: string, pub_lifetime: smallint, pub_impact: float]\n+------+-------+-----------+----------+----+-----------+--------------------+-------------+----------+--------------------+------------+----------+\n|pub_id|is_main|is_backward|is_forward|year|times_cited|      document_types|is_conference|pub_dis_id|           dis_title|pub_lifetime|pub_impact|\n+------+-------+-----------+----------+----+-----------+--------------------+-------------+----------+--------------------+------------+----------+\n|  2168|  false|       true|     false|2006|         81|[Article, Proceed...|         true|      2168|IDENTIFYING AND P...|          10|       8.1|\n|  1225|  false|      false|      true|2014|          1|           [Article]|        false|      1225|THE LEVEL OF INNO...|           2|       0.5|\n|  1124|   true|      false|     false|2011|          0|     [Journal Paper]|        false|      1124|FORESIGHT ON THE ...|           5|       0.0|\n|  1172|  false|       true|     false|2004|         57|[Comparative Stud...|        false|      1172|USING HUMAN EXTRA...|          12|      4.75|\n|  3107|  false|       true|     false|1977|       1539|                null|         null|      3107|                null|          39|  39.46154|\n+------+-------+-----------+----------+----+-----------+--------------------+-------------+----------+--------------------+------------+----------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:41:35 PM",
       "dateStarted": "Mar 4, 2016 2:14:22 PM",
       "dateFinished": "Mar 4, 2016 2:14:23 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Abstracts CSV",
       "text": "val abstracts \u003d publicationIndicators.select(\u0027pub_id, \u0027pub_dis_id, \u0027abstract)\nabstracts.show(5)\nOptSaveMode.foreach(csvWriter(abstracts).mode(_).save(s\"$CsvDir/publication_abstracts-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -340,7 +316,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -348,21 +325,17 @@
       },
       "jobName": "paragraph_1456933356010_135138994",
       "id": "20160302-164236_292645758",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "abstracts: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, pub_dis_id: bigint, abstract: string]\n+------+----------+--------------------+\n|pub_id|pub_dis_id|            abstract|\n+------+----------+--------------------+\n|  2168|      2168|Animals are routi...|\n|  1225|      1225|The link between ...|\n|  1124|      1124|Purpose - The aim...|\n|  1172|      1172|Individuals with ...|\n|  3107|      3107|                null|\n+------+----------+--------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:42:36 PM",
       "dateStarted": "Mar 4, 2016 2:14:23 PM",
       "dateFinished": "Mar 4, 2016 2:14:24 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Author Keywords CSV",
       "text": "val authorKeywords \u003d publicationIndicators.explode(\"author_keywords\", \"author_keyword\")(explodeList[String]).select(\u0027pub_dis_id, \u0027author_keyword)\nauthorKeywords.show(5)\nOptSaveMode.foreach(csvWriter(authorKeywords).mode(_).save(s\"$CsvDir/author_keywords-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -377,7 +350,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -385,21 +359,17 @@
       },
       "jobName": "paragraph_1456933391010_-177030282",
       "id": "20160302-164311_1376375054",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "authorKeywords: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, author_keyword: string]\n+----------+--------------------+\n|pub_dis_id|      author_keyword|\n+----------+--------------------+\n|      2168|     pain assessment|\n|      2168|     pain prevention|\n|      2168|      animal welfare|\n|      1225|Young innovative ...|\n|      1225|Knowledge-intensi...|\n+----------+--------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:43:11 PM",
       "dateStarted": "Mar 4, 2016 2:14:23 PM",
       "dateFinished": "Mar 4, 2016 2:14:24 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "KeyWords Plus CSV",
       "text": "val keywordsPlus \u003d publicationIndicators.explode(\"keywords_plus\", \"keyword_plus\")(explodeList[String]).select(\u0027pub_dis_id, \u0027keyword_plus)\nkeywordsPlus.show(5)\nOptSaveMode.foreach(csvWriter(keywordsPlus).mode(_).save(s\"$CsvDir/keywords_plus-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -414,7 +384,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -422,21 +393,17 @@
       },
       "jobName": "paragraph_1456933452449_1061786953",
       "id": "20160302-164412_88680734",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "keywordsPlus: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, keyword_plus: string]\n+----------+--------------------+\n|pub_dis_id|        keyword_plus|\n+----------+--------------------+\n|      2168|ACUTE CORTISOL RE...|\n|      2168|      DAIRY-COW GAIT|\n|      2168|    LOCAL-ANESTHESIA|\n|      2168|BEHAVIORAL-RESPONSES|\n|      2168|    HOOF PATHOLOGIES|\n+----------+--------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:44:12 PM",
       "dateStarted": "Mar 4, 2016 2:14:24 PM",
       "dateFinished": "Mar 4, 2016 2:14:25 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Research areas CSV",
       "text": "val researchAreas \u003d publicationIndicators.explode(\"research_areas\", \"research_area\")(explodeList[String]).select(\u0027pub_dis_id, \u0027research_area)\nresearchAreas.show(5)\nOptSaveMode.foreach(csvWriter(researchAreas).mode(_).save(s\"$CsvDir/research_areas-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -451,7 +418,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -459,21 +427,17 @@
       },
       "jobName": "paragraph_1456933478128_-215933496",
       "id": "20160302-164438_658891594",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "researchAreas: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, research_area: string]\n+----------+--------------------+\n|pub_dis_id|       research_area|\n+----------+--------------------+\n|      2168|         Agriculture|\n|      2168| Behavioral Sciences|\n|      2168| Veterinary Sciences|\n|      1225|Business \u0026 Economics|\n|      1124|Business \u0026 Economics|\n+----------+--------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:44:38 PM",
       "dateStarted": "Mar 4, 2016 2:14:24 PM",
       "dateFinished": "Mar 4, 2016 2:14:26 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Web of Science categories CSV",
       "text": "val wosCategories \u003d publicationIndicators.explode(\"wos_categories\", \"wos_category\")(explodeList[String]).select(\u0027pub_dis_id, \u0027wos_category)\nwosCategories.show(5)\nOptSaveMode.foreach(csvWriter(wosCategories).mode(_).save(s\"$CsvDir/wos_categories-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -488,7 +452,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -496,21 +461,17 @@
       },
       "jobName": "paragraph_1456933488537_-161653253",
       "id": "20160302-164448_2126431854",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "wosCategories: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, wos_category: string]\n+----------+--------------------+\n|pub_dis_id|        wos_category|\n+----------+--------------------+\n|      2168|Agriculture, Dair...|\n|      2168| Behavioral Sciences|\n|      2168| Veterinary Sciences|\n|      1225|            Business|\n|      1225|          Management|\n+----------+--------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:44:48 PM",
       "dateStarted": "Mar 4, 2016 2:14:25 PM",
       "dateFinished": "Mar 4, 2016 2:14:26 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "SciELO categories CSV",
       "text": "val scieloCategories \u003d publicationIndicators.explode(\"scielo_categories\", \"scielo_category\")(explodeList[String]).select(\u0027pub_dis_id, \u0027scielo_category)\nscieloCategories.show(5)\nOptSaveMode.foreach(csvWriter(scieloCategories).mode(_).save(s\"$CsvDir/scielo_categories-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -525,7 +486,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -533,21 +495,17 @@
       },
       "jobName": "paragraph_1456933539803_2056316887",
       "id": "20160302-164539_2082667243",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "scieloCategories: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, scielo_category: string]\n+----------+---------------+\n|pub_dis_id|scielo_category|\n+----------+---------------+\n+----------+---------------+\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:45:39 PM",
       "dateStarted": "Mar 4, 2016 2:14:26 PM",
       "dateFinished": "Mar 4, 2016 2:14:27 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "ScieELO collections CSV",
       "text": "val scieloCollections \u003d publicationIndicators.explode(\"scielo_collections\", \"scielo_collection\")(explodeList[String]).select(\u0027pub_dis_id, \u0027scielo_collection)\nscieloCollections.show(5)\nOptSaveMode.foreach(csvWriter(scieloCollections).mode(_).save(s\"$CsvDir/scielo_collections-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:25 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -562,7 +520,8 @@
         "enabled": true,
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -570,20 +529,16 @@
       },
       "jobName": "paragraph_1456933562965_1437671304",
       "id": "20160302-164602_390032292",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "scieloCollections: org.apache.spark.sql.DataFrame \u003d [pub_dis_id: bigint, scielo_collection: string]\n+----------+-----------------+\n|pub_dis_id|scielo_collection|\n+----------+-----------------+\n+----------+-----------------+\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:46:02 PM",
       "dateStarted": "Mar 4, 2016 2:14:27 PM",
       "dateFinished": "Mar 4, 2016 2:14:27 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n### Journal Exports",
-      "dateUpdated": "Mar 4, 2016 2:14:20 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:26 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -597,7 +552,8 @@
         },
         "enabled": true,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -605,21 +561,17 @@
       },
       "jobName": "paragraph_1456993793078_785961165",
       "id": "20160303-092953_456993698",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch3\u003eJournal Exports\u003c/h3\u003e\n"
-      },
       "dateCreated": "Mar 3, 2016 9:29:53 AM",
       "dateStarted": "Mar 4, 2016 2:14:21 PM",
       "dateFinished": "Mar 4, 2016 2:14:21 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Journals",
       "text": "val journals \u003d sqlc.read.parquet(s\"$DisambigDir/disambiguated_journals-did_$DatasetId.parquet\").withColumnRenamed(\"dis_id\", \"journal_dis_id\").withColumnRenamed(\"dis_name\", \"journal_dis_name\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\njournals.show(5)\nOptSaveMode.foreach(csvWriter(journals).mode(_).save(s\"$CsvDir/journal_instances-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:26 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -634,7 +586,8 @@
         "title": false,
         "editorMode": "ace/mode/scala",
         "enabled": true,
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -642,20 +595,16 @@
       },
       "jobName": "paragraph_1435576806207_321348235",
       "id": "20150629-112006_1402497812",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "journals: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, journal_dis_id: bigint, journal_dis_name: string]\n+------+--------------+--------------------+\n|pub_id|journal_dis_id|    journal_dis_name|\n+------+--------------+--------------------+\n|  1149|     967282946|           FORESIGHT|\n|  1470|    -820109798|JUSTICE AND JUSTI...|\n|  2915|   -1881525847|KNOWLEDGE MANAGEM...|\n|  3525|   -2040454283|NANOTECHNOLOGY: P...|\n|   287|    -902675080|SOCIAL STUDIES OF...|\n+------+--------------+--------------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Jun 29, 2015 11:20:06 AM",
       "dateStarted": "Mar 4, 2016 2:14:27 PM",
       "dateFinished": "Mar 4, 2016 2:14:28 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%md\n### Institution Exports",
-      "dateUpdated": "Mar 4, 2016 2:14:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:26 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -669,7 +618,8 @@
         },
         "enabled": true,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -677,21 +627,17 @@
       },
       "jobName": "paragraph_1456993896316_-1161082808",
       "id": "20160303-093136_551464666",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch3\u003eInstitution Exports\u003c/h3\u003e\n"
-      },
       "dateCreated": "Mar 3, 2016 9:31:36 AM",
       "dateStarted": "Mar 4, 2016 2:14:21 PM",
       "dateFinished": "Mar 4, 2016 2:14:21 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions Publications Authors - Latest affiliation year only",
       "text": "val institutionsToAuthors \u003d sqlc.read.parquet(s\"$IndicatorsDir/institutions_publications_authors-did_$DatasetId.parquet\").filter(\n    \u0027pub_dis_id.isNotNull\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval institutionsToAuthorsLatestYear \u003d institutionsToAuthors.filter(\n    \u0027pub_dis_id.isNotNull \u0026\u0026 \u0027author_dis_id.isNotNull \u0026\u0026 \u0027year \u003d\u003d\u003d \u0027author_latest_pub_year\n).select(\n    \u0027inst_name, \u0027pub_dis_id, \u0027author_dis_id\n).distinct.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\ninstitutionsToAuthorsLatestYear.show(5)\n\nOptSaveMode.foreach(csvWriter(institutionsToAuthorsLatestYear).mode(_).save(s\"$CsvDir/institutions_publications_authors-latest_pub_year-did_$DatasetId.csv\"))",
-      "dateUpdated": "Mar 4, 2016 2:14:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:26 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -705,7 +651,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -713,20 +661,16 @@
       },
       "jobName": "paragraph_1435578927768_-968729627",
       "id": "20150629-115527_1569587075",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutionsToAuthors: org.apache.spark.sql.DataFrame \u003d [inst_name: string, address_dis_id: bigint, pub_dis_id: bigint, is_main: boolean, year: smallint, is_conference: boolean, pub_impact: float, author_dis_id: bigint, author_latest_pub_year: smallint, author_impact: double, city_geoname_id: int]\ninstitutionsToAuthorsLatestYear: org.apache.spark.sql.DataFrame \u003d [inst_name: string, pub_dis_id: bigint, author_dis_id: bigint]\n+--------------------+----------+-------------+\n|           inst_name|pub_dis_id|author_dis_id|\n+--------------------+----------+-------------+\n|   Universidad Mayor|      1354|          248|\n|Eberhard Karls Un...|      3694|         4077|\n|University of Bergen|      1354|          344|\n| University of Basel|      3824|         4578|\n|University of Cal...|       236|          179|\n+--------------------+----------+-------------+\nonly showing top 5 rows\n\n"
-      },
       "dateCreated": "Jun 29, 2015 11:55:27 AM",
       "dateStarted": "Mar 4, 2016 2:14:28 PM",
       "dateFinished": "Mar 4, 2016 2:14:30 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "",
-      "dateUpdated": "Mar 4, 2016 2:14:21 PM",
+      "dateUpdated": "Mar 4, 2016 5:39:26 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -739,7 +683,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -747,38 +693,17 @@
       },
       "jobName": "paragraph_1435584123665_-861523723",
       "id": "20150629-132203_1408741389",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT"
-      },
       "dateCreated": "Jun 29, 2015 1:22:03 PM",
       "dateStarted": "Mar 4, 2016 2:14:28 PM",
       "dateFinished": "Mar 4, 2016 2:14:30 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],
   "name": "[34] Exports",
   "id": "2ARGY51MH",
-  "angularObjects": {
-    "2BECU381X": [],
-    "2BFE4973F": [],
-    "2BDUP8TX1": [],
-    "2BC2TVSBR": [],
-    "2BEK1W1PD": [],
-    "2BEV8A6Z4": [],
-    "2BCVF5P5F": [],
-    "2BEMYV7QQ": [],
-    "2BFPPNXXV": [],
-    "2BD9VECZR": [],
-    "2BE14FKBG": [],
-    "2BEKWFP9V": [],
-    "2BDPVAN2T": [],
-    "2BDMC46FS": [],
-    "2BFC9NN6P": [],
-    "2BE7P7NCM": [],
-    "2BFQQPY3C": []
-  },
+  "angularObjects": {},
   "config": {
     "looknfeel": "default"
   },

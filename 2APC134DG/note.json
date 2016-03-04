@@ -2,7 +2,7 @@
   "paragraphs": [
     {
       "text": "%md\n\n##### Memo:\n- Add state names\n- See \u0027Known City Identification Issues\u0027 at the end",
-      "dateUpdated": "Mar 4, 2016 10:12:07 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -14,9 +14,10 @@
           "groups": [],
           "scatter": {}
         },
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/markdown",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -24,21 +25,17 @@
       },
       "jobName": "paragraph_1431526549221_-871133890",
       "id": "20150513-141549_31078792",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch5\u003eMemo:\u003c/h5\u003e\n\u003cul\u003e\n\u003cli\u003eAdd state names\u003c/li\u003e\n\u003cli\u003eSee \u0027Known City Identification Issues\u0027 at the end\u003c/li\u003e\n\u003c/ul\u003e\n"
-      },
       "dateCreated": "May 13, 2015 2:15:49 PM",
       "dateStarted": "Mar 4, 2016 10:12:07 AM",
       "dateFinished": "Mar 4, 2016 10:12:07 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Configuration",
       "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval GeonamesDir \u003d \"/tmp/geonames\"\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval ProcessingDir \u003d s\"$WorkDir/processing\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"",
-      "dateUpdated": "Mar 4, 2016 10:12:07 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -53,7 +50,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -61,21 +59,17 @@
       },
       "jobName": "paragraph_1431440621873_860114606",
       "id": "20150512-142341_1999601151",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nGeonamesDir: String \u003d /tmp/geonames\nWorkDir: String \u003d /tmp/anticipation\nProcessingDir: String \u003d /tmp/anticipation/processing\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\n"
-      },
       "dateCreated": "May 12, 2015 2:23:41 PM",
       "dateStarted": "Mar 4, 2016 10:12:07 AM",
       "dateFinished": "Mar 4, 2016 10:12:08 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions",
       "text": "val institutions \u003d sqlc.read.parquet(s\"$ProcessingDir/institutions.parquet\").filter(\u0027did \u003d\u003d\u003d DatasetId \u0026\u0026 \u0027is_valid \u003d\u003d\u003d true).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ninstitutions.registerTempTable(\"institutions\")",
-      "dateUpdated": "Mar 4, 2016 10:12:07 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -87,7 +81,7 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "title": true,
         "editorHide": false,
         "editorMode": "ace/mode/scala",
@@ -99,20 +93,16 @@
       },
       "jobName": "paragraph_1431505855510_-1301712908",
       "id": "20150513-083055_2047211475",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions: org.apache.spark.sql.DataFrame \u003d [did: int, pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, is_valid: boolean]\n"
-      },
       "dateCreated": "May 13, 2015 8:30:55 AM",
       "dateStarted": "Mar 4, 2016 10:12:07 AM",
       "dateFinished": "Mar 4, 2016 10:12:09 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "institutions.printSchema()",
-      "dateUpdated": "Mar 4, 2016 10:12:07 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -124,9 +114,10 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -134,20 +125,16 @@
       },
       "jobName": "paragraph_1431505854235_-181339435",
       "id": "20150513-083054_1680271764",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "root\n |-- did: integer (nullable \u003d true)\n |-- pub_id: long (nullable \u003d true)\n |-- idx: short (nullable \u003d true)\n |-- address: string (nullable \u003d true)\n |-- enhanced_names: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- is_valid: boolean (nullable \u003d true)\n\n"
-      },
       "dateCreated": "May 13, 2015 8:30:54 AM",
       "dateStarted": "Mar 4, 2016 10:12:08 AM",
       "dateFinished": "Mar 4, 2016 10:12:09 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from institutions limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:07 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -173,7 +160,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -181,21 +169,17 @@
       },
       "jobName": "paragraph_1431521679309_768739328",
       "id": "20150513-125439_133558045",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "did\tpub_id\tidx\taddress\tenhanced_names\tis_valid\n1\t2393\t2\tCharite Univ Med Berlin, Dept Biometry \u0026 Med Stat, D-10098 Berlin, Germany\tWrappedArray(Charite Medical University of Berlin, Free University of Berlin, Humboldt University of Berlin)\ttrue\n1\t1436\t1\tDef Sci \u0026 Technol Lab, Horizon Scanning Team, Fareham, Hants, England\tWrappedArray(Defence Science \u0026 Technology Laboratory)\ttrue\n1\t3857\t1\tUniv Stellenbosch, Sch Business, ZA-7535 Cape Town, South Africa\tWrappedArray(Stellenbosch University)\ttrue\n1\t2892\t2\tRoyal Inst Technol KTH, Ctr Sustainable Commun, CESC, SE-10044 Stockholm, Sweden\tWrappedArray(Royal Institute of Technology)\ttrue\n1\t2576\t2\tUniv Washington, Sch Med, Seattle, WA 98195 USA\tWrappedArray(University of Washington, University of Washington Seattle)\ttrue\n1\t2425\t1\tUniv Patras, Dept Mat Sci, Rion 26504, Greece\tWrappedArray(University of Patras)\ttrue\n1\t532\t2\tLEITAT Technol Ctr, Terrassa 08221, Spain\tnull\ttrue\n1\t3935\t4\tDeutsch Bundesbank Univ Appl Sci, Hachenburg, Germany\tnull\ttrue\n"
-      },
       "dateCreated": "May 13, 2015 12:54:39 PM",
       "dateStarted": "Mar 4, 2016 10:12:09 AM",
       "dateFinished": "Mar 4, 2016 10:12:10 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Countries",
       "text": "val countries \u003d sqlc.read.parquet(\n    s\"$GeonamesDir/countries.parquet\"\n).filter(\n    \u0027geoname_id.isNotNull // geoname_id is null for \u0027Netherlands Antilles\u0027 and \u0027Serbia and Montenegro\u0027 which don\u0027t exist anymore\n).select(\n    \u0027geoname_id, \u0027iso, \u0027name, \u0027continent_name\n).withColumnRenamed(\n    \"geoname_id\", \"country_geoname_id\"\n).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ncountries.registerTempTable(\"countries\")",
-      "dateUpdated": "Mar 4, 2016 10:12:08 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -210,7 +194,8 @@
         "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -218,20 +203,16 @@
       },
       "jobName": "paragraph_1431507030226_-1847002791",
       "id": "20150513-085030_979633983",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "countries: org.apache.spark.sql.DataFrame \u003d [country_geoname_id: int, iso: string, name: string, continent_name: string]\n"
-      },
       "dateCreated": "May 13, 2015 8:50:30 AM",
       "dateStarted": "Mar 4, 2016 10:12:09 AM",
       "dateFinished": "Mar 4, 2016 10:12:10 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "countries.printSchema()",
-      "dateUpdated": "Mar 4, 2016 10:12:08 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -245,7 +226,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -253,20 +235,16 @@
       },
       "jobName": "paragraph_1431507114197_-295989674",
       "id": "20150513-085154_564323794",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "root\n |-- country_geoname_id: integer (nullable \u003d true)\n |-- iso: string (nullable \u003d true)\n |-- name: string (nullable \u003d true)\n |-- continent_name: string (nullable \u003d true)\n\n"
-      },
       "dateCreated": "May 13, 2015 8:51:54 AM",
       "dateStarted": "Mar 4, 2016 10:12:10 AM",
       "dateFinished": "Mar 4, 2016 10:12:11 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from countries limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:08 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -303,7 +281,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -311,20 +290,16 @@
       },
       "jobName": "paragraph_1431508926708_-1195928863",
       "id": "20150513-092206_1655060450",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "country_geoname_id\tiso\tname\tcontinent_name\n3378535\tGY\tGuyana\tSouth America\n3582678\tBZ\tBelize\tNorth America\n4796775\tVI\tU.S. Virgin Islands\tNorth America\n2287781\tCI\tIvory Coast\tAfrica\n241170\tSC\tSeychelles\tAfrica\n1547376\tCC\tCocos Islands\tAsia\n289688\tQA\tQatar\tAsia\n2411586\tGI\tGibraltar\tEurope\n"
-      },
       "dateCreated": "May 13, 2015 9:22:06 AM",
       "dateStarted": "Mar 4, 2016 10:12:11 AM",
       "dateFinished": "Mar 4, 2016 10:12:11 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select continent_name, count(*) c from countries group by continent_name order by c desc",
-      "dateUpdated": "Mar 4, 2016 10:12:08 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -361,7 +336,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -369,20 +345,16 @@
       },
       "jobName": "paragraph_1431522946163_-1491480980",
       "id": "20150513-131546_1203422245",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "continent_name\tc\nAfrica\t58\nEurope\t54\nAsia\t52\nNorth America\t42\nOceania\t27\nSouth America\t14\nAntarctica\t5\n"
-      },
       "dateCreated": "May 13, 2015 1:15:46 PM",
       "dateStarted": "Mar 4, 2016 10:12:11 AM",
       "dateFinished": "Mar 4, 2016 10:12:12 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val onlyAsciiUDF \u003d udf { (a: Seq[String]) \u003d\u003e a.filter(_.matches(\"\"\"[\\x00-\\x7F]+\"\"\")) } // (\\p{ASCII} is not recognized so we use the equivalent instead",
-      "dateUpdated": "Mar 4, 2016 10:12:08 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:17 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -396,7 +368,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -404,21 +377,17 @@
       },
       "jobName": "paragraph_1431521805882_-1899342697",
       "id": "20150513-125645_431793424",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "onlyAsciiUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(StringType,true),List(ArrayType(StringType,true)))\n"
-      },
       "dateCreated": "May 13, 2015 12:56:45 PM",
       "dateStarted": "Mar 4, 2016 10:12:11 AM",
       "dateFinished": "Mar 4, 2016 10:12:13 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Cities (population \u003e\u003d 500)",
       "text": "val cities \u003d sqlc.read.parquet(\n    s\"$GeonamesDir/allCountries.parquet\"\n).filter(\n    \u0027feature_class \u003d\u003d\u003d \"P\" \u0026\u0026 \u0027population \u003e\u003d 500\n).withColumn(\n    \"ascii_alternate_names\", onlyAsciiUDF(\u0027alternate_names)\n).select(\n    \u0027geoname_id, \u0027ascii_name, \u0027ascii_alternate_names, \u0027latitude, \u0027longitude, \u0027feature_class, \u0027feature_code, \u0027admin_1_code, \u0027country_iso\n).withColumnRenamed(\n    \"geoname_id\", \"city_geoname_id\"\n).withColumnRenamed(\n    \"admin_1_code\", \"state\"\n).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\ncities.registerTempTable(\"cities\")",
-      "dateUpdated": "Mar 4, 2016 10:12:08 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -433,7 +402,8 @@
         "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -441,20 +411,16 @@
       },
       "jobName": "paragraph_1431505976465_2010775908",
       "id": "20150513-083256_1444874795",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "cities: org.apache.spark.sql.DataFrame \u003d [city_geoname_id: int, ascii_name: string, ascii_alternate_names: array\u003cstring\u003e, latitude: float, longitude: float, feature_class: string, feature_code: string, state: string, country_iso: string]\n"
-      },
       "dateCreated": "May 13, 2015 8:32:56 AM",
       "dateStarted": "Mar 4, 2016 10:12:13 AM",
       "dateFinished": "Mar 4, 2016 10:12:13 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "cities.printSchema()",
-      "dateUpdated": "Mar 4, 2016 10:12:08 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -466,9 +432,10 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -476,20 +443,16 @@
       },
       "jobName": "paragraph_1431507916893_583683109",
       "id": "20150513-090516_41945377",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "root\n |-- city_geoname_id: integer (nullable \u003d true)\n |-- ascii_name: string (nullable \u003d true)\n |-- ascii_alternate_names: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- latitude: float (nullable \u003d true)\n |-- longitude: float (nullable \u003d true)\n |-- feature_class: string (nullable \u003d true)\n |-- feature_code: string (nullable \u003d true)\n |-- state: string (nullable \u003d true)\n |-- country_iso: string (nullable \u003d true)\n\n"
-      },
       "dateCreated": "May 13, 2015 9:05:16 AM",
       "dateStarted": "Mar 4, 2016 10:12:13 AM",
       "dateFinished": "Mar 4, 2016 10:12:14 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from cities limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:09 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -530,20 +493,16 @@
       },
       "jobName": "paragraph_1431521708487_853045310",
       "id": "20150513-125508_26961043",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "city_geoname_id\tascii_name\tascii_alternate_names\tlatitude\tlongitude\tfeature_class\tfeature_code\tstate\tcountry_iso\n4899670\tLexington\tWrappedArray(Leksington)\t40.64142\t-88.7834\tP\tPPL\tIL\tUS\n4901260\tMarquette Heights\tWrappedArray()\t40.61754\t-89.60038\tP\tPPL\tIL\tUS\n4902724\tMorrison\tWrappedArray()\t41.80975\t-89.96512\tP\tPPLA2\tIL\tUS\n4904447\tOakbrook Terrace\tWrappedArray()\t41.85003\t-87.96451\tP\tPPL\tIL\tUS\n4905704\tPeoria Heights\tWrappedArray()\t40.74726\t-89.57398\tP\tPPL\tIL\tUS\n4907514\tRichton Park\tWrappedArray()\t41.48448\t-87.70338\tP\tPPL\tIL\tUS\n4910485\tSan Jose\tWrappedArray(San-Khose)\t40.3056\t-89.60288\tP\tPPL\tIL\tUS\n4912499\tSterling\tWrappedArray(Sterling, Sturling)\t41.78864\t-89.69622\tP\tPPL\tIL\tUS\n"
-      },
       "dateCreated": "May 13, 2015 12:55:08 PM",
       "dateStarted": "Mar 4, 2016 10:12:14 AM",
       "dateFinished": "Mar 4, 2016 10:12:22 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select feature_code, count(*) c from cities group by feature_code order by c desc",
-      "dateUpdated": "Mar 4, 2016 10:12:09 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -580,7 +539,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -588,21 +548,17 @@
       },
       "jobName": "paragraph_1431522540624_995336696",
       "id": "20150513-130900_1631006924",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "feature_code\tc\nPPL\t96671\nPPLA3\t13723\nPPLA2\t11021\nPPLA4\t5249\nPPLA\t3260\nPPLX\t2736\nPPLL\t326\nPPLC\t235\nPPLQ\t23\nPPLS\t14\nPPLF\t10\nPPLG\t8\nPPLH\t5\nPPLR\t4\nPPLW\t1\nSTLMT\t1\n\t1\n"
-      },
       "dateCreated": "May 13, 2015 1:09:00 PM",
       "dateStarted": "Mar 4, 2016 10:12:14 AM",
       "dateFinished": "Mar 4, 2016 10:12:24 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "println(\"cities: \" + cities.count())\nprintln(\"countries: \" + countries.count())\nprintln(\"\")\nprintln(\"cities without ASCII alternate names: \" + cities.filter(\"size(ascii_alternate_names) \u003c 1\").count())\nprintln(\"cities without state: \" + cities.filter(\"state is null\").count())",
-      "dateUpdated": "Mar 4, 2016 10:12:09 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -615,9 +571,10 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -625,21 +582,17 @@
       },
       "jobName": "paragraph_1431505884725_-1911693156",
       "id": "20150513-083124_1575180802",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "cities: 133288\ncountries: 252\n\ncities without ASCII alternate names: 36736\ncities without state: 0\n"
-      },
       "dateCreated": "May 13, 2015 8:31:24 AM",
       "dateStarted": "Mar 4, 2016 10:12:22 AM",
       "dateFinished": "Mar 4, 2016 10:12:25 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Sanity checks",
       "text": "/*\n- geoname ids are not null\n- geoname ids are the keys\n*/\n\nassert(cities.filter(\"city_geoname_id is null\").count() \u003d\u003d 0)\nassert(countries.filter(\"country_geoname_id is null\").count() \u003d\u003d 0)\n\nassert(cities.count() \u003d\u003d cities.select(\u0027city_geoname_id).distinct.count())\nassert(countries.count() \u003d\u003d countries.select(\u0027country_geoname_id).distinct.count())",
-      "dateUpdated": "Mar 4, 2016 10:12:09 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -652,9 +605,10 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -662,20 +616,16 @@
       },
       "jobName": "paragraph_1431505886101_-569688993",
       "id": "20150513-083126_86387026",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 13, 2015 8:31:26 AM",
       "dateStarted": "Mar 4, 2016 10:12:24 AM",
       "dateFinished": "Mar 4, 2016 10:12:29 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from cities where instr(ascii_name, \u0027-\u0027) \u003e 0 limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:09 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -708,7 +658,8 @@
         "title": false,
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -716,20 +667,16 @@
       },
       "jobName": "paragraph_1431523582297_-1168007846",
       "id": "20150513-132622_2020892391",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "city_geoname_id\tascii_name\tascii_alternate_names\tlatitude\tlongitude\tfeature_class\tfeature_code\tstate\tcountry_iso\n5106520\tWood-Ridge\tWrappedArray(Vud-Ridz, Vud-Ridzh, wwd-ryj  nywjrsy)\t40.84566\t-74.08792\tP\tPPL\tNJ\tUS\n2327494\tOhafia-Ifigh\tWrappedArray()\t5.61455\t7.81191\tP\tPPL\t45\tNG\n2745673\tVelsen-Zuid\tWrappedArray(Velsen, Velzen)\t52.46\t4.65\tP\tPPL\t07\tNL\n2135175\tPort-Olry\tWrappedArray(Port-Olry)\t-15.04175\t167.07265\tP\tPPL\t13\tVU\n2510328\tTorre-Cardela\tWrappedArray()\t37.50456\t-3.35609\tP\tPPLA3\t51\tES\n3106510\tVall-Llobrega\tWrappedArray(Vall-Llobrega)\t41.88055\t3.12641\tP\tPPL\t56\tES\n6544099\tMoncloa-Aravaca\tWrappedArray(Moncloa, Moncloa-Aravaca)\t40.43547\t-3.7317\tP\tPPLX\t29\tES\n2967307\tWœlfling-les-Sarreguemines\tWrappedArray(Woelfling, Wolflingen)\t49.08333\t7.18333\tP\tPPL\t44\tFR\n"
-      },
       "dateCreated": "May 13, 2015 1:26:22 PM",
       "dateStarted": "Mar 4, 2016 10:12:25 AM",
       "dateFinished": "Mar 4, 2016 10:12:29 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from countries where instr(name, \u0027-\u0027) \u003e 0 limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:10 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -766,7 +713,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -774,20 +722,16 @@
       },
       "jobName": "paragraph_1431523629378_1504720169",
       "id": "20150513-132709_262335707",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "country_geoname_id\tiso\tname\tcontinent_name\n2372248\tGW\tGuinea-Bissau\tAfrica\n"
-      },
       "dateCreated": "May 13, 2015 1:27:09 PM",
       "dateStarted": "Mar 4, 2016 10:12:29 AM",
       "dateFinished": "Mar 4, 2016 10:12:29 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from cities where ascii_name \u003d \"Hong Kong\"",
-      "dateUpdated": "Mar 4, 2016 10:12:10 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -824,7 +768,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -832,20 +777,16 @@
       },
       "jobName": "paragraph_1431524101374_-1834842276",
       "id": "20150513-133501_181480363",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "city_geoname_id\tascii_name\tascii_alternate_names\tlatitude\tlongitude\tfeature_class\tfeature_code\tstate\tcountry_iso\n1819729\tHong Kong\tWrappedArray(Chon\u0027nk Kon\u0027nk, Gankong, Gon Kong, Gonkong, HKG, Hiong-geng, Hong Kong, Hongkong, Honkong, Khongkong, Khonkong, Victoria, ankan, hamga kamga, hanakana, hang kang, hang kang nagaram, hangakanga, hankam, heankean, hng kng, hon\u0027ga kon\u0027ga, hongakonga, hongkong, honkongu, hwng kwng, hwng qwng, hwngh kwngh, hwnj kwnj, hxngkng, shyanggang, xiang gang)\t22.28552\t114.15769\tP\tPPLC\tHCW\tHK\n"
-      },
       "dateCreated": "May 13, 2015 1:35:01 PM",
       "dateStarted": "Mar 4, 2016 10:12:29 AM",
       "dateFinished": "Mar 4, 2016 10:12:30 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from countries where name \u003d \"China\" OR name \u003d \"Hong Kong\"",
-      "dateUpdated": "Mar 4, 2016 10:12:10 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -877,7 +818,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -885,20 +827,16 @@
       },
       "jobName": "paragraph_1431524165767_-1962286107",
       "id": "20150513-133605_1342754672",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "country_geoname_id\tiso\tname\tcontinent_name\n1814991\tCN\tChina\tAsia\n1819730\tHK\tHong Kong\tAsia\n"
-      },
       "dateCreated": "May 13, 2015 1:36:05 PM",
       "dateStarted": "Mar 4, 2016 10:12:30 AM",
       "dateFinished": "Mar 4, 2016 10:12:30 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "cities.filter(\"array_contains(ascii_alternate_names, ascii_name) \u003d true\").count()",
-      "dateUpdated": "Mar 4, 2016 10:12:10 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -910,9 +848,10 @@
           "groups": [],
           "scatter": {}
         },
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -920,21 +859,17 @@
       },
       "jobName": "paragraph_1431523658067_212009838",
       "id": "20150513-132738_980575661",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res338: Long \u003d 84404\n"
-      },
       "dateCreated": "May 13, 2015 1:27:38 PM",
       "dateStarted": "Mar 4, 2016 10:12:30 AM",
       "dateFinished": "Mar 4, 2016 10:12:30 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Normalization mappings",
       "text": "val ukStatesMap \u003d sc.broadcast(Map(\n    \"wales\" -\u003e \"wls\",\n    \"scotland\" -\u003e \"sct\",\n    \"northern ireland\" -\u003e \"nir\",\n    \"england\" -\u003e \"eng\"))\n\nval countryNameMapping \u003d sc.broadcast(Map(\n    \"peoples r china\" -\u003e \"china\",\n    \"north ireland\" -\u003e \"united kingdom\",\n    \"cote ivoire\" -\u003e \"ivory coast\",\n    \"bosnia \u0026 herceg\" -\u003e \"bosnia and herzegovina\",\n    \"u arab emirates\" -\u003e \"united arab emirates\",\n    \"papua n guinea\" -\u003e \"papua new guinea\",\n    \"rep of georgia\" -\u003e \"georgia\",\n    \"zaire\" -\u003e \"democratic republic of the congo\",\n    \"congo\" -\u003e \"democratic republic of the congo\", // Could be use for \u0027Republic of the Congo\u0027 but this will not introduce identification error\n    \"fr polynesia\" -\u003e \"french polynesia\",\n    \"mongol peo rep\" -\u003e \"mongolia\",\n    \"st kitts \u0026 nevi\" -\u003e \"saint kitts and nevis\",\n    \"dominican rep\" -\u003e \"dominican republic\",\n    \"neth antilles\" -\u003e \"netherlands antilles\",\n    \"byelarus\" -\u003e \"belarus\"))\n\nval cityNameMapping \u003d sc.broadcast(Map(\n    \"tubingen\" -\u003e \"tuebingen\",\n    \"freising weihenstephan\" -\u003e \"freising\"))\n\n// FIXME after admin1CodesASCII.txt integration\nval stateNameMapping \u003d sc.broadcast(Map(\n    \"qld\" -\u003e \"04\")) // AU.04 Queensland",
-      "dateUpdated": "Mar 4, 2016 10:12:11 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -949,7 +884,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -957,21 +893,17 @@
       },
       "jobName": "paragraph_1431526524325_314631572",
       "id": "20150513-141524_1344378738",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "ukStatesMap: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[String,String]] \u003d Broadcast(384)\ncountryNameMapping: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[String,String]] \u003d Broadcast(385)\ncityNameMapping: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[String,String]] \u003d Broadcast(386)\nstateNameMapping: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[String,String]] \u003d Broadcast(387)\n"
-      },
       "dateCreated": "May 13, 2015 2:15:24 PM",
       "dateStarted": "Mar 4, 2016 10:12:30 AM",
       "dateFinished": "Mar 4, 2016 10:12:31 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Normalization helpers",
       "text": "def clean(s: String): String \u003d s.toLowerCase().replace(\"-\", \" \")\n\nval cleanUDF \u003d udf { (s: String) \u003d\u003e clean(s) }\n\nval cleanAlternateNamesUDF \u003d udf { (a: Seq[String], x: String) \u003d\u003e if (!a.isEmpty) a.map(clean).filterNot(_ \u003d\u003d x) else a }\n\ndef properCountryName(s: String): String \u003d countryNameMapping.value.getOrElse(s, s)\n\nval properCountryNameUDF \u003d udf { (s: String) \u003d\u003e properCountryName(s) }\n\nval north \u003d \"^n (.*)\".r\nval south \u003d \"^s (.*)\".r\nval east \u003d \"^e (.*)\".r\nval west \u003d \"^w (.*)\".r\nval fort \u003d \"^ft (.*)\".r\nval park \u003d \"^(.*) pk$\".r\nval station \u003d \"^(.*) stn$\".r\nval island \u003d \"^(.*) isl$\".r\nval heights \u003d \"^(.*) hts$\".r\nval junction \u003d \"^(.*) jct$\".r\n\ndef properCityName(s: String): String \u003d cityNameMapping.value.getOrElse(s, \"\"\"^st(?\u003de? )\"\"\".r.replaceFirstIn(s, \"saint\") match {\n    case north(c) \u003d\u003e s\"north $c\"\n    case south(c) \u003d\u003e s\"south $c\"\n    case east(c) \u003d\u003e s\"east $c\"\n    case west(c) \u003d\u003e s\"west $c\"\n    case fort(c) \u003d\u003e s\"fort $c\"\n    case park(c) \u003d\u003e s\"$c park\"\n    case station(c) \u003d\u003e s\"$c station\"\n    case island(c) \u003d\u003e s\"$c island\"\n    case heights(c) \u003d\u003e s\"$c heights\"\n    case junction(c) \u003d\u003e s\"$c junction\"\n    case e \u003d\u003e e\n})\nval properCityNameUDF \u003d udf { (s: String) \u003d\u003e properCityName(s) }\n\nval properCityNameArrayUDF \u003d udf { (a: Seq[String]) \u003d\u003e a.map(properCityName) }",
-      "dateUpdated": "Mar 4, 2016 10:12:11 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -986,7 +918,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -994,21 +927,17 @@
       },
       "jobName": "paragraph_1431526756198_-410129731",
       "id": "20150513-141916_992488643",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "clean: (s: String)String\ncleanUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,List(StringType))\ncleanAlternateNamesUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction2\u003e,ArrayType(StringType,true),List(ArrayType(StringType,true), StringType))\nproperCountryName: (s: String)String\nproperCountryNameUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,List(StringType))\nnorth: scala.util.matching.Regex \u003d ^n (.*)\nsouth: scala.util.matching.Regex \u003d ^s (.*)\neast: scala.util.matching.Regex \u003d ^e (.*)\nwest: scala.util.matching.Regex \u003d ^w (.*)\nfort: scala.util.matching.Regex \u003d ^ft (.*)\npark: scala.util.matching.Regex \u003d ^(.*) pk$\nstation: scala.util.matching.Regex \u003d ^(.*) stn$\nisland: scala.util.matching.Regex \u003d ^(.*) isl$\nheights: scala.util.matching.Regex \u003d ^(.*) hts$\njunction: scala.util.matching.Regex \u003d ^(.*) jct$\nproperCityName: (s: String)String\nproperCityNameUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,List(StringType))\nproperCityNameArrayUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(StringType,true),List(ArrayType(StringType,true)))\n"
-      },
       "dateCreated": "May 13, 2015 2:19:16 PM",
       "dateStarted": "Mar 4, 2016 10:12:31 AM",
       "dateFinished": "Mar 4, 2016 10:12:32 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Cities2",
       "text": "val cities2 \u003d cities.withColumn(\n    \"algo_city_name\", properCityNameUDF(cleanUDF(\u0027ascii_name))\n).withColumn(\n    \"algo_city_alternate_names\", properCityNameArrayUDF(cleanAlternateNamesUDF(\u0027ascii_alternate_names, \u0027algo_city_name))\n).withColumn(\n    \"algo_state\", cleanUDF(\u0027state)\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 10:12:11 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1023,7 +952,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1031,21 +961,17 @@
       },
       "jobName": "paragraph_1431526887595_-167537065",
       "id": "20150513-142127_63610168",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "cities2: org.apache.spark.sql.DataFrame \u003d [city_geoname_id: int, ascii_name: string, ascii_alternate_names: array\u003cstring\u003e, latitude: float, longitude: float, feature_class: string, feature_code: string, state: string, country_iso: string, algo_city_name: string, algo_city_alternate_names: array\u003cstring\u003e, algo_state: string]\n"
-      },
       "dateCreated": "May 13, 2015 2:21:27 PM",
       "dateStarted": "Mar 4, 2016 10:12:31 AM",
       "dateFinished": "Mar 4, 2016 10:12:33 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Countries2",
       "text": "val countries2 \u003d countries.withColumn(\n    \"algo_country_name\", properCountryNameUDF(cleanUDF(\u0027name))\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 10:12:11 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1060,7 +986,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1068,21 +995,17 @@
       },
       "jobName": "paragraph_1431528250560_-693145102",
       "id": "20150513-144410_1670108466",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "countries2: org.apache.spark.sql.DataFrame \u003d [country_geoname_id: int, iso: string, name: string, continent_name: string, algo_country_name: string]\n"
-      },
       "dateCreated": "May 13, 2015 2:44:10 PM",
       "dateStarted": "Mar 4, 2016 10:12:33 AM",
       "dateFinished": "Mar 4, 2016 10:12:33 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "GeoNames maps",
       "text": "import org.apache.spark.sql.Row\n\nval countriesMap \u003d sc.broadcast(countries.select(\u0027name, \u0027country_geoname_id).map(r \u003d\u003e clean(r.getString(0)) -\u003e r.getInt(1)).collect().toMap)\n\nval countryCityState \u003d cities2.join(\n    countries, \u0027country_iso \u003d\u003d\u003d \u0027iso\n).select(\n    \u0027country_geoname_id, \u0027algo_city_name, \u0027algo_city_alternate_names, \u0027algo_state, \u0027city_geoname_id\n).map { r \u003d\u003e\n    val cityName \u003d r.getString(1)\n    val countryId \u003d if (cityName !\u003d \"hong kong\") r.getInt(0) else 1814991 // Hong Kong as a part of China\n    val cityAlternateNames \u003d r.getSeq[String](2)\n    val state \u003d r.getString(3)\n    val cityId \u003d r.getInt(4)\n    \n    (countryId, cityName, cityAlternateNames, state) -\u003e collection.mutable.Set(cityId)\n}\n\nval citiesMap \u003d sc.broadcast(countryCityState.map { case ((countryId, cityName, _, _), cityIds) \u003d\u003e\n    (countryId, cityName) -\u003e cityIds\n}.reduceByKey(_ ++\u003d _).collect().toMap)\n\nval citiesAlternateMap \u003d sc.broadcast(countryCityState.flatMap { case ((countryId, _, cityAlternateNames, _), cityIds) \u003d\u003e\n    cityAlternateNames.map(n \u003d\u003e (countryId, n) -\u003e cityIds)\n}.reduceByKey(_ ++\u003d _).collect().toMap)\n\nval statesMap \u003d sc.broadcast(countryCityState.map { case ((countryId, cityName, _, state), cityIds) \u003d\u003e\n    (countryId, cityName, state) -\u003e cityIds\n}.reduceByKey(_ ++\u003d _).collect().toMap)\n\nval statesAlternateMap \u003d sc.broadcast(countryCityState.flatMap { case ((countryId, _, cityAlternateNames, state), cityIds) \u003d\u003e\n    cityAlternateNames.map(n \u003d\u003e (countryId, n, state) -\u003e cityIds)\n}.reduceByKey(_ ++\u003d _).collect().toMap)",
-      "dateUpdated": "Mar 4, 2016 10:12:11 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1097,7 +1020,8 @@
         "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1105,21 +1029,17 @@
       },
       "jobName": "paragraph_1431524849771_-1728373576",
       "id": "20150513-134729_1629650484",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "import org.apache.spark.sql.Row\ncountriesMap: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[String,Int]] \u003d Broadcast(389)\ncountryCityState: org.apache.spark.rdd.RDD[((Int, String, Seq[String], String), scala.collection.mutable.Set[Int])] \u003d MapPartitionsRDD[1482] at map at \u003cconsole\u003e:85\ncitiesMap: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[(Int, String),scala.collection.mutable.Set[Int]]] \u003d Broadcast(394)\ncitiesAlternateMap: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[(Int, String),scala.collection.mutable.Set[Int]]] \u003d Broadcast(397)\nstatesMap: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[(Int, String, String),scala.collection.mutable.Set[Int]]] \u003d Broadcast(400)\nstatesAlternateMap: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[(Int, String, String),scala.collection.mutable.Set[Int]]] \u003d Broadcast(403)\n"
-      },
       "dateCreated": "May 13, 2015 1:47:29 PM",
       "dateStarted": "Mar 4, 2016 10:12:33 AM",
       "dateFinished": "Mar 4, 2016 10:12:50 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Metrics",
       "text": "println(\"(country, city): \" + citiesMap.value.size)\nprintln(\"(country, state, city): \" + statesMap.value.size)\n\nprintln(\"alternate (country, city): \" + citiesAlternateMap.value.size)\nprintln(\"alternate (country, state, city): \" + statesAlternateMap.value.size)\n\nprintln()\n\nprintln(\"ambiguous (country, city): \" + citiesMap.value.filter { case (_, cityIds) \u003d\u003e cityIds.size \u003e 1 }.size)\nprintln(\"ambiguous (country, city, state): \" + statesMap.value.filter { case (_, cityIds) \u003d\u003e cityIds.size \u003e 1 }.size)\n\nprintln(\"alternate ambiguous (country, city): \" + citiesAlternateMap.value.filter { case (_, cityIds) \u003d\u003e cityIds.size \u003e 1 }.size)\nprintln(\"alternate ambiguous (country, city, state): \" + statesAlternateMap.value.filter { case (_, cityIds) \u003d\u003e cityIds.size \u003e 1 }.size)",
-      "dateUpdated": "Mar 4, 2016 10:12:12 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1132,9 +1052,10 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1142,21 +1063,17 @@
       },
       "jobName": "paragraph_1431526647891_-907914898",
       "id": "20150513-141727_1735310683",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "(country, city): 119723\n(country, state, city): 131402\nalternate (country, city): 183589\nalternate (country, state, city): 189464\n\nambiguous (country, city): 6841\nambiguous (country, city, state): 1645\nalternate ambiguous (country, city): 4692\nalternate ambiguous (country, city, state): 1344\n"
-      },
       "dateCreated": "May 13, 2015 2:17:27 PM",
       "dateStarted": "Mar 4, 2016 10:12:33 AM",
       "dateFinished": "Mar 4, 2016 10:12:51 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "",
       "text": "case class Extracted(\n    block0: String,\n    block1: String,\n    block2: Option[String],\n    //\n    text0: Option[String],\n    text1: Option[String],\n    text2: Option[String],\n    //\n    country: Option[String],\n    state: Option[String],\n    city1: Option[String],\n    city2: Option[String],\n    //\n    countryId: Option[Int],\n    cityIds: Option[Seq[Int]],\n    //\n    isIdentified: Boolean,\n    isAmbiguous: Boolean)",
-      "dateUpdated": "Mar 4, 2016 10:12:12 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1171,7 +1088,8 @@
         "title": false,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1179,21 +1097,17 @@
       },
       "jobName": "paragraph_1431527090988_-1482533829",
       "id": "20150513-142450_291273855",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "defined class Extracted\n"
-      },
       "dateCreated": "May 13, 2015 2:24:50 PM",
       "dateStarted": "Mar 4, 2016 10:12:50 AM",
       "dateFinished": "Mar 4, 2016 10:12:51 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "GeoNames city matching algorithm",
       "text": "val text \u003d \"(?\u003c\u003d^| )[a-z \u0026]+(?\u003d |$)\".r\nval usState \u003d \"^([a-z]{2})( [0-9]{5})? usa$\".r\nval nlPostalCode \u003d \"\"\"^nl\\-[0-9]{4} [a-z]{2} ([a-z]+)$\"\"\".r\nval dkCityName \u003d \"^(.*) [a-z]{1}$\".r\n\ndef auStateName(s: String): Option[String] \u003d stateNameMapping.value.get(s)\n\ndef identifyCity(blocks: Seq[String]): Extracted \u003d {\n    val parts \u003d blocks.reverse\n    \n    val block0 \u003d parts(0)\n    val block1 \u003d parts(1)\n    val block2 \u003d parts.lift(2)\n    \n    val text0 \u003d text.findFirstIn(block0)\n    val text1 \u003d text.findFirstIn(block1)\n    val text2 \u003d block2.map(b2 \u003d\u003e text.findFirstIn(b2)).flatten\n    \n    var country: Option[String] \u003d None\n    var state: Option[String] \u003d None\n    var city1: Option[String] \u003d None\n    var city2: Option[String] \u003d None\n    \n    var countryId: Option[Int] \u003d None\n    var auState: Boolean \u003d false\n    \n    val cityIds \u003d\n        text0.map(properCountryName).map { t0 \u003d\u003e\n            country \u003d Some(t0)\n            val countries \u003d countriesMap.value\n            countries.get(t0) orElse\n            usState.findFirstMatchIn(block0).map { o \u003d\u003e state \u003d Some(o.group(1)); country \u003d Some(\"united states\"); 6252001 } orElse\n            ukStatesMap.value.get(t0).map { s \u003d\u003e state \u003d Some(s); country \u003d Some(\"united kingdom\"); 2635167 }\n        }.flatten.map { cid \u003d\u003e\n            countryId \u003d Some(cid)\n            text1.map(properCityName).map { t1 \u003d\u003e\n                city1 \u003d Some(t1)\n                val cities \u003d citiesMap.value\n                val states \u003d statesMap.value\n                val cities2 \u003d citiesAlternateMap.value\n                val states2 \u003d statesAlternateMap.value\n                state.map(s \u003d\u003e states.get((cid, t1, s)) orElse states2.get((cid, t1, s))).flatten orElse\n                text2.map(properCityName).map { t2 \u003d\u003e\n                    city2 \u003d Some(t2)\n                    auStateName(t1).map { s \u003d\u003e state \u003d Some(s); auState \u003d true }\n                    state.map(s \u003d\u003e states.get((cid, t2, s)) orElse states2.get((cid, t2, s))).flatten orElse\n                    cities.get((cid, t2)) orElse cities2.get((cid, t2)) orElse\n                    (states.get((cid, t2, t1)) orElse states2.get((cid, t2, t1))).map { ids \u003d\u003e state \u003d Some(t1); ids } orElse\n                    (states.get((cid, t1, t2)) orElse states2.get((cid, t1, t2))).map { ids \u003d\u003e city2 \u003d city1; state \u003d Some(t2); ids }\n                }.flatten orElse\n                {\n                    city1 \u003d\n                        nlPostalCode.findFirstMatchIn(block1).map(_.group(1)) orElse\n                        dkCityName.findFirstMatchIn(t1).map(_.group(1)) orElse\n                        (if (auState) city2 else city1)\n                    cities.get((cid, city1.get)) orElse cities2.get((cid, city1.get))\n                }\n            }.flatten\n        }.flatten\n    \n    val cityIdsSize \u003d cityIds.map(_.size).getOrElse(0)\n    val isIdentified \u003d cityIdsSize \u003d\u003d 1\n    val isAmbiguous \u003d cityIdsSize \u003e 1\n    \n    Extracted(block0, block1, block2, text0, text1, text2, country, state, city1, city2, countryId, cityIds.map(_.toSeq), isIdentified, isAmbiguous)\n}",
-      "dateUpdated": "Mar 4, 2016 10:12:12 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1208,7 +1122,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1216,21 +1131,17 @@
       },
       "jobName": "paragraph_1431527303532_-1654225428",
       "id": "20150513-142823_1810367651",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "text: scala.util.matching.Regex \u003d (?\u003c\u003d^| )[a-z \u0026]+(?\u003d |$)\nusState: scala.util.matching.Regex \u003d ^([a-z]{2})( [0-9]{5})? usa$\nnlPostalCode: scala.util.matching.Regex \u003d ^nl\\-[0-9]{4} [a-z]{2} ([a-z]+)$\ndkCityName: scala.util.matching.Regex \u003d ^(.*) [a-z]{1}$\nauStateName: (s: String)Option[String]\nidentifyCity: (blocks: Seq[String])Extracted\n"
-      },
       "dateCreated": "May 13, 2015 2:28:23 PM",
       "dateStarted": "Mar 4, 2016 10:12:51 AM",
       "dateFinished": "Mar 4, 2016 10:12:52 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Sanity checks",
       "text": "/*\n- addresses are not null\n- addresses hava at least two blocks\n*/\n\nassert(institutions.filter(\"address is null\").count() \u003d\u003d 0)\nassert(institutions.filter(\"size(split(address, \u0027,\u0027)) \u003c 2\").count() \u003d\u003d 0)",
-      "dateUpdated": "Mar 4, 2016 10:12:12 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1243,9 +1154,10 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1253,20 +1165,16 @@
       },
       "jobName": "paragraph_1431530042985_598414796",
       "id": "20150513-151402_1461671995",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 13, 2015 3:14:02 PM",
       "dateStarted": "Mar 4, 2016 10:12:51 AM",
       "dateFinished": "Mar 4, 2016 10:12:53 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql select * from institutions where size(split(address, \",\")) \u003d 2",
-      "dateUpdated": "Mar 4, 2016 10:12:12 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1292,7 +1200,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1300,20 +1209,16 @@
       },
       "jobName": "paragraph_1431533715604_1968459289",
       "id": "20150513-161515_472556964",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "did\tpub_id\tidx\taddress\tenhanced_names\tis_valid\n"
-      },
       "dateCreated": "May 13, 2015 4:15:15 PM",
       "dateStarted": "Mar 4, 2016 10:12:52 AM",
       "dateFinished": "Mar 4, 2016 10:12:53 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "import scala.util.hashing.MurmurHash3\n\ndef hash(a: Seq[String]): Long \u003d MurmurHash3.arrayHash(a.toArray).toLong\n\nval hashUDF \u003d udf { (a: Seq[String]) \u003d\u003e hash(a) }",
-      "dateUpdated": "Mar 4, 2016 10:12:12 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1327,7 +1232,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1335,20 +1241,16 @@
       },
       "jobName": "paragraph_1431539857987_283359200",
       "id": "20150513-175737_133558045",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "import scala.util.hashing.MurmurHash3\nhash: (a: Seq[String])Long\nhashUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,LongType,List(ArrayType(StringType,true)))\n"
-      },
       "dateCreated": "May 13, 2015 5:57:37 PM",
       "dateStarted": "Mar 4, 2016 10:12:53 AM",
       "dateFinished": "Mar 4, 2016 10:12:53 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val algoBlocksUDF \u003d udf { (s: String) \u003d\u003e s.toLowerCase().split(\",\").map(_.trim).takeRight(3) }",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1362,7 +1264,8 @@
         },
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1370,21 +1273,17 @@
       },
       "jobName": "paragraph_1431539863957_1011704192",
       "id": "20150513-175743_26961043",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "algoBlocksUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(StringType,true),List(StringType))\n"
-      },
       "dateCreated": "May 13, 2015 5:57:43 PM",
       "dateStarted": "Mar 4, 2016 10:12:53 AM",
       "dateFinished": "Mar 4, 2016 10:12:54 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions2",
       "text": "val institutions2 \u003d institutions.withColumn(\n    \"algo_blocks\", algoBlocksUDF(\u0027address)\n).withColumn(\n    \"algo_blocks_id\", hashUDF(\u0027algo_blocks)\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1399,7 +1298,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1407,21 +1307,17 @@
       },
       "jobName": "paragraph_1431539835139_248331726",
       "id": "20150513-175715_6231438",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "institutions2: org.apache.spark.sql.DataFrame \u003d [did: int, pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, is_valid: boolean, algo_blocks: array\u003cstring\u003e, algo_blocks_id: bigint]\n"
-      },
       "dateCreated": "May 13, 2015 5:57:15 PM",
       "dateStarted": "Mar 4, 2016 10:12:53 AM",
       "dateFinished": "Mar 4, 2016 10:12:54 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Extracted",
       "text": "val extracted \u003d institutions2.select(\u0027algo_blocks_id, \u0027algo_blocks).distinct.map { r \u003d\u003e (r.getLong(0), identifyCity(r.getSeq[String](1))) }",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1436,7 +1332,8 @@
         "tableHide": true,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1444,21 +1341,17 @@
       },
       "jobName": "paragraph_1431537321129_-1176361682",
       "id": "20150513-171521_1647330118",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "extracted: org.apache.spark.rdd.RDD[(Long, Extracted)] \u003d MapPartitionsRDD[1521] at map at \u003cconsole\u003e:134\n"
-      },
       "dateCreated": "May 13, 2015 5:15:21 PM",
       "dateStarted": "Mar 4, 2016 10:12:54 AM",
       "dateFinished": "Mar 4, 2016 10:12:55 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Evaluation - Time",
       "text": "val extractedCount \u003d extracted.count()\n\n// 10 secs on 51 186 distinct (block2, block1, block0)",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1471,9 +1364,10 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1481,21 +1375,17 @@
       },
       "jobName": "paragraph_1431531607291_718096298",
       "id": "20150513-154007_647730425",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "extractedCount: Long \u003d 2076\n"
-      },
       "dateCreated": "May 13, 2015 3:40:07 PM",
       "dateStarted": "Mar 4, 2016 10:12:54 AM",
       "dateFinished": "Mar 4, 2016 10:12:57 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "",
       "text": "def extractedPercentage(x: Long): Float \u003d (x / extractedCount.toFloat) * 100\n\ndef addMetrics(l1: Seq[Int], l2: Seq[Int]): Seq[Int] \u003d (l1, l2).zipped.map(_ + _)\n\nval metrics \u003d extracted.map { case (_, e) \u003d\u003e\n    Seq(\n        if (e.isIdentified) 1 else 0,\n        if (e.isAmbiguous) 1 else 0,\n        if (e.countryId.isEmpty) 1 else 0,\n        if (e.cityIds.isEmpty) 1 else 0)\n}.aggregate(Seq.fill(4)(0))(addMetrics, addMetrics).map(_.toLong)",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1510,7 +1400,8 @@
         "title": false,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1518,21 +1409,17 @@
       },
       "jobName": "paragraph_1431535337809_695623439",
       "id": "20150513-164217_671794892",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "extractedPercentage: (x: Long)Float\naddMetrics: (l1: Seq[Int], l2: Seq[Int])Seq[Int]\nmetrics: Seq[Long] \u003d List(1943, 46, 18, 87)\n"
-      },
       "dateCreated": "May 13, 2015 4:42:17 PM",
       "dateStarted": "Mar 4, 2016 10:12:55 AM",
       "dateFinished": "Mar 4, 2016 10:13:00 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Evaluation - Quality",
       "text": "println(\"Metrics on distinct (block2, block1, block0) in lower case:\")\n\nSeq(\n    (extractedCount, \"total\"),\n    (metrics(0), \"identified\"),\n    (metrics(1), \"ambiguous\"),\n    (metrics(2), \"no country\"),\n    (metrics(3), \"no city\")\n).map {\n    case (m, label) \u003d\u003e f\"$m%.0f (${extractedPercentage(m)}%.2f %%) $label\"\n}.foreach(println)",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1545,9 +1432,10 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1555,21 +1443,17 @@
       },
       "jobName": "paragraph_1431535331393_235833179",
       "id": "20150513-164211_754207811",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "Metrics on distinct (block2, block1, block0) in lower case:\n2076 (100.00 %) total\n1943 (93.59 %) identified\n46 (2.22 %) ambiguous\n18 (0.87 %) no country\n87 (4.19 %) no city\n"
-      },
       "dateCreated": "May 13, 2015 4:42:11 PM",
       "dateStarted": "Mar 4, 2016 10:12:58 AM",
       "dateFinished": "Mar 4, 2016 10:13:00 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Known city identification issues",
       "text": "%md\n\n##### ambiguous\nCan\u0027t be safely disambiguated without more information (ex: \u0027Univ Childrens Hosp, Munster, Germany\u0027).\nGeoNames postal codes from alternateNames.txt seem not to be correct (ex: \u0027D-79104 Freiburg, Germany\u0027).\n\n##### no country\n\u0027AN (the Netherlands Antilles) with geonameId \u003d 3513447  was dissolved on 10 October 2010\u0027\n\n##### no city\n- city contains abbreviation(s) not yet expanded\n- city has spelling mistakes\n- city in allCountries.txt\n- only county (no city)\n- not in GeoNames",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1582,9 +1466,10 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/markdown",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1592,20 +1477,16 @@
       },
       "jobName": "paragraph_1431537868614_-834353847",
       "id": "20150513-172428_546155536",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch5\u003eambiguous\u003c/h5\u003e\n\u003cp\u003eCan\u0027t be safely disambiguated without more information (ex: \u0027Univ Childrens Hosp, Munster, Germany\u0027).\n\u003cbr  /\u003eGeoNames postal codes from alternateNames.txt seem not to be correct (ex: \u0027D-79104 Freiburg, Germany\u0027).\u003c/p\u003e\n\u003ch5\u003eno country\u003c/h5\u003e\n\u003cp\u003e\u0027AN (the Netherlands Antilles) with geonameId \u003d 3513447  was dissolved on 10 October 2010\u0027\u003c/p\u003e\n\u003ch5\u003eno city\u003c/h5\u003e\n\u003cul\u003e\n\u003cli\u003ecity contains abbreviation(s) not yet expanded\u003c/li\u003e\n\u003cli\u003ecity has spelling mistakes\u003c/li\u003e\n\u003cli\u003ecity in allCountries.txt\u003c/li\u003e\n\u003cli\u003eonly county (no city)\u003c/li\u003e\n\u003cli\u003enot in GeoNames\u003c/li\u003e\n\u003c/ul\u003e\n"
-      },
       "dateCreated": "May 13, 2015 5:24:28 PM",
       "dateStarted": "Mar 4, 2016 10:12:13 AM",
       "dateFinished": "Mar 4, 2016 10:12:13 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "extracted.values.toDF().persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER).registerTempTable(\"extracted\")",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:18 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1618,7 +1499,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1626,21 +1509,17 @@
       },
       "jobName": "paragraph_1431535329801_-727578067",
       "id": "20150513-164209_167677103",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 13, 2015 4:42:09 PM",
       "dateStarted": "Mar 4, 2016 10:13:00 AM",
       "dateFinished": "Mar 4, 2016 10:13:00 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Identified",
       "text": "%sql select distinct * from extracted where isIdentified \u003d true limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:13 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1678,7 +1557,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1686,21 +1566,17 @@
       },
       "jobName": "paragraph_1431538712466_-663886538",
       "id": "20150513-173832_1391676142",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "block0\tblock1\tblock2\ttext0\ttext1\ttext2\tcountry\tstate\tcity1\tcity2\tcountryId\tcityIds\tisIdentified\tisAmbiguous\ncanada\tab t6g 2w2\tedmonton\tcanada\tab\tedmonton\tcanada\tnull\tab\tedmonton\t6251999\tWrappedArray(5946768)\ttrue\tfalse\nfrance\tf-92290 chatenay malabry\tlab genie ind\tfrance\tchatenay malabry\tlab genie ind\tfrance\tnull\tchatenay malabry\tlab genie ind\t3017382\tWrappedArray(3026108)\ttrue\tfalse\niran\ttehran\tfac nutr sci \u0026 food technol\tiran\ttehran\tfac nutr sci \u0026 food technol\tiran\tnull\ttehran\tfac nutr sci \u0026 food technol\t130758\tWrappedArray(112931)\ttrue\tfalse\nspain\tseville 41003\tfac philosophy\tspain\tseville\tfac philosophy\tspain\tnull\tseville\tfac philosophy\t2510769\tWrappedArray(2510911)\ttrue\tfalse\ntx 77251 usa\thouston\tdept chem\ttx\thouston\tdept chem\tunited states\ttx\thouston\tnull\t6252001\tWrappedArray(4699066)\ttrue\tfalse\nsweden\tskovde\tsch business\tsweden\tskovde\tsch business\tsweden\tnull\tskovde\tsch business\t2661886\tWrappedArray(2677234)\ttrue\tfalse\nnetherlands\tnijmegen\tuniv med ctr\tnetherlands\tnijmegen\tuniv med ctr\tnetherlands\tnull\tnijmegen\tuniv med ctr\t2750405\tWrappedArray(2750053)\ttrue\tfalse\nmd 20850 usa\trockville\tj craig venter inst\tmd\trockville\tj craig venter inst\tunited states\tmd\trockville\tnull\t6252001\tWrappedArray(4367175)\ttrue\tfalse\n"
-      },
       "dateCreated": "May 13, 2015 5:38:32 PM",
       "dateStarted": "Mar 4, 2016 10:13:00 AM",
       "dateFinished": "Mar 4, 2016 10:13:04 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Ambiguous",
       "text": "%sql select distinct * from extracted where isAmbiguous \u003d true limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:14 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1738,7 +1614,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1746,21 +1623,17 @@
       },
       "jobName": "paragraph_1431538778009_-1078787058",
       "id": "20150513-173938_1776542189",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "block0\tblock1\tblock2\ttext0\ttext1\ttext2\tcountry\tstate\tcity1\tcity2\tcountryId\tcityIds\tisIdentified\tisAmbiguous\ngermany\td-48143 munster\tdept philosophy\tgermany\tmunster\tdept philosophy\tgermany\tnull\tmunster\tdept philosophy\t2921044\tWrappedArray(2867555, 2867548, 2867542)\tfalse\ttrue\naustralia\tvic 3169\tclayton\taustralia\tvic\tclayton\taustralia\tnull\tvic\tclayton\t2077456\tWrappedArray(2171400, 8347717)\tfalse\ttrue\naustralia\tvic\tclayton\taustralia\tvic\tclayton\taustralia\tnull\tvic\tclayton\t2077456\tWrappedArray(2171400, 8347717)\tfalse\ttrue\ndenmark\tdk-1958 frederiksberg c\tuniv copenhagen\tdenmark\tfrederiksberg c\tuniv copenhagen\tdenmark\tnull\tfrederiksberg\tuniv copenhagen\t2623032\tWrappedArray(2621945, 2621942)\tfalse\ttrue\nsouth korea\tkwangju 500712\tdept environm sci \u0026 engn\tsouth korea\tkwangju\tdept environm sci \u0026 engn\tsouth korea\tnull\tkwangju\tdept environm sci \u0026 engn\t1835841\tWrappedArray(1841810, 1841811)\tfalse\ttrue\nsouth korea\tkwangju 500712\tdept nanobio mat \u0026 elect\tsouth korea\tkwangju\tdept nanobio mat \u0026 elect\tsouth korea\tnull\tkwangju\tdept nanobio mat \u0026 elect\t1835841\tWrappedArray(1841810, 1841811)\tfalse\ttrue\npa 16802 usa\tuniversity pk\tdept agr econ \u0026 rural sociol\tpa\tuniversity pk\tdept agr econ \u0026 rural sociol\tunited states\tpa\tuniversity park\tdept agr econ \u0026 rural sociol\t6252001\tWrappedArray(4914514, 5495937, 4176217, 4738606, 4372137)\tfalse\ttrue\ndenmark\tfrederiksberg\tdept strateg management \u0026 globalizat\tdenmark\tfrederiksberg\tdept strateg management \u0026 globalizat\tdenmark\tnull\tfrederiksberg\tdept strateg management \u0026 globalizat\t2623032\tWrappedArray(2621945, 2621942)\tfalse\ttrue\n"
-      },
       "dateCreated": "May 13, 2015 5:39:38 PM",
       "dateStarted": "Mar 4, 2016 10:13:00 AM",
       "dateFinished": "Mar 4, 2016 10:13:08 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "No country",
       "text": "%sql select distinct * from extracted where countryId is null limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:14 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1798,7 +1671,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1806,21 +1680,17 @@
       },
       "jobName": "paragraph_1431538776513_-515514669",
       "id": "20150513-173936_20545141",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "block0\tblock1\tblock2\ttext0\ttext1\ttext2\tcountry\tstate\tcity1\tcity2\tcountryId\tcityIds\tisIdentified\tisAmbiguous\nga 30333\tatlanta\tctr infect dis\tga\tatlanta\tctr infect dis\tga\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\nmd 21218\tbaltimore\tdiv infect dis\tmd\tbaltimore\tdiv infect dis\tmd\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\nma 02138\tcambridge\tharvard univ\tma\tcambridge\tharvard univ\tma\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\nin 47907\tw lafayette\tdept ind \u0026 phys pharm\tin\tw lafayette\tdept ind \u0026 phys pharm\tin\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\nil 60612\tchicago\tdept orthoped surg\til\tchicago\tdept orthoped surg\til\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\nmd 20646\tla plata\tcharles cty community coll\tmd\tla plata\tcharles cty community coll\tmd\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\nvt\tburlington\tne forest expt stn\tvt\tburlington\tne forest expt stn\tvt\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\nny 14850\tithaca\tnew york state sch ind \u0026 labor relations\tny\tithaca\tnew york state sch ind \u0026 labor relations\tny\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\n"
-      },
       "dateCreated": "May 13, 2015 5:39:36 PM",
       "dateStarted": "Mar 4, 2016 10:13:04 AM",
       "dateFinished": "Mar 4, 2016 10:13:12 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "No city - 1/2",
       "text": "%sql select distinct * from extracted where cityIds is null limit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:14 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1858,7 +1728,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1866,21 +1737,17 @@
       },
       "jobName": "paragraph_1431538866997_2129588047",
       "id": "20150513-174106_2097758936",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "block0\tblock1\tblock2\ttext0\ttext1\ttext2\tcountry\tstate\tcity1\tcity2\tcountryId\tcityIds\tisIdentified\tisAmbiguous\nscotland\tmidlothian\troslin eh25 9ps\tscotland\tmidlothian\troslin\tunited kingdom\tsct\tmidlothian\troslin\t2635167\tnull\tfalse\tfalse\naustralia\twa 6014\tfloreat\taustralia\twa\tfloreat\taustralia\tnull\twa\tfloreat\t2077456\tnull\tfalse\tfalse\nchile\thuechuraba 8580745\tarizona state univ\tchile\thuechuraba\tarizona state univ\tchile\tnull\thuechuraba\tarizona state univ\t3895114\tnull\tfalse\tfalse\naustralia\ttweed gold coast\tso cross business sch\taustralia\ttweed gold coast\tso cross business sch\taustralia\tnull\ttweed gold coast\tso cross business sch\t2077456\tnull\tfalse\tfalse\nga 30333\tatlanta\tctr infect dis\tga\tatlanta\tctr infect dis\tga\tnull\tnull\tnull\tnull\tnull\tfalse\tfalse\ntaiwan\ttaoyuan\tcoll management\ttaiwan\ttaoyuan\tcoll management\ttaiwan\tnull\ttaoyuan\tcoll management\t1668284\tnull\tfalse\tfalse\nswitzerland\teawag\tdept urban water management res\tswitzerland\teawag\tdept urban water management res\tswitzerland\tnull\teawag\tdept urban water management res\t2658434\tnull\tfalse\tfalse\nengland\tlondon wcin iax\tnanomed lab\tengland\tlondon wcin iax\tnanomed lab\tunited kingdom\teng\tlondon wcin iax\tnanomed lab\t2635167\tnull\tfalse\tfalse\n"
-      },
       "dateCreated": "May 13, 2015 5:41:06 PM",
       "dateStarted": "Mar 4, 2016 10:13:08 AM",
       "dateFinished": "Mar 4, 2016 10:13:15 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "No city - 2/2",
       "text": "%sql\nselect count(*) c, countryId, country, state, city1, city2\nfrom extracted\nwhere cityIds is null\ngroup by countryId, country, state, city1, city2\norder by c, countryId, state, city1, city2 desc\nlimit 8",
-      "dateUpdated": "Mar 4, 2016 10:12:14 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1918,7 +1785,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/sql",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1926,21 +1794,17 @@
       },
       "jobName": "paragraph_1431538891774_1286633855",
       "id": "20150513-174131_895865773",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "c\tcountryId\tcountry\tstate\tcity1\tcity2\n1\tnull\tvt\tnull\tnull\tnull\n1\tnull\tny\tnull\tnull\tnull\n1\tnull\tmi\tnull\tnull\tnull\n1\tnull\tsc\tnull\tnull\tnull\n1\tnull\tpa\tnull\tnull\tnull\n1\tnull\tin\tnull\tnull\tnull\n1\t294640\tisrael\tnull\trehovot\tdept soil \u0026 water sci\n1\t294640\tisrael\tnull\trehovot\tdept neurobiol\n"
-      },
       "dateCreated": "May 13, 2015 5:41:31 PM",
       "dateStarted": "Mar 4, 2016 10:13:12 AM",
       "dateFinished": "Mar 4, 2016 10:13:20 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Institutions3",
       "text": "val identified \u003d extracted.filter(_._2.isIdentified).map { case (blocksId, e) \u003d\u003e (blocksId, e.cityIds.map(_.head)) }.toDF(\"algo_geo_id\", \"city_geoname_id\")\n\nval institutions3 \u003d institutions2.join(\n    identified, \u0027algo_blocks_id \u003d\u003d\u003d \u0027algo_geo_id, \"left_outer\"\n).select(\n    // original fields\n    \u0027pub_id, \u0027idx, \u0027address, \u0027enhanced_names,\n    // GeoNames identification result fields\n    \u0027city_geoname_id\n    // GeoNames identification debug fields\n    //\u0027algo_geo_id\n).coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 10:12:14 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1955,7 +1819,8 @@
         "title": true,
         "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -1963,21 +1828,17 @@
       },
       "jobName": "paragraph_1431538354544_-1425042455",
       "id": "20150513-173234_795512113",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "identified: org.apache.spark.sql.DataFrame \u003d [algo_geo_id: bigint, city_geoname_id: int]\ninstitutions3: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, idx: smallint, address: string, enhanced_names: array\u003cstring\u003e, city_geoname_id: int]\n"
-      },
       "dateCreated": "May 13, 2015 5:32:34 PM",
       "dateStarted": "Mar 4, 2016 10:13:16 AM",
       "dateFinished": "Mar 4, 2016 10:13:20 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Sanity checks",
       "text": "/*\n- no institution lost\n*/\n\nassert(institutions3.count() \u003d\u003d institutions.count())",
-      "dateUpdated": "Mar 4, 2016 10:12:15 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1990,9 +1851,10 @@
           "scatter": {}
         },
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -2000,21 +1862,17 @@
       },
       "jobName": "paragraph_1431541467666_-517958388",
       "id": "20150513-182427_1107570614",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 13, 2015 6:24:27 PM",
       "dateStarted": "Mar 4, 2016 10:13:20 AM",
       "dateFinished": "Mar 4, 2016 10:13:25 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Write",
       "text": "OptSaveMode.foreach(institutions3.write.mode(_).parquet(s\"$DisambigDir/geonames_city_identified_institutions-did_$DatasetId.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 10:12:15 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -2028,7 +1886,9 @@
         },
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -2036,20 +1896,16 @@
       },
       "jobName": "paragraph_1431538412426_1052648516",
       "id": "20150513-173332_41945377",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "May 13, 2015 5:33:32 PM",
       "dateStarted": "Mar 4, 2016 10:13:21 AM",
       "dateFinished": "Mar 4, 2016 10:13:26 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "institutions3.show()",
-      "dateUpdated": "Mar 4, 2016 10:12:15 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -2062,7 +1918,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -2070,20 +1928,16 @@
       },
       "jobName": "paragraph_1431541657941_-2125394965",
       "id": "20150513-182737_2079557620",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+------+---+--------------------+--------------------+---------------+\n|pub_id|idx|             address|      enhanced_names|city_geoname_id|\n+------+---+--------------------+--------------------+---------------+\n|   157|  1|Rensselaer Polyte...|[Rensselaer Polyt...|        5141502|\n|  3574|  1|Univ Virginia, Sc...|[University of Vi...|        4752031|\n|   607|  1|CSIRO Oceans \u0026 At...|[Commonwealth Sci...|           null|\n|   398|  1|NYU, Dept Psychol...|[New York Univers...|        5128581|\n|   424|  1|NYU, Dept Psychol...|[New York Univers...|        5128581|\n|  2112|  1|Tampere Univ Tech...|[Tampere Universi...|         634963|\n|  1671| 11|IRCCS CSS, San Gi...|                null|        3168234|\n|  2507|  2|Weill Cornell Med...|[Cornell Universi...|        4699066|\n|  2507|  3|Weill Cornell Med...|[Cornell Universi...|        4699066|\n|  1903|  1|Nanyang Technol U...|[Nanyang Technolo...|        1880252|\n|   579|  1|Nagoya Univ, Dept...| [Nagoya University]|        1856057|\n|  2118|  3|San Francisco Afr...|                null|        5391959|\n|  2083|  1|Univ Alcala De He...|[Universidad de A...|        3117735|\n|  3253|  1|Heriot Watt Univ,...|[Heriot Watt Univ...|        2650225|\n|  2581|  1|Univ Dublin Trini...|[Trinity College ...|        2964574|\n|  1046|  4|Korea Adv Inst Sc...|[Korea Advanced I...|        1835235|\n|  1988|  7|Univ Kuala Lumpur...|[University of Ku...|        1732891|\n|   260|  1|Airbus Def \u0026 Spac...|                null|        6619659|\n|  3179|  3|Woodrow Wilson In...|                null|        4140963|\n|  3641|  1|Papworth Hosp, Re...|                null|        2653941|\n+------+---+--------------------+--------------------+---------------+\nonly showing top 20 rows\n\n"
-      },
       "dateCreated": "May 13, 2015 6:27:37 PM",
       "dateStarted": "Mar 4, 2016 10:13:25 AM",
       "dateFinished": "Mar 4, 2016 10:13:26 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "",
-      "dateUpdated": "Mar 4, 2016 10:12:15 AM",
+      "dateUpdated": "Mar 4, 2016 5:35:19 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -2096,7 +1950,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -2104,38 +1960,17 @@
       },
       "jobName": "paragraph_1431962939949_-2027535336",
       "id": "20150518-152859_2028884895",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT"
-      },
       "dateCreated": "May 18, 2015 3:28:59 PM",
       "dateStarted": "Mar 4, 2016 10:13:26 AM",
       "dateFinished": "Mar 4, 2016 10:13:26 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],
   "name": "[24] GeoNames city identification",
   "id": "2APC134DG",
-  "angularObjects": {
-    "2BECU381X": [],
-    "2BFE4973F": [],
-    "2BDUP8TX1": [],
-    "2BC2TVSBR": [],
-    "2BEK1W1PD": [],
-    "2BEV8A6Z4": [],
-    "2BCVF5P5F": [],
-    "2BEMYV7QQ": [],
-    "2BFPPNXXV": [],
-    "2BD9VECZR": [],
-    "2BE14FKBG": [],
-    "2BEKWFP9V": [],
-    "2BDPVAN2T": [],
-    "2BDMC46FS": [],
-    "2BFC9NN6P": [],
-    "2BE7P7NCM": [],
-    "2BFQQPY3C": []
-  },
+  "angularObjects": {},
   "config": {
     "looknfeel": "default"
   },

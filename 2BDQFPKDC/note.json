@@ -2,11 +2,11 @@
   "paragraphs": [
     {
       "text": "%md\n\n##### Memo:\n - Investigate title similarities.",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "graph": {
           "mode": "table",
           "height": 300.0,
@@ -16,7 +16,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -24,21 +25,17 @@
       },
       "jobName": "paragraph_1456931760982_1706758341",
       "id": "20160302-161600_1959061298",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003ch5\u003eMemo:\u003c/h5\u003e\n\u003cul\u003e\n\u003cli\u003eInvestigate title similarities.\u003c/li\u003e\n\u003c/ul\u003e\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:41 AM",
       "dateFinished": "Mar 4, 2016 10:10:41 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Configuration",
       "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite/*ErrorIfExists*/)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval ProcessingDir \u003d s\"$WorkDir/processing\"\nval DisambigDir \u003d s\"$WorkDir/disambiguation\"",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "tableHide": true,
         "colWidth": 12.0,
@@ -53,7 +50,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -61,25 +59,21 @@
       },
       "jobName": "paragraph_1456931760983_1706373592",
       "id": "20160302-161600_125969998",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nWorkDir: String \u003d /tmp/anticipation\nProcessingDir: String \u003d /tmp/anticipation/processing\nDisambigDir: String \u003d /tmp/anticipation/disambiguation\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:41 AM",
       "dateFinished": "Mar 4, 2016 10:10:42 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Definitions",
       "text": "import scala.util.hashing.MurmurHash3\n\ndef hash(s: String): Long \u003d MurmurHash3.stringHash(s).toLong\n\nval hashUDF \u003d sqlc.udf.register(\"hashUDF\", (s: String) \u003d\u003e hash(s))",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
-        "editorHide": true,
+        "editorHide": false,
         "title": true,
         "graph": {
           "mode": "table",
@@ -90,7 +84,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -98,21 +93,17 @@
       },
       "jobName": "paragraph_1456931760983_1706373592",
       "id": "20160302-161600_188837337",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "import scala.util.hashing.MurmurHash3\nhash: (s: String)Long\nhashUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,LongType,List())\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:41 AM",
       "dateFinished": "Mar 4, 2016 10:10:42 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Load",
       "text": "val publications \u003d sqlc.read.parquet(s\"$ProcessingDir/publications.parquet\").filter(\u0027did \u003d\u003d\u003d DatasetId \u0026\u0026 \u0027is_valid \u003d\u003d\u003d true).repartition(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\npublications.registerTempTable(\"publications\")",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "tableHide": true,
         "colWidth": 12.0,
@@ -136,25 +127,21 @@
       },
       "jobName": "paragraph_1456931760983_1706373592",
       "id": "20160302-161600_357168594",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "publications: org.apache.spark.sql.DataFrame \u003d [did: int, pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, title: string, alternate_titles: array\u003cstring\u003e, year: smallint, abstract: string, times_cited: int, references_count: int, document_types: array\u003cstring\u003e, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, controlled_indexing: array\u003cstring\u003e, uncontrolled_indexing: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categories: array\u003cstring\u003e, scielo_collections: array\u003cstring\u003e, author_address: string, wos_database: string, is_valid: boolean, is_conference: boolean]\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:42 AM",
       "dateFinished": "Mar 4, 2016 10:10:42 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "publications.printSchema()",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
-        "editorHide": true,
+        "editorHide": false,
         "graph": {
           "mode": "table",
           "height": 300.0,
@@ -172,24 +159,20 @@
       },
       "jobName": "paragraph_1456931760983_1706373592",
       "id": "20160302-161600_1189571902",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "root\n |-- did: integer (nullable \u003d true)\n |-- pub_id: long (nullable \u003d true)\n |-- is_main: boolean (nullable \u003d true)\n |-- is_backward: boolean (nullable \u003d true)\n |-- is_forward: boolean (nullable \u003d true)\n |-- title: string (nullable \u003d true)\n |-- alternate_titles: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- year: short (nullable \u003d true)\n |-- abstract: string (nullable \u003d true)\n |-- times_cited: integer (nullable \u003d true)\n |-- references_count: integer (nullable \u003d true)\n |-- document_types: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- author_keywords: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- keywords_plus: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- controlled_indexing: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- uncontrolled_indexing: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- research_areas: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- wos_categories: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- scielo_categories: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- scielo_collections: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- author_address: string (nullable \u003d true)\n |-- wos_database: string (nullable \u003d true)\n |-- is_valid: boolean (nullable \u003d true)\n |-- is_conference: boolean (nullable \u003d true)\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:42 AM",
       "dateFinished": "Mar 4, 2016 10:10:42 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "publications.select(\u0027title).distinct.selectExpr(\"lower(title) as lc_title\").groupBy(\u0027lc_title).count().filter(\u0027count \u003e 1).count()\n// Publication titles are case sensitive",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
-        "tableHide": false,
+        "tableHide": true,
         "graph": {
           "mode": "table",
           "height": 300.0,
@@ -199,7 +182,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -207,20 +191,16 @@
       },
       "jobName": "paragraph_1456931760983_1706373592",
       "id": "20160302-161600_1346475002",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res239: Long \u003d 19\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:42 AM",
       "dateFinished": "Mar 4, 2016 10:10:46 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql\nselect *\nfrom (\n    select lc_title, title_set, size(title_set) as s\n    from (\n        select lc_title, collect_set(title) as title_set\n        from (select lower(title) as lc_title, title from publications) t1\n        group by lc_title\n        ) t2\n    ) t3\nwhere s \u003e 1\norder by s desc\nlimit 8",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/sql",
@@ -252,7 +232,8 @@
             }
           }
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -260,20 +241,16 @@
       },
       "jobName": "paragraph_1456931760983_1706373592",
       "id": "20160302-161600_1349387150",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "lc_title\ttitle_set\ts\ntaking european knowledge society seriously\tWrappedArray(Taking European Knowledge Society seriously, Taking European knowledge society seriously, Taking European Knowledge Society Seriously)\t3\nleft to their own devices: breakdowns in united states medical device premarket review\tWrappedArray(Left to their own devices: breakdowns in United States Medical Device premarket review, Left to their own devices: breakdowns in United States medical device premarket review)\t2\ngoverning nanotechnology in a multi-stakeholder world\tWrappedArray(Governing nanotechnology in a multi-stakeholder world, Governing Nanotechnology in a Multi-Stakeholder World)\t2\nthe salience of small: nanotechnology coverage in the american press, 1986-2004\tWrappedArray(The salience of small: nanotechnology coverage in the American Press, 1986-2004, The Salience of Small: Nanotechnology Coverage in the American Press, 1986-2004)\t2\noutlining ethical issues in nanotechnologies\tWrappedArray(OUTLINING ETHICAL ISSUES IN NANOTECHNOLOGIES, Outlining ethical issues in nanotechnologies)\t2\nconverging technologies-shaping the future of european societies\tWrappedArray(Converging technologies-shaping the future of European Societies, Converging Technologies-Shaping the Future of European Societies)\t2\ngreat uncertainty about small things\tWrappedArray(GREAT UNCERTAINTY ABOUT SMALL THINGS, Great uncertainty about small things)\t2\nknocking out pain in livestock: can technology succeed where morality has stalled?\tWrappedArray(Knocking Out Pain in Livestock: Can Technology Succeed Where Morality has Stalled?, Knocking out pain in livestock: can technology succeed where morality has stalled?)\t2\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:43 AM",
       "dateFinished": "Mar 4, 2016 10:10:48 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "import scala.util.hashing.MurmurHash3\n\ndef hash(s: String): Long \u003d MurmurHash3.stringHash(s).toLong\n\nval hashUDF \u003d udf { (s: String) \u003d\u003e hash(s) }",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -287,7 +264,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -295,26 +273,22 @@
       },
       "jobName": "paragraph_1456931760983_1706373592",
       "id": "20160302-161600_173251380",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "import scala.util.hashing.MurmurHash3\nhash: (s: String)Long\nhashUDF: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,LongType,List(StringType))\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:47 AM",
       "dateFinished": "Mar 4, 2016 10:10:48 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Disambiguation",
       "text": "%md\n\nNo disambiguation currently.",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/markdown",
-        "editorHide": true,
+        "editorHide": false,
         "title": true,
         "graph": {
           "mode": "table",
@@ -333,21 +307,17 @@
       },
       "jobName": "paragraph_1456931760985_1704065098",
       "id": "20160302-161600_1511658057",
-      "result": {
-        "code": "SUCCESS",
-        "type": "HTML",
-        "msg": "\u003cp\u003eNo disambiguation currently.\u003c/p\u003e\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:41 AM",
       "dateFinished": "Mar 4, 2016 10:10:41 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "publications4",
       "text": "val publications4 \u003d publications.withColumn(\n    \"dis_title\", upper(\u0027title)\n).withColumn(\n    \"dis_id\", \u0027pub_id\n).select(\n    // original fields\n    \u0027pub_id, \u0027is_main, \u0027is_backward, \u0027is_forward, \u0027title, \u0027year, \u0027times_cited, \u0027document_types, \u0027abstract, \u0027is_conference, \u0027author_keywords, \u0027keywords_plus, \u0027research_areas, \u0027wos_categories, \u0027scielo_categories, \u0027scielo_collections,\n    // disambiguation result fields\n    \u0027dis_id, \u0027dis_title\n).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\npublications4.registerTempTable(\"publications_4\")",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "tableHide": true,
         "colWidth": 12.0,
@@ -362,7 +332,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -370,23 +341,19 @@
       },
       "jobName": "paragraph_1456931760985_1704065098",
       "id": "20160302-161600_73623214",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "publications4: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, is_main: boolean, is_backward: boolean, is_forward: boolean, title: string, year: smallint, times_cited: int, document_types: array\u003cstring\u003e, abstract: string, is_conference: boolean, author_keywords: array\u003cstring\u003e, keywords_plus: array\u003cstring\u003e, research_areas: array\u003cstring\u003e, wos_categories: array\u003cstring\u003e, scielo_categories: array\u003cstring\u003e, scielo_collections: array\u003cstring\u003e, dis_id: bigint, dis_title: string]\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:48 AM",
       "dateFinished": "Mar 4, 2016 10:10:48 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Sanity Checks",
       "text": "/*\n- rid are indeed unique for a given did\n- no hash collisions\n*/\n\nassert(publications4.count() \u003d\u003d publications4.select(\u0027pub_id).distinct.count())\nassert(publications4.select(\u0027pub_id, \u0027dis_id).distinct.groupBy(\u0027dis_id).count().filter(\u0027count \u003e 1).count() \u003d\u003d 0)",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
         "title": true,
@@ -399,7 +366,8 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -407,21 +375,17 @@
       },
       "jobName": "paragraph_1456931760985_1704065098",
       "id": "20160302-161600_971759393",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:48 AM",
       "dateFinished": "Mar 4, 2016 10:10:52 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Normalization",
       "text": "publications4.select(\u0027abstract).distinct.selectExpr(\"lower(abstract) as lc_abstract\").groupBy(\u0027lc_abstract).count().filter(\u0027count \u003e 1).count()\n// Abstracts are case sensitive",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -435,7 +399,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -443,20 +409,16 @@
       },
       "jobName": "paragraph_1456931760985_1704065098",
       "id": "20160302-161600_1731997359",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res253: Long \u003d 0\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:49 AM",
       "dateFinished": "Mar 4, 2016 10:10:56 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql\nselect c, hashUDF(lc_abstract) as lc_abstract_hash, dis_id, pub_id, dis_title, year, times_cited, document_types\nfrom (\n    select lc_abstract, count(*) c\n    from (\n        select lower(abstract) as lc_abstract\n        from (\n            select distinct abstract\n            from publications_4\n            ) t1\n        ) t2\n    group by lc_abstract\n    ) t3\njoin publications_4\non lower(abstract) \u003d lc_abstract\nwhere c \u003e 1\norder by c, lc_abstract_hash desc",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/sql",
@@ -488,7 +450,8 @@
             }
           }
         },
-        "enabled": true
+        "enabled": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -496,21 +459,17 @@
       },
       "jobName": "paragraph_1456931760986_1705219345",
       "id": "20160302-161600_1841225819",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "c\tlc_abstract_hash\tdis_id\tpub_id\tdis_title\tyear\ttimes_cited\tdocument_types\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:53 AM",
       "dateFinished": "Mar 4, 2016 10:11:01 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Sanity checks",
       "text": "/*\n- document types are not case sensitive\n*/\n\nassert(publications4.explode(\"document_types\", \"document_type\")((a: Seq[String]) \u003d\u003e Option(a).getOrElse(Seq.empty[String])).select(\u0027document_type).distinct.selectExpr(\"lower(document_type) as lc_document_type\").groupBy(\u0027lc_document_type).count().filter(\u0027count \u003e 1).count() \u003d\u003d 0)",
-      "dateUpdated": "Mar 4, 2016 10:10:41 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -524,7 +483,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -532,21 +493,17 @@
       },
       "jobName": "paragraph_1456931760986_1705219345",
       "id": "20160302-161600_1928838484",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:10:56 AM",
       "dateFinished": "Mar 4, 2016 10:11:02 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Write",
       "text": "OptSaveMode.foreach(publications4.write.mode(_).parquet(s\"$DisambigDir/disambiguated_publications-did_$DatasetId.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 10:10:42 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -560,7 +517,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -568,20 +527,16 @@
       },
       "jobName": "paragraph_1456931760986_1705219345",
       "id": "20160302-161600_352478972",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:11:01 AM",
       "dateFinished": "Mar 4, 2016 10:11:03 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "publications4.show()",
-      "dateUpdated": "Mar 4, 2016 10:10:42 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -594,7 +549,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -602,20 +559,16 @@
       },
       "jobName": "paragraph_1456931760986_1705219345",
       "id": "20160302-161600_323845029",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "+------+-------+-----------+----------+--------------------+----+-----------+--------------------+--------------------+-------------+--------------------+--------------------+--------------------+--------------------+-----------------+------------------+------+--------------------+\n|pub_id|is_main|is_backward|is_forward|               title|year|times_cited|      document_types|            abstract|is_conference|     author_keywords|       keywords_plus|      research_areas|      wos_categories|scielo_categories|scielo_collections|dis_id|           dis_title|\n+------+-------+-----------+----------+--------------------+----+-----------+--------------------+--------------------+-------------+--------------------+--------------------+--------------------+--------------------+-----------------+------------------+------+--------------------+\n|  3678|  false|       true|     false|Rationalities of ...|2012|         11|           [Article]|The financial cri...|        false|[neo-liberalism, ...|[ECONOMICS, POLIT...|[Business \u0026 Econo...|[Economics, Socio...|             null|              null|  3678|RATIONALITIES OF ...|\n|  3673|  false|       true|     false|Synthetic Biology...|2012|          1|           [Article]|                null|        false|                null|                null|[Biotechnology \u0026 ...|[Biotechnology \u0026 ...|             null|              null|  3673|SYNTHETIC BIOLOGY...|\n|   712|  false|      false|      true|Energy and enviro...|2013|         68|[Editorial Material]|                null|        false|                null|[PHOTOSYSTEM-II, ...|[Chemistry, Energ...|[Chemistry, Multi...|             null|              null|   712|ENERGY AND ENVIRO...|\n|  1285|  false|       true|     false|The case of nanob...|2004|          1|[Editorial Material]|                null|        false|                null|                null|[Biochemistry \u0026 M...|[Biochemistry \u0026 M...|             null|              null|  1285|THE CASE OF NANOB...|\n| 10467|  false|       true|     false|Diffusion and pol...|2013|          1|                null|                null|         null|                null|                null|                null|                null|             null|              null| 10467|DIFFUSION AND POL...|\n|  9383|  false|       true|     false|Australasian anim...|2009|          2|                null|                null|         null|                null|                null|                null|                null|             null|              null|  9383|AUSTRALASIAN ANIM...|\n|   681|   true|      false|     false|A generic foresig...|2003|         32|     [Journal Paper]|A generic foresig...|        false|                null|                null|[Computer Science...|                null|             null|              null|   681|A GENERIC FORESIG...|\n|  2978|  false|       true|     false|                null|2007|          1|                null|                null|         null|                null|                null|                null|                null|             null|              null|  2978|                null|\n|  2791|   true|      false|     false|Challenges in tra...|2007|          1|     [Journal Paper]|The purpose of th...|        false|                null|                null|[Automation \u0026 Con...|                null|             null|              null|  2791|CHALLENGES IN TRA...|\n| 12390|  false|       true|     false|Neuroethics and B...|2009|          2|                null|                null|         null|                null|                null|                null|                null|             null|              null| 12390|NEUROETHICS AND B...|\n|  3256|   true|      false|     false|Making anticipato...|2010|          4|     [Journal Paper]|Purpose - When co...|        false|                null|                null|[Computer Science...|                null|             null|              null|  3256|MAKING ANTICIPATO...|\n|   179|  false|       true|     false|Complexities: An ...|2006|          3|                null|                null|         null|                null|                null|                null|                null|             null|              null|   179|COMPLEXITIES: AN ...|\n|   577|  false|      false|      true|Operationalizing ...|2013|          0|           [Article]|Adaptive policyma...|        false|[Dynamic adaptive...|[SPEED, METHODOLOGY]|[Business \u0026 Econo...|[Economics, Plann...|             null|              null|   577|OPERATIONALIZING ...|\n|  2186|  false|       true|     false|Animals in their ...|2004|         40|           [Article]|This article seek...|        false|[animals, embodim...|                null|         [Sociology]|         [Sociology]|             null|              null|  2186|ANIMALS IN THEIR ...|\n|  2632|   true|      false|     false|Road-mapping the ...|2010|         10|     [Journal Paper]|Purpose - This pa...|        false|                null|                null|[Mathematical \u0026 C...|                null|             null|              null|  2632|ROAD-MAPPING THE ...|\n|   687|  false|       true|     false|Nanotoxicology: A...|2005|       2874|            [Review]|Although humans h...|        false|[biokinetics, cen...|[PARTICULATE AIR-...|[Environmental Sc...|[Environmental Sc...|             null|              null|   687|NANOTOXICOLOGY: A...|\n|  3132|  false|       true|     false|Public attitudes ...|2004|         43|            [Letter]|                null|        false|                null|                null|[Chemistry, Mater...|[Chemistry, Physi...|             null|              null|  3132|PUBLIC ATTITUDES ...|\n|  4407|  false|       true|     false|                null|2004|         21|                null|                null|         null|                null|                null|                null|                null|             null|              null|  4407|                null|\n| 13353|  false|       true|     false|Ethics and nanote...|2008|          6|                null|                null|         null|                null|                null|                null|                null|             null|              null| 13353|ETHICS AND NANOTE...|\n|  3595|  false|       true|     false|Understanding shi...|2013|          5|           [Article]|Communications fr...|        false|[Nanotechnologies...|[RISK PERCEPTIONS...|[Business \u0026 Econo...|[Management, Plan...|             null|              null|  3595|UNDERSTANDING SHI...|\n+------+-------+-----------+----------+--------------------+----+-----------+--------------------+--------------------+-------------+--------------------+--------------------+--------------------+--------------------+-----------------+------------------+------+--------------------+\nonly showing top 20 rows\n\n"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:11:02 AM",
       "dateFinished": "Mar 4, 2016 10:11:03 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "",
-      "dateUpdated": "Mar 4, 2016 10:10:42 AM",
+      "dateUpdated": "Mar 4, 2016 5:33:33 PM",
       "config": {
         "colWidth": 12.0,
         "editorMode": "ace/mode/scala",
@@ -628,7 +581,9 @@
           "groups": [],
           "scatter": {}
         },
-        "enabled": true
+        "enabled": true,
+        "tableHide": true,
+        "editorHide": false
       },
       "settings": {
         "params": {},
@@ -636,38 +591,17 @@
       },
       "jobName": "paragraph_1456931760986_1705219345",
       "id": "20160302-161600_166460847",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT"
-      },
       "dateCreated": "Mar 2, 2016 4:16:00 PM",
       "dateStarted": "Mar 4, 2016 10:11:03 AM",
       "dateFinished": "Mar 4, 2016 10:11:03 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],
   "name": "[22] Publication disambiguation",
   "id": "2BDQFPKDC",
-  "angularObjects": {
-    "2BECU381X": [],
-    "2BFE4973F": [],
-    "2BDUP8TX1": [],
-    "2BC2TVSBR": [],
-    "2BEK1W1PD": [],
-    "2BEV8A6Z4": [],
-    "2BCVF5P5F": [],
-    "2BEMYV7QQ": [],
-    "2BFPPNXXV": [],
-    "2BD9VECZR": [],
-    "2BE14FKBG": [],
-    "2BEKWFP9V": [],
-    "2BDPVAN2T": [],
-    "2BDMC46FS": [],
-    "2BFC9NN6P": [],
-    "2BE7P7NCM": [],
-    "2BFQQPY3C": []
-  },
+  "angularObjects": {},
   "config": {
     "looknfeel": "default"
   },

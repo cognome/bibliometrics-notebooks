@@ -2,7 +2,7 @@
   "paragraphs": [
     {
       "text": "val NumPartitions \u003d 32\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite)\nval OptDebugSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval CrawlDir \u003d s\"$WorkDir/crawl\"\nval RawDir \u003d s\"$WorkDir/raw\"\nval QualityDir \u003d s\"$WorkDir/quality\"",
-      "dateUpdated": "Mar 4, 2016 9:55:27 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -25,21 +25,17 @@
       },
       "jobName": "paragraph_1425548774291_925993399",
       "id": "20150305-094614_1936011931",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "NumPartitions: Int \u003d 32\nOptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nOptDebugSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(Overwrite)\nDatasetId: Int \u003d 1\nStudyName: String \u003d anticipation\nWorkDir: String \u003d /tmp/anticipation\nCrawlDir: String \u003d /tmp/anticipation/crawl\nRawDir: String \u003d /tmp/anticipation/raw\nQualityDir: String \u003d /tmp/anticipation/quality\n"
-      },
       "dateCreated": "Mar 5, 2015 9:46:14 AM",
       "dateStarted": "Mar 4, 2016 9:55:27 AM",
       "dateFinished": "Mar 4, 2016 9:55:29 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Common scraping helpers",
       "text": "object Common {\n    \n    import org.jsoup.Jsoup\n\n    object ScrapingHelper {\n    \n        private val NonAsciiChars \u003d \"\"\"[^\\p{ASCII}]+\"\"\".r\n        private val MultiWhitespaces \u003d \" {2,}\".r\n    \n        def css(element: org.jsoup.nodes.Element, selector: String): Option[Seq[String]] \u003d {\n            import scala.collection.JavaConversions._\n            val l \u003d element.select(selector).map { e \u003d\u003e clean(e.text) }.filterNot(_.isEmpty)\n            if (l.isEmpty) None else Some(l)\n        }\n    \n        def cssHtml(element: org.jsoup.nodes.Element, selector: String): Option[String] \u003d {\n            val s \u003d clean(element.select(selector).html)\n            if (s.isEmpty) None else Some(s)\n        }\n    \n        def cssString(element: org.jsoup.nodes.Element, selector: String): Option[String] \u003d {\n            val s \u003d clean(element.select(selector).text)\n            if (s.isEmpty) None else Some(s)\n        }\n    \n        def clean(content: String): String \u003d {\n            val s1 \u003d NonAsciiChars.replaceAllIn(content, \" \")\n            MultiWhitespaces.replaceAllIn(s1, \" \").trim\n        }\n    }\n}\n\nval css \u003d sqlc.udf.register(\"css\", (html: String, selector: String) \u003d\u003e Common.ScrapingHelper.css(org.jsoup.Jsoup.parse(html), selector))\nval cssHtml \u003d sqlc.udf.register(\"css_html\", (html: String, selector: String) \u003d\u003e Common.ScrapingHelper.cssHtml(org.jsoup.Jsoup.parse(html), selector))\nval cssString \u003d sqlc.udf.register(\"css_string\", (html: String, selector: String) \u003d\u003e Common.ScrapingHelper.cssString(org.jsoup.Jsoup.parse(html), selector))",
-      "dateUpdated": "Mar 4, 2016 9:55:27 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -52,9 +48,10 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -62,21 +59,17 @@
       },
       "jobName": "paragraph_1435761525463_2019372023",
       "id": "20150701-143845_687195333",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "defined module Common\ncss: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction2\u003e,ArrayType(StringType,true),List())\ncssHtml: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction2\u003e,StringType,List())\ncssString: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction2\u003e,StringType,List())\n"
-      },
       "dateCreated": "Jul 1, 2015 2:38:45 PM",
       "dateStarted": "Mar 4, 2016 9:55:27 AM",
       "dateFinished": "Mar 4, 2016 9:55:33 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Definitions",
       "text": "object Wos {\n    \n    case class Affiliation(addressLine: Option[String], enhancedNames: Option[Seq[String]])\n\n    object ScrapingHelper {\n        \n        def scrapeField(element: org.jsoup.nodes.Element, name: String): Option[String] \u003d {\n            Common.ScrapingHelper.cssString(element, s\".FR_field:matches(^$name:)\").flatMap { s \u003d\u003e\n                val cleaned \u003d s\"^$name:\".r.replaceFirstIn(s, \"\").trim\n                if (cleaned.isEmpty) None else Some(cleaned)\n            }\n        }\n        \n        def scrapeBlock(element: org.jsoup.nodes.Element, name: String): Option[String] \u003d {\n            Common.ScrapingHelper.cssString(element, s\".block-record-info:matches(^$name)\").flatMap { s \u003d\u003e\n                val cleaned \u003d s\"^$name\".r.replaceFirstIn(s, \"\").trim\n                if (cleaned.isEmpty) None else Some(cleaned)\n            }\n        }\n        \n        def scrapeAffiliations(doc: org.jsoup.nodes.Document): Seq[Affiliation] \u003d {\n            import scala.collection.JavaConversions._\n            val addressRows1 \u003d doc.select(\".FR_field:matches(^Addresses:)+.FR_table_noborders .fr_address_row2\")\n            lazy val addressRows2 \u003d doc.select(\".FR_field:matches(^Addresses:) a\")\n            if (!addressRows1.isEmpty) {\n                addressRows1.map { e \u003d\u003e\n                    Affiliation(\n                        addressLine \u003d Common.ScrapingHelper.css(e, \"a\").flatMap(_.headOption),\n                        enhancedNames \u003d Common.ScrapingHelper.css(e, \"preferred_org\"))\n                }\n            } else {\n                addressRows2.map { e \u003d\u003e\n                    Affiliation(\n                        addressLine \u003d Some(e.text),\n                        enhancedNames \u003d None)\n                }\n            }\n        }\n        \n        def scrapeSummaryJournal(doc: org.jsoup.nodes.Document): Option[String] \u003d {\n            import scala.collection.JavaConversions._\n            Common.ScrapingHelper.cssString(doc, \"source_title_txt_label\") orElse {\n                val l \u003d doc.select(\"div div\").filter { e \u003d\u003e\n                    val s \u003d e.text\n                    s.contains(\"Volume:\") || s.contains(\"Issue:\") || s.contains(\"Pages:\") || s.contains(\"Supplement:\") || s.contains(\"Published:\")\n                }\n                if (l.isEmpty) {\n                    None\n                } else {\n                    val e \u003d l.reduce { (a, b) \u003d\u003e\n                        if (a.text.length \u003c b.text.length) a else b\n                    }\n                    Some(Common.ScrapingHelper.clean(e.ownText))\n                }\n            } orElse {\n                val l \u003d doc.select(\".fcr-normal-data \u003e div\").filter(!_.html.startsWith(\"\u003cspan\"))\n                if (l.size \u003d\u003d 1) Some(Common.ScrapingHelper.clean(l.head.text)) else None\n            }\n        }\n    }\n    \n    class RawPublication(\n            did: Int,\n            crawl_id: String,\n            rid: String,\n            depth: Int,\n            is_main: Boolean,\n            is_backward: Boolean,\n            is_forward: Boolean,\n            is_summary: Boolean \u003d false,\n            summary_idx: Option[Int] \u003d None,\n            title: Option[String] \u003d None,\n            alternate_titles: Option[Seq[String]] \u003d None,\n            date: Option[String] \u003d None,\n            times_cited_field: Option[String] \u003d None,\n            references_count_field: Option[String] \u003d None,\n            pub_abstract: Option[String] \u003d None,\n            document_types_field: Option[String] \u003d None,\n            language: Option[String] \u003d None,\n            accessionNumber: Option[String] \u003d None,\n            pmid: Option[Long] \u003d None,\n            issn: Option[String] \u003d None,\n            eissn: Option[String] \u003d None,\n            isbn: Option[String] \u003d None,\n            doi: Option[String] \u003d None,\n            idsNumber: Option[String] \u003d None,\n            nlmUniqueId: Option[String] \u003d None,\n            country: Option[String] \u003d None,\n            journal: Option[String] \u003d None,\n            volume: Option[String] \u003d None,\n            issue: Option[String] \u003d None,\n            pages: Option[String] \u003d None,\n            supplement: Option[String] \u003d None,\n            publisher: Option[String] \u003d None,\n            authors_field: Option[String] \u003d None,\n            group_authors_field: Option[String] \u003d None,\n            corporate_authors_field: Option[String] \u003d None,\n            affiliations_field: Option[Seq[Affiliation]] \u003d None,\n            author_address: Option[String] \u003d None,\n            author_keywords_field: Option[String] \u003d None,\n            keywords_plus_field: Option[String] \u003d None,\n            controlled_indexing_field: Option[String] \u003d None,\n            uncontrolled_indexing_field: Option[String] \u003d None,\n            research_areas_field: Option[String] \u003d None,\n            wos_categories_field: Option[String] \u003d None,\n            scielo_categories_field: Option[String] \u003d None,\n            scielo_collections_field: Option[String] \u003d None,\n            wos_database: Option[String] \u003d None) extends Product {\n        \n        override def canEqual(that: Any): Boolean \u003d  {\n            that match {\n                case that: RawPublication \u003d\u003e\n                    (for (i \u003c- 0 until productArity) yield this.productElement(i) \u003d\u003d that.productElement(i)).reduce(_ \u0026\u0026 _)\n                case _ \u003d\u003e false\n            }\n        }\n        \n        override def productArity: Int \u003d 46\n        \n        override def productElement(n: Int) \u003d n match {\n            case 0 \u003d\u003e did\n            case 1 \u003d\u003e crawl_id\n            case 2 \u003d\u003e rid\n            case 3 \u003d\u003e depth\n            case 4 \u003d\u003e is_main\n            case 5 \u003d\u003e is_backward\n            case 6 \u003d\u003e is_forward\n            case 7 \u003d\u003e is_summary\n            case 8 \u003d\u003e summary_idx\n            case 9 \u003d\u003e title\n            case 10 \u003d\u003e alternate_titles\n            case 11 \u003d\u003e date\n            case 12 \u003d\u003e times_cited_field\n            case 13 \u003d\u003e references_count_field\n            case 14 \u003d\u003e pub_abstract\n            case 15 \u003d\u003e document_types_field\n            case 16 \u003d\u003e language\n            case 17 \u003d\u003e accessionNumber\n            case 18 \u003d\u003e pmid\n            case 19 \u003d\u003e issn\n            case 20 \u003d\u003e eissn\n            case 21 \u003d\u003e isbn\n            case 22 \u003d\u003e doi\n            case 23 \u003d\u003e idsNumber\n            case 24 \u003d\u003e nlmUniqueId\n            case 25 \u003d\u003e country\n            case 26 \u003d\u003e journal\n            case 27 \u003d\u003e volume\n            case 28 \u003d\u003e issue\n            case 29 \u003d\u003e pages\n            case 30 \u003d\u003e supplement\n            case 31 \u003d\u003e publisher\n            case 32 \u003d\u003e authors_field\n            case 33 \u003d\u003e group_authors_field\n            case 34 \u003d\u003e corporate_authors_field\n            case 35 \u003d\u003e affiliations_field\n            case 36 \u003d\u003e author_address\n            case 37 \u003d\u003e author_keywords_field\n            case 38 \u003d\u003e keywords_plus_field\n            case 39 \u003d\u003e controlled_indexing_field\n            case 40 \u003d\u003e uncontrolled_indexing_field\n            case 41 \u003d\u003e research_areas_field\n            case 42 \u003d\u003e wos_categories_field\n            case 43 \u003d\u003e scielo_categories_field\n            case 44 \u003d\u003e scielo_collections_field\n            case 45 \u003d\u003e wos_database\n            case _ \u003d\u003e throw new IndexOutOfBoundsException(n.toString())\n        }\n    }\n}",
-      "dateUpdated": "Mar 4, 2016 10:23:35 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -88,10 +81,11 @@
           "groups": [],
           "scatter": {}
         },
-        "editorHide": true,
+        "editorHide": false,
         "title": true,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -99,21 +93,17 @@
       },
       "jobName": "paragraph_1435068568614_-347828544",
       "id": "20150623-140928_1641429242",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "defined module Wos\n"
-      },
       "dateCreated": "Jun 23, 2015 2:09:28 PM",
       "dateStarted": "Mar 4, 2016 9:55:29 AM",
       "dateFinished": "Mar 4, 2016 9:55:36 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Loading",
       "text": "val publicationPages \u003d sqlc.read.parquet(s\"$CrawlDir/publications.parquet\")\nval summaryPages \u003d sqlc.read.parquet(s\"$CrawlDir/summaries.parquet\")",
-      "dateUpdated": "Mar 4, 2016 10:23:37 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -126,8 +116,8 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
-        "tableHide": false,
+        "editorHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true
       },
@@ -137,21 +127,17 @@
       },
       "jobName": "paragraph_1428410938212_620798329",
       "id": "20150407-124858_1228349337",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "publicationPages: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, url: string, domain: string, data_type: string, http_status_code: int, depth: int, html: string, tags: array\u003cstring\u003e, time: date]\nsummaryPages: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, url: string, domain: string, data_type: string, http_status_code: int, depth: int, html: string, tags: array\u003cstring\u003e, time: date]\n"
-      },
       "dateCreated": "Apr 7, 2015 12:48:58 PM",
       "dateStarted": "Mar 4, 2016 9:55:34 AM",
       "dateFinished": "Mar 4, 2016 9:55:37 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Scraping",
       "text": "val allRawPublicationsFromPublicationPages \u003d publicationPages.select(\u0027did, \u0027crawl_id, \u0027rid, \u0027depth, \u0027html, \u0027tags).map { row \u003d\u003e\n    val html \u003d row.getString(4)\n    val doc \u003d org.jsoup.Jsoup.parse(html)\n    val titles \u003d Common.ScrapingHelper.css(doc, \".title\")\n    val depth \u003d row.getInt(3)\n    val tags \u003d row.getSeq[String](5)\n    new Wos.RawPublication(\n        did \u003d row.getInt(0),\n        crawl_id \u003d row.getString(1),\n        rid \u003d row.getString(2),\n        depth \u003d depth,\n        is_main \u003d depth \u003d\u003d 1,\n        is_backward \u003d tags.contains(\"backward\"),\n        is_forward \u003d tags.contains(\"forward\"),\n        title \u003d titles.flatMap(_.headOption),\n        alternate_titles \u003d titles.flatMap { l \u003d\u003e if (l.size \u003e 1) Some(l.tail) else None },\n        date \u003d Wos.ScrapingHelper.scrapeField(doc, \"Published\"),\n        times_cited_field \u003d Common.ScrapingHelper.cssString(doc, \".TCcountFR\"),\n        references_count_field \u003d Common.ScrapingHelper.cssString(doc, \".l-column-sidebar2 \u003e div:nth-child(2) \u003e div \u003e div \u003e p:nth-child(2)\"),\n        pub_abstract \u003d Wos.ScrapingHelper.scrapeBlock(doc, \"Abstract\"),\n        document_types_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"Document Type\"),\n        language \u003d Wos.ScrapingHelper.scrapeField(doc, \"Language\"),\n        accessionNumber \u003d Wos.ScrapingHelper.scrapeField(doc, \"Accession Number\"),\n        pmid \u003d Wos.ScrapingHelper.scrapeField(doc, \"PubMed ID\").map(_.toLong),\n        issn \u003d Wos.ScrapingHelper.scrapeField(doc, \"ISSN\"),\n        eissn \u003d Wos.ScrapingHelper.scrapeField(doc, \"eISSN\"),\n        isbn \u003d Wos.ScrapingHelper.scrapeField(doc, \"ISBN\"),\n        doi \u003d Wos.ScrapingHelper.scrapeField(doc, \"DOI\"),\n        idsNumber \u003d Wos.ScrapingHelper.scrapeField(doc, \"IDS Number\"),\n        nlmUniqueId \u003d Wos.ScrapingHelper.scrapeField(doc, \"NLM Unique ID\"),\n        country \u003d Wos.ScrapingHelper.scrapeField(doc, \"Country\"),\n        journal \u003d Common.ScrapingHelper.cssString(doc, \".block-record-info-source \u003e .sourceTitle, .block-record-info-source \u003e a\"),\n        volume \u003d Wos.ScrapingHelper.scrapeField(doc, \"Volume\"),\n        issue \u003d Wos.ScrapingHelper.scrapeField(doc, \"Issue\"),\n        pages \u003d Wos.ScrapingHelper.scrapeField(doc, \"Pages\"),\n        supplement \u003d Wos.ScrapingHelper.scrapeField(doc, \"Supplement\"),\n        publisher \u003d Wos.ScrapingHelper.scrapeBlock(doc, \"Publisher\"),\n        authors_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"By\"),\n        group_authors_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"\"\"Group Author\\(s\\)\"\"\"),\n        corporate_authors_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"\"\"Corporate Author\\(s\\)\"\"\"),\n        affiliations_field \u003d Some(Wos.ScrapingHelper.scrapeAffiliations(doc)),\n        author_address \u003d Wos.ScrapingHelper.scrapeField(doc, \"Author Address\"),\n        author_keywords_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"Author Keywords\"),\n        keywords_plus_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"KeyWords Plus\"),\n        controlled_indexing_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"Controlled Indexing\"),\n        uncontrolled_indexing_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"Uncontrolled Indexing\"),\n        research_areas_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"Research Areas\").map(_.replaceFirst(\"\"\" \\(provided by Thomson Reuters\\)$\"\"\", \"\")),\n        wos_categories_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"Web of Science Categories\"),\n        scielo_categories_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"SciELO Categories\"),\n        scielo_collections_field \u003d Wos.ScrapingHelper.scrapeField(doc, \"SciELO Collections\"),\n        wos_database \u003d Common.ScrapingHelper.cssString(doc, \".thisRecordSilo\"))\n}.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER).toDF().withColumn(\n    \"is_empty\", \u0027title.isNull\n)\nallRawPublicationsFromPublicationPages.registerTempTable(\"publication_pages_all\")",
-      "dateUpdated": "Mar 4, 2016 10:22:22 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -164,8 +150,8 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
-        "tableHide": false,
+        "editorHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true
       },
@@ -175,20 +161,16 @@
       },
       "jobName": "paragraph_1436774144905_306996769",
       "id": "20150713-075544_265126864",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "allRawPublicationsFromPublicationPages: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, depth: int, is_main: boolean, is_backward: boolean, is_forward: boolean, is_summary: boolean, summary_idx: int, title: string, alternate_titles: array\u003cstring\u003e, date: string, times_cited_field: string, references_count_field: string, pub_abstract: string, document_types_field: string, language: string, accessionNumber: string, pmid: bigint, issn: string, eissn: string, isbn: string, doi: string, idsNumber: string, nlmUniqueId: string, country: string, journal: string, volume: string, issue: string, pages: string, supplement: string, publisher: string, authors_field: string, group_authors_field: string, corporate_authors_field: string, affiliations_field: array\u003cstruct\u003caddress..."
-      },
       "dateCreated": "Jul 13, 2015 7:55:44 AM",
       "dateStarted": "Mar 4, 2016 9:55:36 AM",
       "dateFinished": "Mar 4, 2016 9:55:38 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val allRawPublicationsFromSummaryPages \u003d summaryPages.select(\u0027did, \u0027crawl_id, \u0027rid, \u0027depth, \u0027html, \u0027tags).map { row \u003d\u003e\n    val html \u003d row.getString(4)\n    val doc \u003d org.jsoup.Jsoup.parse(html)\n    val depth \u003d row.getInt(3)\n    val tags \u003d row.getSeq[String](5)\n    val by \u003d Common.ScrapingHelper.cssString(doc, \"div:matches(^By:)\").map(_.replace(\"By: \", \"\"))\n    new Wos.RawPublication(\n        did \u003d row.getInt(0),\n        crawl_id \u003d row.getString(1),\n        rid \u003d row.getString(2),\n        depth \u003d depth,\n        is_main \u003d depth \u003d\u003d 1,\n        is_backward \u003d tags.contains(\"backward\"),\n        is_forward \u003d tags.contains(\"forward\"),\n        is_summary \u003d true,\n        summary_idx \u003d Common.ScrapingHelper.cssString(doc, \".search-results-number\").map(_.replaceAll(\"\"\"\\.\"\"\", \"\").toInt),\n        title \u003d Common.ScrapingHelper.cssString(doc, \".reference-title, .search-results-content \u003e div \u003e div:first-child\"),\n        date \u003d Common.ScrapingHelper.cssString(doc, \".label:matches(Published:) + .data_bold\"),\n        times_cited_field \u003d Common.ScrapingHelper.cssString(doc, \".search-results-data-cite\"),\n        journal \u003d Wos.ScrapingHelper.scrapeSummaryJournal(doc).map(_.replaceAll(\"\u003c.+?\u003e\", \"\").trim),\n        volume \u003d Common.ScrapingHelper.cssString(doc, \".label:matches(Volume:) + .data_bold\"),\n        issue \u003d Common.ScrapingHelper.cssString(doc, \".label:matches(Issue:) + .data_bold\"),\n        pages \u003d Common.ScrapingHelper.cssString(doc, \".label:matches(Pages:) + .data_bold\"),\n        supplement \u003d Common.ScrapingHelper.cssString(doc, \".label:matches(Supplement:) + .data_bold\"),\n        authors_field \u003d by.filterNot(_.startsWith(\"*\")),\n        group_authors_field \u003d Common.ScrapingHelper.cssString(doc, \"\"\"div:matches(^Group Author\\(s\\):)\"\"\").map(_.replace(\"Group Author(s): \", \"\")) orElse by.filter(_.startsWith(\"*\")).map(_.replace(\"*\", \"\")),\n        corporate_authors_field \u003d Common.ScrapingHelper.cssString(doc, \"\"\"div:matches(^Corporate Author\\(s\\):)\"\"\").map(_.replace(\"Corporate Author(s): \", \"\")))\n}.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER).toDF().withColumn(\n    \"is_empty\", \u0027title.isNull \u0026\u0026 \u0027journal.isNull \u0026\u0026 \u0027authors_field.isNull \u0026\u0026 \u0027group_authors_field.isNull \u0026\u0026 \u0027corporate_authors_field.isNull\n)\nallRawPublicationsFromSummaryPages.registerTempTable(\"summary_pages_all\")",
-      "dateUpdated": "Mar 4, 2016 9:55:28 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -200,9 +182,10 @@
           "groups": [],
           "scatter": {}
         },
-        "editorHide": true,
+        "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -210,20 +193,16 @@
       },
       "jobName": "paragraph_1436953043935_686439937",
       "id": "20150715-093723_21568647",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "allRawPublicationsFromSummaryPages: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, depth: int, is_main: boolean, is_backward: boolean, is_forward: boolean, is_summary: boolean, summary_idx: int, title: string, alternate_titles: array\u003cstring\u003e, date: string, times_cited_field: string, references_count_field: string, pub_abstract: string, document_types_field: string, language: string, accessionNumber: string, pmid: bigint, issn: string, eissn: string, isbn: string, doi: string, idsNumber: string, nlmUniqueId: string, country: string, journal: string, volume: string, issue: string, pages: string, supplement: string, publisher: string, authors_field: string, group_authors_field: string, corporate_authors_field: string, affiliations_field: array\u003cstruct\u003caddressLine..."
-      },
       "dateCreated": "Jul 15, 2015 9:37:23 AM",
       "dateStarted": "Mar 4, 2016 9:55:37 AM",
       "dateFinished": "Mar 4, 2016 9:55:39 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val allRawPublications \u003d {\n    val df \u003d allRawPublicationsFromPublicationPages.unionAll(allRawPublicationsFromSummaryPages).withColumnRenamed(\"pub_abstract\", \"abstract\")\n    val ids \u003d df.select(\u0027rid).rdd.zipWithUniqueId().map { case (r, id) \u003d\u003e\n        r.getString(0) -\u003e id\n    }.toDF(\"rid\", \"pub_id\")\n    df.join(ids, \"rid\")\n}.persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nallRawPublications.registerTempTable(\"raw_publications_all\")",
-      "dateUpdated": "Mar 4, 2016 9:58:11 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -235,8 +214,8 @@
           "groups": [],
           "scatter": {}
         },
-        "editorHide": true,
-        "tableHide": false,
+        "editorHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true
       },
@@ -246,20 +225,16 @@
       },
       "jobName": "paragraph_1436953042078_1636754396",
       "id": "20150715-093722_100676479",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "allRawPublications: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, depth: int, is_main: boolean, is_backward: boolean, is_forward: boolean, is_summary: boolean, summary_idx: int, title: string, alternate_titles: array\u003cstring\u003e, date: string, times_cited_field: string, references_count_field: string, abstract: string, document_types_field: string, language: string, accessionNumber: string, pmid: bigint, issn: string, eissn: string, isbn: string, doi: string, idsNumber: string, nlmUniqueId: string, country: string, journal: string, volume: string, issue: string, pages: string, supplement: string, publisher: string, authors_field: string, group_authors_field: string, corporate_authors_field: string, affiliations_field: array\u003cstruct\u003caddressLine:string,enhancedName..."
-      },
       "dateCreated": "Jul 15, 2015 9:37:22 AM",
       "dateStarted": "Mar 4, 2016 9:55:38 AM",
       "dateFinished": "Mar 4, 2016 9:55:40 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val crawlingEdges \u003d sqlc.read.parquet(s\"$CrawlDir/edges.parquet\").join(\n    allRawPublications as \u0027from, $\"from.rid\" \u003d\u003d\u003d \u0027from_item\n).join(\n    allRawPublications as \u0027to, $\"to.rid\" \u003d\u003d\u003d \u0027to_item\n).select(\n    \u0027from_item, $\"from.pub_id\" as \"src_id\", \u0027to_item, $\"to.pub_id\" as \"dst_id\", \u0027label, \u0027tags\n)\ncrawlingEdges.registerTempTable(\"crawling_edges\")",
-      "dateUpdated": "Mar 4, 2016 9:55:29 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -272,8 +247,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "editorHide": true,
-        "enabled": true
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -281,20 +257,16 @@
       },
       "jobName": "paragraph_1441968649856_-1358699779",
       "id": "20150911-105049_922485841",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "crawlingEdges: org.apache.spark.sql.DataFrame \u003d [from_item: string, src_id: bigint, to_item: string, dst_id: bigint, label: string, tags: array\u003cstring\u003e]\n"
-      },
       "dateCreated": "Sep 11, 2015 10:50:49 AM",
       "dateStarted": "Mar 4, 2016 9:55:39 AM",
       "dateFinished": "Mar 4, 2016 9:55:41 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "// Sanity checks\nassert(allRawPublicationsFromSummaryPages.count() \u003d\u003d crawlingEdges.filter(\u0027label \u003d\u003d\u003d \"cites\").count())",
-      "dateUpdated": "Mar 4, 2016 9:55:29 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -308,7 +280,8 @@
         },
         "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -316,20 +289,16 @@
       },
       "jobName": "paragraph_1436883507560_-267923099",
       "id": "20150714-141827_581081185",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Jul 14, 2015 2:18:27 PM",
       "dateStarted": "Mar 4, 2016 9:55:41 AM",
       "dateFinished": "Mar 4, 2016 9:56:46 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "// Sanity checks\nassert(allRawPublicationsFromPublicationPages.filter(\u0027is_main \u003d\u003d\u003d false).count() \u003d\u003d crawlingEdges.filter(\u0027label \u003d\u003d\u003d \"summaries\").count())",
-      "dateUpdated": "Mar 4, 2016 9:55:29 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -343,7 +312,8 @@
         },
         "editorHide": false,
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -351,163 +321,16 @@
       },
       "jobName": "paragraph_1436536611372_-1298374598",
       "id": "20150710-135651_2143121064",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Jul 10, 2015 1:56:51 PM",
       "dateStarted": "Mar 4, 2016 9:55:41 AM",
       "dateFinished": "Mar 4, 2016 9:57:09 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "val crawlingEdgeRDD \u003d crawlingEdges.map { r \u003d\u003e\n    val label \u003d r.getString(4)\n    val tags \u003d r.getSeq[String](5)\n    org.apache.spark.graphx.Edge(\n        srcId \u003d r.getLong(1),\n        dstId \u003d r.getLong(3),\n        attr \u003d (label, tags))\n}",
-      "dateUpdated": "Mar 4, 2016 9:55:29 AM",
-      "config": {
-        "colWidth": 12.0,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "editorHide": true,
-        "editorMode": "ace/mode/scala",
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1438952707277_-1639433324",
-      "id": "20150807-130507_1420395218",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "crawlingEdgeRDD: org.apache.spark.rdd.RDD[org.apache.spark.graphx.Edge[(String, Seq[String])]] \u003d MapPartitionsRDD[170] at map at \u003cconsole\u003e:62\n"
-      },
-      "dateCreated": "Aug 7, 2015 1:05:07 PM",
-      "dateStarted": "Mar 4, 2016 9:56:47 AM",
-      "dateFinished": "Mar 4, 2016 9:57:10 AM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "title": "Initial crawling graph",
-      "text": "val initialCrawlingGraph \u003d org.apache.spark.graphx.Graph(\n    vertices \u003d allRawPublications.select(\u0027pub_id, \u0027title).map { r \u003d\u003e\n        r.getLong(0) -\u003e r.getString(1)\n    },\n    edges \u003d crawlingEdgeRDD,\n    defaultVertexAttr \u003d null,\n    edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n    vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
-      "dateUpdated": "Mar 4, 2016 9:55:30 AM",
-      "config": {
-        "colWidth": 12.0,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "editorMode": "ace/mode/scala",
-        "title": true,
-        "editorHide": true,
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1438959426718_1332926999",
-      "id": "20150807-145706_463890905",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "initialCrawlingGraph: org.apache.spark.graphx.Graph[String,(String, Seq[String])] \u003d org.apache.spark.graphx.impl.GraphImpl@13e48619\n"
-      },
-      "dateCreated": "Aug 7, 2015 2:57:06 PM",
-      "dateStarted": "Mar 4, 2016 9:57:10 AM",
-      "dateFinished": "Mar 4, 2016 9:57:10 AM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "text": "initialCrawlingGraph.numVertices\ninitialCrawlingGraph.numEdges",
-      "dateUpdated": "Mar 4, 2016 9:55:30 AM",
-      "config": {
-        "colWidth": 12.0,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "editorMode": "ace/mode/scala",
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1442308390450_1675903881",
-      "id": "20150915-091310_1692209213",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res34: Long \u003d 5445\nres35: Long \u003d 5159\n"
-      },
-      "dateCreated": "Sep 15, 2015 9:13:10 AM",
-      "dateStarted": "Mar 4, 2016 9:57:10 AM",
-      "dateFinished": "Mar 4, 2016 9:57:49 AM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "title": "Fix summaries linked to publications with a different title (WoS bug)",
-      "text": "val wrongLinks \u003d initialCrawlingGraph.triplets.filter { triplet \u003d\u003e\n    // Valid only if the summary\u0027s title matches the related publication\u0027s\n    val label \u003d triplet.attr._1\n    val summaryTitle \u003d triplet.srcAttr\n    val publicationTitle \u003d triplet.dstAttr\n    label \u003d\u003d \"summaries\" \u0026\u0026 summaryTitle !\u003d publicationTitle\n}.map { triplet \u003d\u003e\n    (triplet.srcId, triplet.srcAttr, triplet.dstId, triplet.dstAttr)\n}.toDF(\"src_id\", \"src_title\", \"dst_id\", \"dst_title\")\nwrongLinks.registerTempTable(\"wrong_links\")\n\nval fixedCrawlingGraph \u003d initialCrawlingGraph.outerJoinVertices(wrongLinks.map(_.getLong(2) -\u003e false)) { case (_, _, optValidFlag) \u003d\u003e\n    optValidFlag.getOrElse(true)\n}.subgraph(\n    vpred \u003d { case (_, isValid) \u003d\u003e isValid }\n)\n\nval fixedAllRawPublications \u003d allRawPublications.join(fixedCrawlingGraph.vertices.keys.toDF(\"pub_id\"), \"pub_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nfixedAllRawPublications.registerTempTable(\"raw_publications_all_fixed\")",
-      "dateUpdated": "Mar 4, 2016 9:57:48 AM",
-      "config": {
-        "colWidth": 12.0,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "editorMode": "ace/mode/scala",
-        "title": true,
-        "editorHide": true,
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1438953465283_118002773",
-      "id": "20150807-131745_1635558800",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "wrongLinks: org.apache.spark.sql.DataFrame \u003d [src_id: bigint, src_title: string, dst_id: bigint, dst_title: string]\nfixedCrawlingGraph: org.apache.spark.graphx.Graph[Boolean,(String, Seq[String])] \u003d org.apache.spark.graphx.impl.GraphImpl@38ca6c15\nfixedAllRawPublications: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, depth: int, is_main: boolean, is_backward: boolean, is_forward: boolean, is_summary: boolean, summary_idx: int, title: string, alternate_titles: array\u003cstring\u003e, date: string, times_cited_field: string, references_count_field: string, abstract: string, document_types_field: string, language: string, accessionNumber: string, pmid: bigint, issn: string, eissn: string, isbn: string, doi: string, idsNumber: string, nlmUniqueId: string, country: string, journal: string, volume: string, issue: string, pages: string, supplement: string, publisher: string, authors_field: string, group_authors_field: string, corporate_authors_field: string, affiliations_field: array\u003cstruct\u003caddressLine:string,enhance..."
-      },
-      "dateCreated": "Aug 7, 2015 1:17:45 PM",
-      "dateStarted": "Mar 4, 2016 9:57:11 AM",
-      "dateFinished": "Mar 4, 2016 9:57:50 AM",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
-      "text": "fixedCrawlingGraph.numVertices\nfixedCrawlingGraph.numEdges",
-      "dateUpdated": "Mar 4, 2016 9:55:30 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -520,7 +343,139 @@
           "scatter": {}
         },
         "editorHide": false,
-        "tableHide": false,
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1438952707277_-1639433324",
+      "id": "20150807-130507_1420395218",
+      "dateCreated": "Aug 7, 2015 1:05:07 PM",
+      "dateStarted": "Mar 4, 2016 9:56:47 AM",
+      "dateFinished": "Mar 4, 2016 9:57:10 AM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Initial crawling graph",
+      "text": "val initialCrawlingGraph \u003d org.apache.spark.graphx.Graph(\n    vertices \u003d allRawPublications.select(\u0027pub_id, \u0027title).map { r \u003d\u003e\n        r.getLong(0) -\u003e r.getString(1)\n    },\n    edges \u003d crawlingEdgeRDD,\n    defaultVertexAttr \u003d null,\n    edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n    vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true,
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1438959426718_1332926999",
+      "id": "20150807-145706_463890905",
+      "dateCreated": "Aug 7, 2015 2:57:06 PM",
+      "dateStarted": "Mar 4, 2016 9:57:10 AM",
+      "dateFinished": "Mar 4, 2016 9:57:10 AM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "initialCrawlingGraph.numVertices\ninitialCrawlingGraph.numEdges",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1442308390450_1675903881",
+      "id": "20150915-091310_1692209213",
+      "dateCreated": "Sep 15, 2015 9:13:10 AM",
+      "dateStarted": "Mar 4, 2016 9:57:10 AM",
+      "dateFinished": "Mar 4, 2016 9:57:49 AM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Fix summaries linked to publications with a different title (WoS bug)",
+      "text": "val wrongLinks \u003d initialCrawlingGraph.triplets.filter { triplet \u003d\u003e\n    // Valid only if the summary\u0027s title matches the related publication\u0027s\n    val label \u003d triplet.attr._1\n    val summaryTitle \u003d triplet.srcAttr\n    val publicationTitle \u003d triplet.dstAttr\n    label \u003d\u003d \"summaries\" \u0026\u0026 summaryTitle !\u003d publicationTitle\n}.map { triplet \u003d\u003e\n    (triplet.srcId, triplet.srcAttr, triplet.dstId, triplet.dstAttr)\n}.toDF(\"src_id\", \"src_title\", \"dst_id\", \"dst_title\")\nwrongLinks.registerTempTable(\"wrong_links\")\n\nval fixedCrawlingGraph \u003d initialCrawlingGraph.outerJoinVertices(wrongLinks.map(_.getLong(2) -\u003e false)) { case (_, _, optValidFlag) \u003d\u003e\n    optValidFlag.getOrElse(true)\n}.subgraph(\n    vpred \u003d { case (_, isValid) \u003d\u003e isValid }\n)\n\nval fixedAllRawPublications \u003d allRawPublications.join(fixedCrawlingGraph.vertices.keys.toDF(\"pub_id\"), \"pub_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nfixedAllRawPublications.registerTempTable(\"raw_publications_all_fixed\")",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "title": true,
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1438953465283_118002773",
+      "id": "20150807-131745_1635558800",
+      "dateCreated": "Aug 7, 2015 1:17:45 PM",
+      "dateStarted": "Mar 4, 2016 9:57:11 AM",
+      "dateFinished": "Mar 4, 2016 9:57:50 AM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "fixedCrawlingGraph.numVertices\nfixedCrawlingGraph.numEdges",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true
       },
@@ -530,21 +485,17 @@
       },
       "jobName": "paragraph_1439303068049_-505461432",
       "id": "20150811-142428_1458974434",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res42: Long \u003d 5437\nres43: Long \u003d 5151\n"
-      },
       "dateCreated": "Aug 11, 2015 2:24:28 PM",
       "dateStarted": "Mar 4, 2016 9:57:50 AM",
       "dateFinished": "Mar 4, 2016 9:58:06 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Wrong links",
       "text": "%sql SELECT * FROM wrong_links",
-      "dateUpdated": "Mar 4, 2016 9:55:31 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -580,7 +531,7 @@
           }
         },
         "title": true,
-        "editorHide": true,
+        "editorHide": false,
         "tableHide": true,
         "editorMode": "ace/mode/sql",
         "enabled": true
@@ -591,21 +542,17 @@
       },
       "jobName": "paragraph_1436880796085_1622454993",
       "id": "20150714-133316_1943001373",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "src_id\tsrc_title\tdst_id\tdst_title\n8074\tConceitos de Ci ncia e a Pol tica Cient fica, Tecnol gica e de Inova o The concept of Science, and the Science, Technology and Innovation Policy\t2370\tConceitos de Ci ncia e a Pol tica Cient fica, Tecnol gica e de Inova o\n7451\tAttitudes, values, and socio-demographic characteristics that predict acceptance of genetic engineering and applications of new technology in Australia\t1077\tAttitudes, values, and socio-demographic characteristics that predict acceptance of genetic engineering and applications of new technology in Australia.\n12390\tNeuroethics and Bioethics - Implications of Balkanization Controversy\t1594\t[Neuroethics and bioethics--implications of Balkanization controversy].\n5612\tDisability: An agenda for bioethics: Response to Mark Kuczewski\t2742\tResponse to Mark Kuczewski.\n3611\tA Resilience Perspective on Biofuel Production\t1535\tA resilience perspective on biofuel production.\n8828\tEnvironmental diplomacy: Negotiating more effective global agreements.\t2396\tPolar politics. Creating international environmental regimes.\n2459\tA sensitive period for the development of the central auditory system in children with cochlear implants: Implications for age of implantation.\t2637\tA sensitive period for the development of the central auditory system in children with cochlear implants: implications for age of implantation.\n982\tPolypyrrole-Peptide Microarray for Biomolecular Interaction Analysis by SPR Imaging\t1412\tPolypyrrole-peptide microarray for biomolecular interaction analysis by SPR imaging.\n"
-      },
       "dateCreated": "Jul 14, 2015 1:33:16 PM",
       "dateStarted": "Mar 4, 2016 9:57:51 AM",
       "dateFinished": "Mar 4, 2016 9:58:08 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Empty records",
       "text": "%sql SELECT * FROM raw_publications_all WHERE is_empty\u003dtrue",
-      "dateUpdated": "Mar 4, 2016 9:55:31 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -640,9 +587,9 @@
             }
           }
         },
-        "editorHide": true,
+        "editorHide": false,
         "title": true,
-        "tableHide": false,
+        "tableHide": true,
         "enabled": true,
         "editorMode": "ace/mode/sql"
       },
@@ -652,21 +599,17 @@
       },
       "jobName": "paragraph_1436797377767_-410699942",
       "id": "20150713-142257_1203496399",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "did\tcrawl_id\trid\tdepth\tis_main\tis_backward\tis_forward\tis_summary\tsummary_idx\ttitle\talternate_titles\tdate\ttimes_cited_field\treferences_count_field\tabstract\tdocument_types_field\tlanguage\taccessionNumber\tpmid\tissn\teissn\tisbn\tdoi\tidsNumber\tnlmUniqueId\tcountry\tjournal\tvolume\tissue\tpages\tsupplement\tpublisher\tauthors_field\tgroup_authors_field\tcorporate_authors_field\taffiliations_field\tauthor_address\tauthor_keywords_field\tkeywords_plus_field\tcontrolled_indexing_field\tuncontrolled_indexing_field\tresearch_areas_field\twos_categories_field\tscielo_categories_field\tscielo_collections_field\twos_database\tis_empty\tpub_id\n"
-      },
       "dateCreated": "Jul 13, 2015 2:22:57 PM",
       "dateStarted": "Mar 4, 2016 9:58:06 AM",
       "dateFinished": "Mar 4, 2016 9:58:10 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Deduplication toolbox",
       "text": "def dedupPublications(tableName: String, extraDedupFields: Set[String] \u003d Set.empty) \u003d {\n    val defaultDedupFields \u003d Set(\"is_summary\", \"title\", \"alternate_titles\", \"date\", \"abstract\", \"document_types_field\", \"journal\", \"volume\", \"issue\", \"pages\", \"supplement\", \"publisher\", \"authors_field\", \"group_authors_field\", \"corporate_authors_field\", \"affiliations_field\", \"author_address\", \"author_keywords_field\", \"keywords_plus_field\", \"controlled_indexing_field\", \"uncontrolled_indexing_field\", \"research_areas_field\", \"wos_categories_field\", \"scielo_categories_field\", \"scielo_collections_field\", \"wos_database\")\n    val selectedDedupFields \u003d defaultDedupFields.mkString(\",\")\n    val dedupFields \u003d (defaultDedupFields ++ extraDedupFields).mkString(\",\")\n    sqlc.sql(s\"SELECT max(did) AS did, collect_set(crawl_id) AS crawl_ids, max(pub_id) AS pub_id, collect_set(pub_id) AS occurrences, count(*) AS nb_occurrences, max(times_cited_field) AS times_cited_field, max(references_count_field) AS references_count_field, max(is_main) AS is_main, max(is_backward) AS is_backward, max(is_forward) AS is_forward, $selectedDedupFields FROM $tableName GROUP BY $dedupFields\")\n}\n\ndef getDedupIds(publicationDf: org.apache.spark.sql.DataFrame) \u003d {\n    publicationDf.explode(\"occurrences\", \"dup\") { pubIds: Seq[Long] \u003d\u003e pubIds }.select(\u0027dup, \u0027pub_id).map { r \u003d\u003e r.getLong(0) -\u003e r.getLong(1) }\n}\n\ndef dedupGraph[VD](\n        originalGraph: org.apache.spark.graphx.Graph[VD, (String, Seq[String])],\n        dedupIdsRDD: org.apache.spark.rdd.RDD[(Long, Long)]) \u003d {\n    val g \u003d originalGraph.outerJoinVertices(dedupIdsRDD) {\n        (_, _, optPubId) \u003d\u003e optPubId\n    }\n    org.apache.spark.graphx.Graph(\n        vertices \u003d g.vertices.map { case (vid, optPubId) \u003d\u003e\n            optPubId.getOrElse(vid) -\u003e null\n        }.distinct,\n        edges \u003d g.triplets.map { triplet \u003d\u003e\n            org.apache.spark.graphx.Edge(triplet.srcAttr.getOrElse(triplet.srcId), triplet.dstAttr.getOrElse(triplet.dstId), triplet.attr)\n        }.distinct,\n        defaultVertexAttr \u003d null,\n        edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n        vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER\n    )\n}",
-      "dateUpdated": "Mar 4, 2016 10:27:03 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -679,8 +622,8 @@
           "scatter": {}
         },
         "title": true,
-        "editorHide": true,
-        "tableHide": false,
+        "editorHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true
       },
@@ -690,21 +633,17 @@
       },
       "jobName": "paragraph_1428565195133_-1800275777",
       "id": "20150409-073955_2117417211",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "dedupPublications: (tableName: String, extraDedupFields: Set[String])org.apache.spark.sql.DataFrame\ngetDedupIds: (publicationDf: org.apache.spark.sql.DataFrame)org.apache.spark.rdd.RDD[(Long, Long)]\ndedupGraph: [VD](originalGraph: org.apache.spark.graphx.Graph[VD,(String, Seq[String])], dedupIdsRDD: org.apache.spark.rdd.RDD[(Long, Long)])org.apache.spark.graphx.Graph[Null,(String, Seq[String])]\n"
-      },
       "dateCreated": "Apr 9, 2015 7:39:55 AM",
       "dateStarted": "Mar 4, 2016 9:58:09 AM",
       "dateFinished": "Mar 4, 2016 9:58:10 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Deduplication of main publications",
       "text": "val allMainRawPublications \u003d allRawPublications.filter(\u0027is_empty \u003d\u003d\u003d false \u0026\u0026 \u0027is_main \u003d\u003d\u003d true).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nallMainRawPublications.registerTempTable(\"main_raw_publications_all\")\n\nval mainRawPublications \u003d dedupPublications(\"main_raw_publications_all\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nmainRawPublications.registerTempTable(\"main_raw_publications\")\nval mainDedupIdsRDD \u003d getDedupIds(mainRawPublications).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval graphWithMainRawPubDedup \u003d dedupGraph(fixedCrawlingGraph, mainDedupIdsRDD)",
-      "dateUpdated": "Mar 4, 2016 10:23:50 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -718,8 +657,9 @@
         },
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true,
-        "enabled": true
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -727,20 +667,16 @@
       },
       "jobName": "paragraph_1442218569762_226142952",
       "id": "20150914-081609_414370448",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "allMainRawPublications: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, depth: int, is_main: boolean, is_backward: boolean, is_forward: boolean, is_summary: boolean, summary_idx: int, title: string, alternate_titles: array\u003cstring\u003e, date: string, times_cited_field: string, references_count_field: string, abstract: string, document_types_field: string, language: string, accessionNumber: string, pmid: bigint, issn: string, eissn: string, isbn: string, doi: string, idsNumber: string, nlmUniqueId: string, country: string, journal: string, volume: string, issue: string, pages: string, supplement: string, publisher: string, authors_field: string, group_authors_field: string, corporate_authors_field: string, affiliations_field: array\u003cstruct\u003caddressLine:string,enhanced...mainRawPublications: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_ids: array\u003cstring\u003e, pub_id: bigint, occurrences: array\u003cbigint\u003e, nb_occurrences: bigint, times_cited_field: string, references_count_field: string, is_main: boolean, is_backward: boolean, is_forward: boolean, scielo_categories_field: string, research_areas_field: string, supplement: string, scielo_collections_field: string, controlled_indexing_field: string, author_address: string, journal: string, abstract: string, pages: string, author_keywords_field: string, group_authors_field: string, wos_categories_field: string, issue: string, uncontrolled_indexing_field: string, date: string, keywords_plus_field: string, corporate_authors_field: string, publisher: string, document_types_field: string, authors_field: string, al...mainDedupIdsRDD: org.apache.spark.rdd.RDD[(Long, Long)] \u003d MapPartitionsRDD[248] at map at \u003cconsole\u003e:26\ngraphWithMainRawPubDedup: org.apache.spark.graphx.Graph[Null,(String, Seq[String])] \u003d org.apache.spark.graphx.impl.GraphImpl@337c03bf\n"
-      },
       "dateCreated": "Sep 14, 2015 8:16:09 AM",
       "dateStarted": "Mar 4, 2016 9:58:10 AM",
       "dateFinished": "Mar 4, 2016 9:58:12 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "graphWithMainRawPubDedup.numVertices\ngraphWithMainRawPubDedup.numEdges",
-      "dateUpdated": "Mar 4, 2016 9:55:31 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -753,7 +689,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -761,20 +699,16 @@
       },
       "jobName": "paragraph_1442222554784_218838474",
       "id": "20150914-092234_943114617",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res53: Long \u003d 5437\nres54: Long \u003d 5151\n"
-      },
       "dateCreated": "Sep 14, 2015 9:22:34 AM",
       "dateStarted": "Mar 4, 2016 9:58:10 AM",
       "dateFinished": "Mar 4, 2016 9:58:40 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "// Sanity checks\nassert(allMainRawPublications.count() \u003d\u003d fixedAllRawPublications.filter(\u0027is_main \u003d\u003d\u003d true).count())\nassert(allMainRawPublications.count() \u003d\u003d mainDedupIdsRDD.keys.distinct.count())\nassert(graphWithMainRawPubDedup.numVertices \u003d\u003d fixedCrawlingGraph.numVertices - mainDedupIdsRDD.filter { case (a, b) \u003d\u003e a !\u003d b }.count())\nassert(graphWithMainRawPubDedup.numVertices \u003d\u003d mainDedupIdsRDD.values.distinct.count() + fixedAllRawPublications.filter(\u0027is_main \u003d\u003d\u003d false).count())\nassert(graphWithMainRawPubDedup.numEdges \u003d\u003d fixedCrawlingGraph.numEdges)",
-      "dateUpdated": "Mar 4, 2016 9:55:31 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -787,7 +721,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -795,20 +731,16 @@
       },
       "jobName": "paragraph_1442223635337_-400646649",
       "id": "20150914-094035_444309095",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Sep 14, 2015 9:40:35 AM",
       "dateStarted": "Mar 4, 2016 9:58:12 AM",
       "dateFinished": "Mar 4, 2016 9:58:51 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "OptDebugSaveMode.foreach(mainRawPublications.write.mode(_).parquet(s\"$QualityDir/main_raw_publications.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 9:55:32 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -821,7 +753,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -829,21 +763,17 @@
       },
       "jobName": "paragraph_1446126869422_-1426098313",
       "id": "20151029-135429_2024752327",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Oct 29, 2015 1:54:29 PM",
       "dateStarted": "Mar 4, 2016 9:58:40 AM",
       "dateFinished": "Mar 4, 2016 9:58:54 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Deduplication of non-main publications",
       "text": "val mainPubIds \u003d mainRawPublications.select(\u0027pub_id).map(_.getLong(0))\n\nval summariesWithRelatedMainId \u003d graphWithMainRawPubDedup.outerJoinVertices(mainPubIds.map { mainId \u003d\u003e mainId -\u003e mainId }) {\n    case (_, _, optMainPubId) \u003d\u003e optMainPubId\n}.triplets.filter(_.attr._1 \u003d\u003d \"cites\").flatMap { triplet \u003d\u003e\n    triplet.srcAttr.map(triplet.dstId -\u003e _).toSeq ++ triplet.dstAttr.map(triplet.srcId -\u003e _).toSeq\n}\n\nval nonMainPublicationsWithRelatedMainId \u003d graphWithMainRawPubDedup.outerJoinVertices(summariesWithRelatedMainId) {\n    case (_, _, optMainPubId) \u003d\u003e optMainPubId\n}.triplets.filter(_.attr._1 \u003d\u003d \"summaries\").flatMap { triplet \u003d\u003e\n    triplet.srcAttr.map(triplet.dstId -\u003e _)\n}\n\nval relatedMainIds \u003d (summariesWithRelatedMainId ++ nonMainPublicationsWithRelatedMainId).toDF(\"pub_id\", \"main_id\")\nval allNonMainRawPublications \u003d fixedAllRawPublications.filter(\u0027is_empty \u003d\u003d\u003d false \u0026\u0026 \u0027is_main \u003d\u003d\u003d false).join(relatedMainIds, \"pub_id\").persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nallNonMainRawPublications.registerTempTable(\"non_main_raw_publications_all\")\n\nval nonMainRawPublications \u003d dedupPublications(\"non_main_raw_publications_all\", Set(\"main_id\", \"summary_idx\")).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nnonMainRawPublications.registerTempTable(\"non_main_raw_publications\")\nval nonMainDedupIdsRDD \u003d getDedupIds(nonMainRawPublications).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval graphWithLocalDedup \u003d dedupGraph(graphWithMainRawPubDedup, nonMainDedupIdsRDD)",
-      "dateUpdated": "Mar 4, 2016 10:30:28 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -857,8 +787,9 @@
         },
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true,
-        "enabled": true
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -866,20 +797,16 @@
       },
       "jobName": "paragraph_1442223803295_-1516205566",
       "id": "20150914-094323_1968943276",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "mainPubIds: org.apache.spark.rdd.RDD[Long] \u003d MapPartitionsRDD[322] at map at \u003cconsole\u003e:30\nsummariesWithRelatedMainId: org.apache.spark.rdd.RDD[(org.apache.spark.graphx.VertexId, Long)] \u003d MapPartitionsRDD[335] at flatMap at \u003cconsole\u003e:87\nnonMainPublicationsWithRelatedMainId: org.apache.spark.rdd.RDD[(org.apache.spark.graphx.VertexId, Long)] \u003d MapPartitionsRDD[347] at flatMap at \u003cconsole\u003e:89\nrelatedMainIds: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint, main_id: bigint]\nallNonMainRawPublications: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_id: string, rid: string, depth: int, is_main: boolean, is_backward: boolean, is_forward: boolean, is_summary: boolean, summary_idx: int, title: string, alternate_titles: array\u003cstring\u003e, date: string, times_cited_field: string, references_count_field: string, abstract: string, document_types_field: string, language: string, accessionNumber: string, pmid: bigint, issn: string, eissn: string, isbn: string, doi: string, idsNumber: string, nlmUniqueId: string, country: string, journal: string, volume: string, issue: string, pages: string, supplement: string, publisher: string, authors_field: string, group_authors_field: string, corporate_authors_field: string, affiliations_field: array\u003cstruct\u003caddressLine:string,enhan...nonMainRawPublications: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_ids: array\u003cstring\u003e, pub_id: bigint, occurrences: array\u003cbigint\u003e, nb_occurrences: bigint, times_cited_field: string, references_count_field: string, is_main: boolean, is_backward: boolean, is_forward: boolean, scielo_categories_field: string, research_areas_field: string, supplement: string, scielo_collections_field: string, controlled_indexing_field: string, author_address: string, journal: string, abstract: string, pages: string, author_keywords_field: string, group_authors_field: string, wos_categories_field: string, issue: string, uncontrolled_indexing_field: string, date: string, keywords_plus_field: string, corporate_authors_field: string, publisher: string, document_types_field: string, authors_field: string,...nonMainDedupIdsRDD: org.apache.spark.rdd.RDD[(Long, Long)] \u003d MapPartitionsRDD[374] at map at \u003cconsole\u003e:26\ngraphWithLocalDedup: org.apache.spark.graphx.Graph[Null,(String, Seq[String])] \u003d org.apache.spark.graphx.impl.GraphImpl@117948a7\n"
-      },
       "dateCreated": "Sep 14, 2015 9:43:23 AM",
       "dateStarted": "Mar 4, 2016 9:58:52 AM",
       "dateFinished": "Mar 4, 2016 9:58:55 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "graphWithLocalDedup.numVertices\ngraphWithLocalDedup.numEdges",
-      "dateUpdated": "Mar 4, 2016 9:55:32 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -892,7 +819,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -900,20 +829,16 @@
       },
       "jobName": "paragraph_1442239685030_337320960",
       "id": "20150914-140805_1712781681",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res73: Long \u003d 5437\nres74: Long \u003d 5151\n"
-      },
       "dateCreated": "Sep 14, 2015 2:08:05 PM",
       "dateStarted": "Mar 4, 2016 9:58:55 AM",
       "dateFinished": "Mar 4, 2016 9:59:51 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "// Sanity checks\nassert(summariesWithRelatedMainId.count() \u003d\u003d graphWithMainRawPubDedup.edges.filter(_.attr._1 \u003d\u003d \"cites\").count())\nassert(summariesWithRelatedMainId.count() \u003d\u003d fixedAllRawPublications.filter(\u0027is_summary \u003d\u003d\u003d true).count())\nassert(nonMainPublicationsWithRelatedMainId.count() \u003d\u003d fixedAllRawPublications.filter(\u0027is_main \u003d\u003d\u003d false \u0026\u0026 \u0027is_summary \u003d\u003d\u003d false).count())\nassert(allNonMainRawPublications.count() \u003d\u003d fixedAllRawPublications.filter(\u0027is_main \u003d\u003d\u003d false).count())\nassert(graphWithLocalDedup.numVertices \u003d\u003d graphWithMainRawPubDedup.numVertices - nonMainDedupIdsRDD.filter { case (a, b) \u003d\u003e a !\u003d b }.count())\nassert(graphWithLocalDedup.numVertices \u003d\u003d nonMainDedupIdsRDD.values.distinct.count() + mainDedupIdsRDD.values.distinct.count())\nassert(graphWithLocalDedup.numEdges \u003c\u003d graphWithMainRawPubDedup.numEdges)",
-      "dateUpdated": "Mar 4, 2016 9:55:32 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -926,7 +851,9 @@
           "scatter": {}
         },
         "enabled": true,
-        "editorMode": "ace/mode/scala"
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -934,21 +861,17 @@
       },
       "jobName": "paragraph_1442239398398_71629680",
       "id": "20150914-140318_258501335",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Sep 14, 2015 2:03:18 PM",
       "dateStarted": "Mar 4, 2016 9:58:55 AM",
       "dateFinished": "Mar 4, 2016 10:00:04 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Drop needless summaries",
       "text": "val summariesToPublicationsRDD \u003d graphWithLocalDedup.edges.filter(_.attr._1 \u003d\u003d \"summaries\").map { edge \u003d\u003e\n    edge.srcId -\u003e edge.dstId\n}.distinct\n\nval initialCitationGraph \u003d {\n    val baseGraph \u003d graphWithLocalDedup.outerJoinVertices(summariesToPublicationsRDD) { (_, _, optSummariedPublication) \u003d\u003e\n        optSummariedPublication\n    }\n    \n    // Replace \"summaries\" edges with a \"cites\" one\n    org.apache.spark.graphx.Graph(\n        vertices \u003d baseGraph.vertices.filter { case (_, optSummariedPublication) \u003d\u003e\n            optSummariedPublication.isEmpty\n        },\n        edges \u003d baseGraph.triplets.filter(_.attr._1 \u003d\u003d \"cites\").map { triplet \u003d\u003e\n            org.apache.spark.graphx.Edge(triplet.srcAttr.getOrElse(triplet.srcId), triplet.dstAttr.getOrElse(triplet.dstId), triplet.attr)\n        },\n        defaultVertexAttr \u003d null,\n        edgeStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER,\n        vertexStorageLevel \u003d org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER\n    )\n}",
-      "dateUpdated": "Mar 4, 2016 10:35:00 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -962,8 +885,9 @@
         },
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true,
-        "enabled": true
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -971,20 +895,16 @@
       },
       "jobName": "paragraph_1442239962395_765341814",
       "id": "20150914-141242_108031819",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "summariesToPublicationsRDD: org.apache.spark.rdd.RDD[(org.apache.spark.graphx.VertexId, org.apache.spark.graphx.VertexId)] \u003d MapPartitionsRDD[451] at distinct at \u003cconsole\u003e:90\ninitialCitationGraph: org.apache.spark.graphx.Graph[Option[org.apache.spark.graphx.VertexId],(String, Seq[String])] \u003d org.apache.spark.graphx.impl.GraphImpl@60d2c17\n"
-      },
       "dateCreated": "Sep 14, 2015 2:12:42 PM",
       "dateStarted": "Mar 4, 2016 9:59:52 AM",
       "dateFinished": "Mar 4, 2016 10:00:04 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "initialCitationGraph.numVertices\ninitialCitationGraph.numEdges",
-      "dateUpdated": "Mar 4, 2016 9:55:32 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -997,7 +917,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1005,20 +927,16 @@
       },
       "jobName": "paragraph_1442223465455_-1004331353",
       "id": "20150914-093745_184906593",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res87: Long \u003d 3832\nres88: Long \u003d 3546\n"
-      },
       "dateCreated": "Sep 14, 2015 9:37:45 AM",
       "dateStarted": "Mar 4, 2016 10:00:04 AM",
       "dateFinished": "Mar 4, 2016 10:00:26 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "// Sanity checks\nassert(summariesToPublicationsRDD.count() + initialCitationGraph.numVertices \u003d\u003d graphWithLocalDedup.numVertices)\nassert(initialCitationGraph.numEdges \u003d\u003d graphWithLocalDedup.edges.filter(_.attr._1 \u003d\u003d \"cites\").count())\nassert(initialCitationGraph.numEdges \u003d\u003d graphWithLocalDedup.numEdges - graphWithLocalDedup.edges.filter(_.attr._1 \u003d\u003d \"summaries\").count())",
-      "dateUpdated": "Mar 4, 2016 9:55:33 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1031,7 +949,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1039,21 +959,17 @@
       },
       "jobName": "paragraph_1442326591834_708900347",
       "id": "20150915-141631_1097886156",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Sep 15, 2015 2:16:31 PM",
       "dateStarted": "Mar 4, 2016 10:00:04 AM",
       "dateFinished": "Mar 4, 2016 10:00:28 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Global deduplication",
       "text": "val initialCitationGraphIds \u003d initialCitationGraph.vertices.keys.toDF(\"pub_id\")\nval rawPublicationsWithLocalDedup \u003d (mainRawPublications unionAll nonMainRawPublications).join(initialCitationGraphIds, \"pub_id\").explode(\"crawl_ids\", \"crawl_id\") { l: Seq[String] \u003d\u003e l }\nrawPublicationsWithLocalDedup.registerTempTable(\"raw_publications_local_dedup\")\n\nval rawPublications \u003d dedupPublications(\"raw_publications_local_dedup\").coalesce(NumPartitions).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\nrawPublications.registerTempTable(\"raw_publications\")\nval globalDedupIdsRDD \u003d getDedupIds(rawPublications).persist(org.apache.spark.storage.StorageLevel.MEMORY_ONLY_SER)\n\nval citationGraph \u003d dedupGraph(initialCitationGraph, globalDedupIdsRDD)",
-      "dateUpdated": "Mar 4, 2016 9:56:40 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1067,8 +983,9 @@
         },
         "editorMode": "ace/mode/scala",
         "title": true,
-        "editorHide": true,
-        "enabled": true
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1076,20 +993,16 @@
       },
       "jobName": "paragraph_1442392616030_1041536749",
       "id": "20150916-083656_1442002611",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "initialCitationGraphIds: org.apache.spark.sql.DataFrame \u003d [pub_id: bigint]\nrawPublicationsWithLocalDedup: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_ids: array\u003cstring\u003e, pub_id: bigint, occurrences: array\u003cbigint\u003e, nb_occurrences: bigint, times_cited_field: string, references_count_field: string, is_main: boolean, is_backward: boolean, is_forward: boolean, scielo_categories_field: string, research_areas_field: string, supplement: string, scielo_collections_field: string, controlled_indexing_field: string, author_address: string, journal: string, abstract: string, pages: string, author_keywords_field: string, group_authors_field: string, wos_categories_field: string, issue: string, uncontrolled_indexing_field: string, date: string, keywords_plus_field: string, corporate_authors_field: string, publisher: string, document_types_field: string, authors_field: ...rawPublications: org.apache.spark.sql.DataFrame \u003d [did: int, crawl_ids: array\u003cstring\u003e, pub_id: bigint, occurrences: array\u003cbigint\u003e, nb_occurrences: bigint, times_cited_field: string, references_count_field: string, is_main: boolean, is_backward: boolean, is_forward: boolean, scielo_categories_field: string, research_areas_field: string, supplement: string, scielo_collections_field: string, controlled_indexing_field: string, author_address: string, journal: string, abstract: string, pages: string, author_keywords_field: string, group_authors_field: string, wos_categories_field: string, issue: string, uncontrolled_indexing_field: string, date: string, keywords_plus_field: string, corporate_authors_field: string, publisher: string, document_types_field: string, authors_field: string, altern...globalDedupIdsRDD: org.apache.spark.rdd.RDD[(Long, Long)] \u003d MapPartitionsRDD[505] at map at \u003cconsole\u003e:26\ncitationGraph: org.apache.spark.graphx.Graph[Null,(String, Seq[String])] \u003d org.apache.spark.graphx.impl.GraphImpl@418d048d\n"
-      },
       "dateCreated": "Sep 16, 2015 8:36:56 AM",
       "dateStarted": "Mar 4, 2016 10:00:26 AM",
       "dateFinished": "Mar 4, 2016 10:00:31 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "citationGraph.numVertices\ncitationGraph.numEdges",
-      "dateUpdated": "Mar 4, 2016 9:55:33 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1102,7 +1015,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1110,20 +1025,16 @@
       },
       "jobName": "paragraph_1442405016400_-127908236",
       "id": "20150916-120336_1369348935",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "res100: Long \u003d 3378\nres101: Long \u003d 3545\n"
-      },
       "dateCreated": "Sep 16, 2015 12:03:36 PM",
       "dateStarted": "Mar 4, 2016 10:00:28 AM",
       "dateFinished": "Mar 4, 2016 10:01:00 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "// Sanity checks\nassert(globalDedupIdsRDD.values.distinct.count() \u003d\u003d citationGraph.numVertices)\nassert(citationGraph.numVertices \u003d\u003d initialCitationGraph.numVertices - globalDedupIdsRDD.filter { case (a, b) \u003d\u003e a !\u003d b }.count())\nassert(citationGraph.numVertices \u003d\u003d globalDedupIdsRDD.values.distinct.count())\nassert(citationGraph.numEdges \u003c\u003d initialCitationGraph.numEdges)\nassert((citationGraph.edges.filter(_.attr._2.contains(\"backward\")).map(_.srcId) ++ citationGraph.edges.filter(_.attr._2.contains(\"forward\")).map(_.dstId)).distinct.count() \u003c\u003d rawPublications.where(\u0027is_main \u003d\u003d\u003d true).count())\nassert((citationGraph.edges.filter(_.attr._2.contains(\"backward\")).map(_.dstId) ++ citationGraph.edges.filter(_.attr._2.contains(\"forward\")).map(_.srcId)).distinct.count() \u003d\u003d rawPublications.where(\u0027is_backward \u003d\u003d\u003d true || \u0027is_forward \u003d\u003d\u003d true).count())",
-      "dateUpdated": "Mar 4, 2016 9:55:33 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1136,7 +1047,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "enabled": true
+        "enabled": true,
+        "editorHide": false,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1144,20 +1057,16 @@
       },
       "jobName": "paragraph_1442409885185_1117660750",
       "id": "20150916-132445_1602128403",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Sep 16, 2015 1:24:45 PM",
       "dateStarted": "Mar 4, 2016 10:00:32 AM",
       "dateFinished": "Mar 4, 2016 10:01:08 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "println(\"Publication count: \" + rawPublications.count())\nprintln(\"Main publication count: \" + rawPublications.where(\u0027is_main \u003d\u003d\u003d true).count())\nprintln(\"Backward publication count: \" +  rawPublications.where(\u0027is_backward \u003d\u003d\u003d true).count())\nprintln(\"Forward publication count: \" +  rawPublications.where(\u0027is_forward \u003d\u003d\u003d true).count())\nprintln(\"Backward reference count: \" +  citationGraph.edges.filter(_.attr._2.contains(\"backward\")).count())\nprintln(\"Forward reference count: \" +  citationGraph.edges.filter(_.attr._2.contains(\"forward\")).count())",
-      "dateUpdated": "Mar 4, 2016 9:55:33 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:54 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1170,8 +1079,9 @@
           "scatter": {}
         },
         "editorMode": "ace/mode/scala",
-        "editorHide": true,
-        "enabled": true
+        "editorHide": false,
+        "enabled": true,
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1179,21 +1089,17 @@
       },
       "jobName": "paragraph_1442405692317_1295039336",
       "id": "20150916-121452_661120866",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "Publication count: 3378\nMain publication count: 286\nBackward publication count: 2607\nForward publication count: 513\nBackward reference count: 2930\nForward reference count: 615\n"
-      },
       "dateCreated": "Sep 16, 2015 12:14:52 PM",
       "dateStarted": "Mar 4, 2016 10:01:00 AM",
       "dateFinished": "Mar 4, 2016 10:01:13 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Save raw",
       "text": "OptSaveMode.foreach(rawPublications.write.mode(_).parquet(s\"$RawDir/publications.parquet\"))\nOptSaveMode.foreach(citationGraph.edges.toDF().coalesce(NumPartitions).write.mode(_).parquet(s\"$RawDir/citation_edges.parquet\"))",
-      "dateUpdated": "Mar 4, 2016 9:55:34 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:54 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1207,7 +1113,7 @@
         },
         "title": true,
         "editorHide": false,
-        "tableHide": false,
+        "tableHide": true,
         "editorMode": "ace/mode/scala",
         "enabled": true
       },
@@ -1217,20 +1123,16 @@
       },
       "jobName": "paragraph_1434458011196_-1138956003",
       "id": "20150616-123331_36661108",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": ""
-      },
       "dateCreated": "Jun 16, 2015 12:33:31 PM",
       "dateStarted": "Mar 4, 2016 10:01:09 AM",
       "dateFinished": "Mar 4, 2016 10:01:16 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "",
-      "dateUpdated": "Mar 4, 2016 9:55:34 AM",
+      "dateUpdated": "Mar 4, 2016 5:31:54 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -1244,7 +1146,8 @@
         },
         "editorHide": false,
         "enabled": true,
-        "editorMode": "ace/mode/scala"
+        "editorMode": "ace/mode/scala",
+        "tableHide": true
       },
       "settings": {
         "params": {},
@@ -1252,37 +1155,31 @@
       },
       "jobName": "paragraph_1428678023528_7071764",
       "id": "20150410-150023_497546737",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT"
-      },
       "dateCreated": "Apr 10, 2015 3:00:23 PM",
       "dateStarted": "Mar 4, 2016 10:01:14 AM",
       "dateFinished": "Mar 4, 2016 10:01:16 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],
   "name": "[12] Web of Science scraping",
   "id": "2AEVQ5J8W",
   "angularObjects": {
-    "2BECU381X": [],
-    "2BFE4973F": [],
-    "2BDUP8TX1": [],
-    "2BC2TVSBR": [],
-    "2BEK1W1PD": [],
-    "2BEV8A6Z4": [],
-    "2BCVF5P5F": [],
-    "2BEMYV7QQ": [],
-    "2BFPPNXXV": [],
-    "2BD9VECZR": [],
-    "2BE14FKBG": [],
-    "2BEKWFP9V": [],
-    "2BDPVAN2T": [],
-    "2BDMC46FS": [],
-    "2BFC9NN6P": [],
-    "2BE7P7NCM": [],
-    "2BFQQPY3C": []
+    "2BD4H88Z1": [],
+    "2BD1QADH4": [],
+    "2BDHDMZPH": [],
+    "2BCNPYMPW": [],
+    "2BDRR3C3C": [],
+    "2BBM98Y57": [],
+    "2BECY547T": [],
+    "2BB8PV5AF": [],
+    "2BBS2SY48": [],
+    "2BE8YHRPM": [],
+    "2BDEEJDMM": [],
+    "2BDJU4DCB": [],
+    "2BF2YVJQX": [],
+    "2BCHBM7Y2": []
   },
   "config": {
     "looknfeel": "default"
