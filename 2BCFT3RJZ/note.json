@@ -1,38 +1,6 @@
 {
   "paragraphs": [
     {
-      "title": "Dataset download",
-      "text": "%sh\n\nSCRAPY_DIR\u003d/tmp/scrapy\n\nmkdir -p $SCRAPY_DIR\ncd $SCRAPY_DIR\n\nif [ ! -f anticipation_FORESIGHT.json ]\nthen\n  wget \"https://s3-eu-west-1.amazonaws.com/cognome-crawl/anticipation_FORESIGHT.json\"\nfi\n\nif [ ! -f anticipation_NANOETHICS.json ]\nthen\n  wget \"https://s3-eu-west-1.amazonaws.com/cognome-crawl/anticipation_NANOETHICS.json\"\nfi",
-      "dateUpdated": "Mar 4, 2016 5:31:27 PM",
-      "config": {
-        "tableHide": true,
-        "colWidth": 12.0,
-        "editorMode": "ace/mode/sh",
-        "title": true,
-        "graph": {
-          "mode": "table",
-          "height": 300.0,
-          "optionOpen": false,
-          "keys": [],
-          "values": [],
-          "groups": [],
-          "scatter": {}
-        },
-        "enabled": true,
-        "editorHide": false
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "jobName": "paragraph_1457098597683_-1143943259",
-      "id": "20160304-143637_1928759401",
-      "dateCreated": "Mar 4, 2016 2:36:37 PM",
-      "status": "READY",
-      "errorMessage": "",
-      "progressUpdateIntervalMs": 500
-    },
-    {
       "title": "Configuration",
       "text": "val CrawlNames \u003d Seq(\n    \"anticipation_FORESIGHT\",\n    \"anticipation_NANOETHICS\")\nval CrawlIds: Option[Seq[String]] \u003d None\nval OptSaveMode: Option[org.apache.spark.sql.SaveMode] \u003d Some(org.apache.spark.sql.SaveMode.Overwrite)\nval DatasetId \u003d 1\nval StudyName \u003d \"anticipation\"\n\nval ScrapyDir \u003d \"/tmp/scrapy\"\nval WorkDir \u003d s\"/tmp/$StudyName\"\nval CrawlDir \u003d s\"$WorkDir/crawl\"\nval CrawlFiles \u003d CrawlNames.map { crawlName \u003d\u003e s\"$ScrapyDir/$crawlName.json\" }",
       "dateUpdated": "Mar 4, 2016 5:31:27 PM",
